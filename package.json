@@ -25,7 +25,7 @@
   "author": "ssribeiro",
   "license": "ISC",
   "dependencies": {
-    "@angstone/node-util": "^0.0.3",
+    "@angstone/node-util": "^0.0.4",
     "dotenv": "^6.0.0"
   },
   "devDependencies": {
