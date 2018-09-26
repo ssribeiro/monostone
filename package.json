@@ -26,7 +26,6 @@
   "license": "ISC",
   "dependencies": {
     "@angstone/node-util": "^0.0.3",
-    "chalk": "^2.4.1",
     "dotenv": "^6.0.0"
   },
   "devDependencies": {
