@@ -1,0 +1,24 @@
+{
+  "name": "monostone",
+  "version": "0.0.0",
+  "description": "monolitic event-sourced framework",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "/home/ss/gd/repos/monostone"
+  },
+  "keywords": [
+    "monolith",
+    "framework",
+    "nodejs",
+    "backend",
+    "event",
+    "eventstore",
+    "event-sourced"
+  ],
+  "author": "ssribeiro",
+  "license": "ISC"
+}
