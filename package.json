@@ -4,6 +4,7 @@
   "description": "monolitic event-sourced framework",
   "main": "index.js",
   "scripts": {
+    "build": "./node_modules/typescript/bin/tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -20,5 +21,9 @@
     "event-sourced"
   ],
   "author": "ssribeiro",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {},
+  "devDependencies": {
+    "typescript": "^3.0.3"
+  }
 }
