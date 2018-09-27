@@ -2,6 +2,8 @@
 
 export class App {
 
+  joel: string = 'santana';
+
   constructor() {
   }
 
