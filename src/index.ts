@@ -9,7 +9,8 @@ ast.log('loading configuration')
 
 // Config
 config();
-if (process.env.NODE_ENV == 'production' || process.env.NODE_ENV == 'development')
+if (process.env.NODE_ENV == 'production'
+  || process.env.NODE_ENV == 'development')
   ast.success('configuration loaded');
 else error.fatal('configuration failed - please verify .env file');
 ast.info('configured environment: ' + process.env.NODE_ENV);
