@@ -1,7 +1,7 @@
 import * as ast from '@angstone/node-util';
 import { config } from './config';
 import { error } from './error';
-import { App, createApp } from './app';
+import { App } from './app';
 
 /* Boot Process */
 ast.log('booting monostone framework')
@@ -16,7 +16,7 @@ ast.info('configured environment: ' + process.env.NODE_ENV);
 
 // Create Express App
 ast.log('creating express app');
-const app: App = createApp();
+const app: App = new App();
 if (app) ast.success('express app created');
 else error.fatal('fail in creating express app');
 
