@@ -1,4 +1,4 @@
-import * as ast from '@angstone/node-util';
+//import * as ast from '@angstone/node-util';
 
 export class App {
 
@@ -12,4 +12,4 @@ export class App {
 
 export const createApp = function() {
   return new App();
-};
+}
