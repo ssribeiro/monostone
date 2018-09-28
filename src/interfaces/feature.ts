@@ -1,5 +1,5 @@
-import { Model } from './';
+import { IModel } from "./";
 
-export interface Feature {
-  models: Model[];
-};
+export interface IFeature {
+  models: IModel[];
+}

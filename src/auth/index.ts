@@ -1,5 +1,5 @@
-import { Feature } from '../interfaces';
+import { IFeature } from "../interfaces";
 
-export const feature: Feature = {
-  models: [{ name: 'user' }],
+export const feature: IFeature = {
+  models: [{ name: "user" }],
 };

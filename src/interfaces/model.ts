@@ -1,3 +1,3 @@
-export interface Model {
+export interface IModel {
   name: string;
-};
+}

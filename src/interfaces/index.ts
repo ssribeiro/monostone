@@ -1,4 +1,4 @@
-import { Feature } from './feature';
-import { Model } from './model';
+import { IFeature } from "./feature";
+import { IModel } from "./model";
 
-export { Feature, Model };
+export { IFeature, IModel };

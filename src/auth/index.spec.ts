@@ -1,16 +1,17 @@
-import 'jasmine';
-import 'jasmine-expect';
-import { feature } from './';
+import "jasmine";
+import "jasmine-expect";
+import { IModel } from "../interfaces";
+import { feature } from "./";
 
-describe('Auth Feature', () => {
+describe("Auth Feature", () => {
 
-  it('should be a feature', () => {
+  it("should be a feature", () => {
     expect(feature).toBeDefined();
   });
 
-  it('should contain models', () => {
+  it("should contain models", () => {
     expect(feature.models).toBeArray();
-    feature.models.forEach(model => {
+    feature.models.forEach((model: IModel) => {
       expect(model.name).toBeString();
     });
   });
