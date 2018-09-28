@@ -7,7 +7,12 @@
     "sourceMap": true,
     "strict": true,
     "moduleResolution": "node",
-    "typeRoots": ["node_module/@types","./typings","./types"]
+    "typeRoots": ["node_module/@types","./typings","./types","node_modules/jasmine-expect/jasmine-matchers.d.ts"],
+    "types": [
+      "jasmine",
+      "node",
+      "jasmine-expect"
+    ]
   },
   "include": [
     "src/**/*.ts"

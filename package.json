@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "npm run dev",
-    "dev": "node --inspect=9229 ./node_modules/nodemon/bin/nodemon.js",
+    "dev": "node --inspect=9239 ./node_modules/nodemon/bin/nodemon.js",
     "build": "npm run clean && ./node_modules/typescript/bin/tsc",
     "test": "jasmine-ts --config=jasmine.json \"./src/**/*.spec.ts\"",
     "clean": "rimraf ./dist"
@@ -34,9 +34,11 @@
     "@types/dotenv": "^4.0.3",
     "@types/express": "^4.16.0",
     "@types/jasmine": "^2.8.8",
+    "@types/jasmine-expect": "^3.8.1",
     "@types/node": "^10.11.0",
     "@types/supertest": "^2.0.6",
     "jasmine": "^3.2.0",
+    "jasmine-expect": "^3.8.4",
     "jasmine-spec-reporter": "^4.2.1",
     "jasmine-ts": "^0.2.1",
     "nodemon": "^1.18.4",

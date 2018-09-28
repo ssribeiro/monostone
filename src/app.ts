@@ -16,7 +16,7 @@ export class App {
     ast.log('creating routes');
     const router = express.Router();
 
-    router.get('/ping', (res: express.Response) => {
+    router.get('/ping', (req: express.Request, res: express.Response) => {
       res.send('pong');
     });
 
