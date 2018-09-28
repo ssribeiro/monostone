@@ -1,4 +1,5 @@
-import "jasmine-expect";
+import 'jasmine';
+import 'jasmine-expect';
 import { App } from './app';
 import * as supertest from 'supertest';
 

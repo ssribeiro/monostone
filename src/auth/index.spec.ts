@@ -1,5 +1,5 @@
-import "jasmine-expect";
-
+import 'jasmine';
+import 'jasmine-expect';
 import { feature } from './';
 
 describe('Auth Feature', () => {
