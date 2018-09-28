@@ -11,16 +11,20 @@ describe("Auth Feature", () => {
 
   it("should contain models", () => {
     expect(feature.models).toBeArray();
-    feature.models.forEach((model: IModel) => {
-      expect(model.name).toBeString();
-    });
+    if (feature.models) {
+      feature.models.forEach((model: IModel) => {
+        expect(model.name).toBeString();
+      });
+    }
   });
 
   it("should contain commands", () => {
     expect(feature.commands).toBeArray();
-    feature.commands.forEach((command: ICommand) => {
-      expect(command.name).toBeString();
-    });
+    if (feature.commands) {
+      feature.commands.forEach((command: ICommand) => {
+        expect(command.name).toBeString();
+      });
+    }
   });
 
 });

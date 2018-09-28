@@ -1,3 +1,3 @@
 export interface IRuleSheet {
-  name: string;
+  preValidation?: (req: any) => Promise<string>;
 }
