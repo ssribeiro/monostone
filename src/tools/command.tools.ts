@@ -1,13 +1,12 @@
-import * as ast from "@angstone/node-util";
 import { ICommand, IRuleSheet } from "../interfaces";
+import { RuleTools } from "./";
 
 export function createCommand(commandRecipe: {
   commandName: string, featurePath: string }): ICommand {
-  const name = commandRecipe.commandName;
   const ruleSheet: IRuleSheet = require(commandRecipe.featurePath + "/" +
-    commandRecipe.commandName + "/" + commandRecipe.commandName + ".rule");
-  ast.bp(ruleSheet);
-  return { name };
+    commandRecipe.commandName + "/" + commandRecipe.commandName + ".rule").ruleSheet;
+  const rule: IRuleSheet = RuleTools.loadRule(ruleSheet);
+  return { commandName: commandRecipe.commandName, rule };
 }
 
 export function createCommands(commandsRecipe: {

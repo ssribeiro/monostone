@@ -21,4 +21,14 @@ export const ruleSheet: IRuleSheet = {
       resolve(undefined);
     }),
 
+  validation: (req: any): Promise<string> =>
+    new Promise<string>((resolve, reject) => {
+      resolve(undefined);
+    }),
+
+  respond: (eventNumber: number, req: any): Promise<any> =>
+    new Promise<any>((resolve, reject) => {
+      resolve(eventNumber);
+    }),
+
 };

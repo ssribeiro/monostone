@@ -22,7 +22,7 @@ describe("Auth Feature", () => {
     expect(feature.commands).toBeArray();
     if (feature.commands) {
       feature.commands.forEach((command: ICommand) => {
-        expect(command.name).toBeString();
+        expect(command.commandName).toBeString();
       });
     }
   });

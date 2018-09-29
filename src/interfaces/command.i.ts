@@ -1,3 +1,6 @@
+import { IRuleSheet } from "./";
+
 export interface ICommand {
-  name: string;
+  commandName: string;
+  rule: IRuleSheet;
 }

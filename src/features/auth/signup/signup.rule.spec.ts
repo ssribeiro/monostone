@@ -139,4 +139,20 @@ describe("Signup Rule", () => {
 
   });
 
+  describe("validation data", () => {
+
+    it("should have a validation function", () => {
+      expect(ruleSheet.validation).toBeDefined();
+    });
+
+  });
+
+  describe("respond function", () => {
+
+    it("should have a respond function", () => {
+      expect(ruleSheet.respond).toBeDefined();
+    });
+
+  });
+
 });
