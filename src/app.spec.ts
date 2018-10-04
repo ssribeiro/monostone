@@ -1,7 +1,9 @@
 import "jasmine";
 import "jasmine-expect";
 import * as supertest from "supertest";
+
 import { App } from "./app";
+import { features as basicFeatures } from "./features";
 
 describe("App", () => {
 
@@ -29,5 +31,30 @@ describe("App", () => {
         expect(err).toBeNull();
       });
   });
+
+  describe("loadFeatures function", () => {
+
+    it("should load features", () => {
+      expect(app.features).toEqual(basicFeatures);
+    });
+
+  });
+
+  // it("should signup a user", (done) => {
+  //  const userInfo = {
+  //    login: "userlogin",
+  //    name: "user name",
+  //    password: "secreto1",
+  //    password_confirmation: "secreto2",
+  //  };
+  //  (request.post("/auth/signup") as supertest.Test)
+  //    .send(userInfo)
+  //    .expect(200)
+  //    .then((res) => {
+  //      expect(res).toBeNumber();
+  //      expect(res).toBeGreaterThan(0);
+  //      done();
+  //    });
+  // });
 
 });

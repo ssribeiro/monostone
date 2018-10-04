@@ -5,4 +5,7 @@ export const error = {
     ast.error(message);
     process.exit(1);
   },
+  throw(message: any) {
+    throw new Error(message);
+  },
 };

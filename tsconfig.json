@@ -9,7 +9,9 @@
     "moduleResolution": "node",
     "typeRoots": ["node_module/@types","./typings","./types"],
     "types": [
-      "node_modules/@angstone/node-util",
+      "node",
+      "jasmine",
+      "jasmine-expect"
     ]
   },
   "include": [

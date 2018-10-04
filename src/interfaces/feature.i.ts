@@ -1,7 +1,7 @@
 import { ICommand, IModel } from "./";
 
 export interface IFeature {
-  name: string;
+  featureName: string;
   models?: IModel[];
   commands?: ICommand[];
 }
