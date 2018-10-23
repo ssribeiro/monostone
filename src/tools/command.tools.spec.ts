@@ -12,6 +12,7 @@ describe("CommandTools", () => {
     it("should create a Command with rules and a name", () => {
       const command: ICommand = CommandTools.createCommand({
         commandName: "signup",
+        featureName: "auth",
         featurePath: __dirname + "/../features/auth",
       });
       expect(command).toBeDefined();
@@ -20,8 +21,10 @@ describe("CommandTools", () => {
       expect(ruleSheet).toBeDefined();
       expect(ruleSheet.preValidation).toBeDefined();
       expect(command.rule).toEqual(ruleSheet);
-      expect(command.rule.validation).toBeDefined();
-      expect(command.rule.respond).toBeDefined();
+      if (command.rule) {
+        expect(command.rule.validation).toBeDefined();
+        expect(command.rule.respond).toBeDefined();
+      }
     });
 
   });

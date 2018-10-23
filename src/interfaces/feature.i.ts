@@ -1,7 +1,6 @@
-import { ICommand, IModel } from "./";
+import { ICommand } from "./";
 
 export interface IFeature {
   featureName: string;
-  models?: IModel[];
   commands?: ICommand[];
 }

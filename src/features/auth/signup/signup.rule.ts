@@ -1,9 +1,10 @@
 import { IRuleSheet } from "../../../interfaces";
+import { Store } from "../../../store";
 import { messages } from "./signup.messages";
 
 export const ruleSheet: IRuleSheet = {
 
-  preValidation: (req: any): Promise<string> =>
+  preValidation: (req: any): Promise<string|undefined> =>
     new Promise<string>((resolve, reject) => {
       if (!req.name) { resolve(messages.NO_NAME); }
       if (!req.login) { resolve(messages.NO_LOGIN); }
@@ -21,14 +22,16 @@ export const ruleSheet: IRuleSheet = {
       resolve(undefined);
     }),
 
-  validation: (req: any): Promise<string> =>
-    new Promise<string>((resolve, reject) => {
-      resolve(undefined);
-    }),
+  validation: async (req: any): Promise<string|undefined> => {
+    const user = await Store.getMapper("user").findAll({ login: req.login}).catch((err: any) => {
+      if (err.msg === "Table `dev.user` does not exist.") { return []; } else { throw(err); }
+    });
+    return user.length > 0 ? messages.LOGIN_TAKEN : undefined;
+  },
 
   respond: (eventNumber: number, req: any): Promise<any> =>
     new Promise<any>((resolve, reject) => {
-      resolve(eventNumber);
+      resolve({ eventNumber });
     }),
 
 };

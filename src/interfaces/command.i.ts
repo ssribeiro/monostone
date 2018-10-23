@@ -1,7 +1,8 @@
-import { IRuleSheet } from "./";
+import { IReducer, IRuleSheet } from "./";
 
 export interface ICommand {
+  featureName: string;
   commandName: string;
-  rule: IRuleSheet;
-  request: (req: any) => Promise<any>;
+  reducer?: IReducer;
+  rule?: IRuleSheet;
 }

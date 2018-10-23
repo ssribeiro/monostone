@@ -1,82 +1,103 @@
 import * as ast from "@angstone/node-util";
-import * as express from "express";
+
+import { config } from "./config";
+import { error } from "./error";
+import { EventController } from "./event_controller";
 import { features as basicFeatures } from "./features";
-import { ICommand, IFeature } from "./interfaces";
+import { IFeature } from "./interfaces";
+import { Portal } from "./portal";
+import * as SystemCommands from "./system_commands";
+import { DevTools, EventTools } from "./tools";
 
 export class App {
 
-  public apiPort: number;
-  public expressApp: express.Express;
+  public eventController: EventController;
   public features: IFeature[];
+  public portal: Portal;
+
+  public timeLoaded: number | null = null;
+  public timeStarted: number;
+  public rethinkDevConnected: boolean = false;
+
+  public devTools = DevTools;
 
   constructor() {
-    this.apiPort = +(process.env.API_PORT || 3002);
-    this.expressApp = express();
-    ast.log("loadind features");
+    this.timeStarted = Date.now();
+    this.config();
+
+    this.portal = new Portal();
+
     this.features = this.loadFeatures();
-    this.route();
+    this.eventController = new EventController();
+
+    this.portal.route(this.features, this.eventController.eventReduced$);
   }
 
-  public start() {
-    this.expressApp.listen(this.apiPort, () =>
-      ast.log("Express Server listening on port " + this.apiPort),
-    );
-  }
+  public async start() {
+    this.loadReducers();
+    this.startReducer();
+    await this.reducePast();
 
-  private route() {
-    ast.log("creating routes");
-    this.routeSystem();
-    this.routeFeatures();
-  }
-
-  private routeSystem() {
-    ast.log("adding system routes");
-    const router = express.Router();
-
-    router.get("/ping", (req: express.Request, res: express.Response) => {
-      res.send("pong");
-    });
-
-    this.expressApp.use("/", router);
-    ast.log("system routes added");
-  }
-
-  private routeFeatures() {
-    ast.log("adding the feature routes");
-    this.features.forEach((feature) => {
-
-      ast.log("found feature: " + feature.featureName);
-      const featureRouter = express.Router();
-
-      if (feature.commands) {
-        feature.commands.forEach((command) => {
-          ast.log(" found command: " + command.commandName);
-
-          featureRouter.post("/" + command.commandName,
-            this.commandRequest(command));
-
-          ast.log(" routed command " + command.commandName);
-        });
-      }
-
-      this.expressApp.use("/" + feature.featureName, featureRouter);
-      ast.log("routed feature " + feature.featureName);
-
-    });
-  }
-
-  private commandRequest(command: ICommand): (
-    req: express.Request,
-    res: express.Response,
-  ) => void {
-    return (req: express.Request, res: express.Response) => {
-      command.request(req)
-        .then((ans: any) => res.send(ans))
-        .catch((err: Error) => res.status(400).send(err.message));
+    this.timeLoaded = Date.now();
+    const systemInfo = {
+      load_time: this.timeLoaded - this.timeStarted,
     };
+    await EventTools.send({ command: SystemCommands.started, request: systemInfo});
+
+    await this.startPortal();
+
+    await EventTools.send({ command: SystemCommands.apiOpened });
+  }
+
+  public async startPortal() {
+    await this.portal.start();
+  }
+
+  public async stopPortal() {
+    await this.portal.stop();
+  }
+
+  public loadReducers() {
+    this.eventController.loadReducers(this.features);
+  }
+
+  public startReducer() {
+    this.eventController.startReducer();
+  }
+
+  public stopEventController() {
+    this.eventController.stop();
+  }
+
+  public async reducePast() {
+    await this.eventController.completePastReducing();
+  }
+
+  public async stop() {
+    await this.stopPortal();
+    await new Promise((resolve) => {
+      setTimeout(resolve, 100);
+    });
+
+    await this.stopEventController();
+    await new Promise((resolve) => {
+      setTimeout(resolve, 100);
+    });
+  }
+
+  private config() {
+    config();
+    if (process.env.NODE_ENV === "production"
+      || process.env.NODE_ENV === "development") {
+      ast.success("configuration loaded");
+    } else {
+      error.fatal("configuration failed - please verify .env file");
+    }
+    ast.info("configured environment: " + process.env.NODE_ENV);
   }
 
   private loadFeatures(): IFeature[] {
+    ast.log("loadind features");
     return [...basicFeatures];
   }
 

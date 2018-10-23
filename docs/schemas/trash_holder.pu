@@ -1,0 +1,35 @@
+reducer -> appStream : get stream
+appStream -> streamListener : get stream
+
+
+
+reducer -> modeler : user_model_update_stream$
+reducer -> modeler : session_model_update_stream$
+user_procedure -> commander : add 'cmd, rules_sheet, reducer'
+commander -> reducer : add 'cmd, reducer'
+
+
+commander -> ruler : load 'cmd_rules_sheet'
+ruler -> modeler : get models'
+modeler -> ruler : models
+ruler -> commander : cmd_rules_loaded w/ models
+commander -> user_procedure : 'cmd w/ cmd_rules_loaded w/ models loaded'
+
+
+
+
+
+
+
+
+
+
+
+
+reducer -> modeler : model_update_stream$ emited data
+reducer -> modeler : model_update_stream$ emited data
+modeler -> ruler : data emited
+ruler -> commander : data emited
+modeler -> ruler : data emited
+ruler -> commander : data emited
+commander -> user_procedure : data

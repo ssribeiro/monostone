@@ -1,0 +1,19 @@
+version: '3'
+services:
+
+  eventstore:
+    image: eventstore/eventstore:release-4.1.1
+    ports:
+      - "2113:2113"
+      - "1113:1113"
+    #logging:
+    #  driver: "none"
+
+  rethinkdb:
+    image: rethinkdb
+    ports:
+      - "29015:29015"
+      - "28015:28015"
+      - "8080:8080"
+
+

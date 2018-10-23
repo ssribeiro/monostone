@@ -1,0 +1,105 @@
+@startuml
+title Microservice For Angstone
+boundary client
+boundary user_procedure
+box "microservice"
+participant auth << (A,#ADD1B2) >>
+participant commander << (C,#ADD1B2) >>
+control ruler << (B,#ADD1B2) >>
+database modeler << (D,#ADD1B2) >>
+participant evt << (E,#ADD1B2) >>
+participant reducer << (R,#ADD1B2) >>
+participant appStream << (A,#ADD1B2) >>
+participant streamListener << (L,#ADD1B2) >>
+end box
+== Boot Time ==
+
+user_procedure -> auth : LOAD
+auth -> commander : LOAD
+commander -> ruler : LOAD
+commander -> evt : LOAD
+commander -> reducer : LOAD
+commander -> appStream : LOAD
+
+appStream -> streamListener : LOAD
+streamListener -> streamListener : connection
+streamListener -> streamListener : LOADED
+
+appStream -> streamListener : LISTEN TO events
+streamListener -> appStream : event_stream$
+appStream -> appStream : LOADED
+
+ruler -> modeler : LOAD
+modeler -> appStream : LOAD
+appStream -> appStream : LOADED
+modeler -> modeler : LOADED
+ruler -> ruler : LOADED
+
+evt -> evt : LOADED
+
+reducer -> appStream : LOAD
+appStream -> appStream : LOADED
+
+reducer -> modeler : LOAD
+modeler -> modeler : LOADED
+
+reducer -> reducer : LOADED
+
+commander -> commander : LOADED
+
+auth -> commander : ADD_COMMAND (cmd, rule, reducer)
+commander -> ruler : LOAD_RULE rule
+
+ruler -> modeler : GET_MODEL models
+modeler -> appStream : GET STREAMS model_stream$[s]
+appStream -> modeler : model_stream$[s]
+modeler -> ruler : model_loaded[s]
+
+ruler -> commander : rule_loaded
+
+commander -> reducer : ADD_REDUCER reducer
+
+reducer -> modeler : GET_MODEL models
+modeler -> appStream : GET STREAMS model_stream$[s]
+appStream -> modeler : model_stream$[s]
+modeler -> reducer : model_loaded[s]
+
+reducer -> appStream : GET REDUCER STREAM
+appStream -> reducer : reducer_stream$
+reducer -> appStream : GET past_events
+appStream -> reducer : past_events
+
+reducer -> reducer : EACH PAST EVENT
+reducer -> reducer : redux
+
+reducer -> appStream : GET event_stream$
+appStream -> reducer : event_stream$
+reducer -> commander : REDUCER_ADDED
+
+reducer -> reducer : ON EVENT
+reducer -> reducer : redux
+reducer -> appStream : EMIT reducer_stream$
+
+commander -> commander : command_added
+
+auth -> auth : LOADED
+user_procedure -> user_procedure : LOADED
+
+== Command Operations ==
+client -> commander : cmd data
+commander -> ruler : pre_validade data
+ruler -> commander : false(meaning valid)
+commander -> ruler : validate data
+ruler -> modeler : help-me w/ data
+modeler -> ruler : data
+ruler -> commander : false(meaning valid)
+commander -> ruler : what respond?
+ruler -> ruler : response_function
+commander -> evt : send cmd data
+evt -> appStream : dispatch cmd data
+appStream -> reducer : EMIT cmd data
+reducer -> reducer : REDUX
+reducer -> appStream : EMIT reduced reducer_stream$
+appStream -> ruler : reduced reducer_stream
+ruler -> client : RESPOND data
+@enduml
