@@ -1,9 +1,11 @@
 import "jasmine";
 import "jasmine-expect";
 import { ICommand } from "../../interfaces";
-import { feature } from "./";
+import { feature as featureMaker } from "./";
 
 describe("Auth Feature", () => {
+
+  const feature = featureMaker();
 
   it("should be a feature", () => {
     expect(feature).toBeDefined();

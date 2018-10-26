@@ -26,7 +26,7 @@
   "author": "ssribeiro",
   "license": "ISC",
   "dependencies": {
-    "@angstone/node-util": "^0.0.4",
+    "@angstone/node-util": "^0.0.6",
     "body-parser": "^1.18.3",
     "dotenv": "^6.0.0",
     "event-store-client": "^1.0.0",

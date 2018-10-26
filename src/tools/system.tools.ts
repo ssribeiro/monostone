@@ -1,3 +1,4 @@
+// import * as ast from "@angstone/node-util";
 import { connectRethinkDbDev, r } from "../store";
 import { EventTools } from "../tools";
 
@@ -38,3 +39,5 @@ export const dbWipe = async () => {
 export const eventClear = async () => {
   await EventTools.clearAllEvents();
 };
+
+export { r };

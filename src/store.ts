@@ -19,12 +19,17 @@ const rethinkDashOptions = Object.assign({}, rethinkOptions, {
   // servers: an array of objects {host: <string>, port: <number>} representing RethinkDB nodes to connect to
 });
 
-const Store = new Container();
 const rethinkdbAdapter = new RethinkDBAdapter({
   // Pass config to rethinkdbdash here
   rOpts: rethinkDashOptions,
 });
 
+class StoreDB extends Container {
+  constructor() {
+    super();
+  }
+}
+const Store: StoreDB = new StoreDB();
 // "store" will now use a RethinkDB adapter by default
 Store.registerAdapter("rethinkdb", rethinkdbAdapter, { default: true });
 

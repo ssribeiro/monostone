@@ -7,7 +7,7 @@ import { features as basicFeatures } from "./features";
 import { IFeature } from "./interfaces";
 import { Portal } from "./portal";
 import * as SystemCommands from "./system_commands";
-import { DevTools, EventTools } from "./tools";
+import { EventTools, SystemTools } from "./tools";
 
 export class App {
 
@@ -19,7 +19,7 @@ export class App {
   public timeStarted: number;
   public rethinkDevConnected: boolean = false;
 
-  public devTools = DevTools;
+  public systemTools = SystemTools;
 
   constructor() {
     this.timeStarted = Date.now();
@@ -33,9 +33,17 @@ export class App {
     this.portal.route(this.features, this.eventController.eventReduced$);
   }
 
+  public async grantDb() {
+    await SystemTools.use();
+    if (! await SystemTools.dbCheck()) {
+      await SystemTools.dbCreate();
+    }
+  }
+
   public async start() {
+    await this.grantDb();
     this.loadReducers();
-    this.startReducer();
+    this.startEventController();
     await this.reducePast();
 
     this.timeLoaded = Date.now();
@@ -61,8 +69,8 @@ export class App {
     this.eventController.loadReducers(this.features);
   }
 
-  public startReducer() {
-    this.eventController.startReducer();
+  public startEventController() {
+    this.eventController.start();
   }
 
   public stopEventController() {
@@ -85,6 +93,10 @@ export class App {
     });
   }
 
+  public reloadFeatures() {
+    this.features = this.loadFeatures();
+  }
+
   private config() {
     config();
     if (process.env.NODE_ENV === "production"
@@ -98,7 +110,7 @@ export class App {
 
   private loadFeatures(): IFeature[] {
     ast.log("loadind features");
-    return [...basicFeatures];
+    return [...basicFeatures()];
   }
 
 }
