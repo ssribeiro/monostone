@@ -1,9 +1,9 @@
 import { IReducer } from "../../../interfaces";
-import { Store } from "../../../store";
+import { db } from "../../../store";
 
 export const reducer: IReducer = {
   async process(request: any, eventNumber: number): Promise<void> {
-    await Store.getMapper("user").create({
+    await db.collection("user").insert({
       id: eventNumber,
       login: request.login,
       name: request.name,

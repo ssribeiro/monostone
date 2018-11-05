@@ -4,6 +4,7 @@ import "jasmine-expect";
 import { EventController } from "./event_controller";
 import { features as basicFeatures } from "./features";
 import { ICommand } from "./interfaces";
+import { connectStore } from "./store";
 import { EventTools } from "./tools";
 
 describe("EventController", () => {
@@ -19,19 +20,14 @@ describe("EventController", () => {
     expect(EventController).toBeDefined();
   });
 
-  it("should start reducer", (done) => {
+  it("should start reducer and stop gracefully", (done) => {
     const eventController: EventController = new EventController();
     eventController.loadReducers(basicFeatures());
-    eventController.startReducer();
-    eventController.completePastReducing().then(done);
-  });
-
-  it("should stop gracefully", (done) => {
-    const eventController: EventController = new EventController();
-    eventController.loadReducers(basicFeatures());
-    eventController.startReducer();
-    eventController.completePastReducing().then(() => {
-      eventController.stop().then(done);
+    connectStore().then(() => {
+      eventController.start();
+      eventController.completePastReducing().then(() => {
+        eventController.stop().then(done);
+      });
     });
   });
 
@@ -50,9 +46,11 @@ describe("EventController", () => {
       setTimeout(() => {
         const eventController: EventController = new EventController();
         eventController.loadReducers(basicFeatures());
-        eventController.startReducer();
-        eventController.completePastReducing().then(() => {
-          eventController.stop().then(done);
+        connectStore().then(() => {
+          eventController.start();
+          eventController.completePastReducing().then(() => {
+            eventController.stop().then(done);
+          });
         });
       }, 300);
     });
@@ -71,12 +69,14 @@ describe("EventController", () => {
     };
     const eventController: EventController = new EventController();
     eventController.loadReducers(basicFeatures());
-    eventController.startReducer();
-    eventController.completePastReducing().then(() => {
-      EventTools.send({ command, request }).then(() => {
-        setTimeout(() => {
-          eventController.stop().then(done);
-        }, 300);
+    connectStore().then(() => {
+      eventController.start();
+      eventController.completePastReducing().then(() => {
+        EventTools.send({ command, request }).then(() => {
+          setTimeout(() => {
+            eventController.stop().then(done);
+          }, 300);
+        });
       });
     });
   });

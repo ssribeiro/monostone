@@ -6,6 +6,7 @@ import { EventController } from "./event_controller";
 import { features as basicFeatures } from "./features";
 import { IFeature } from "./interfaces";
 import { Portal } from "./portal";
+import { closeStore, connectStore } from "./store";
 import * as SystemCommands from "./system_commands";
 import { EventTools, SystemTools } from "./tools";
 
@@ -17,7 +18,7 @@ export class App {
 
   public timeLoaded: number | null = null;
   public timeStarted: number;
-  public rethinkDevConnected: boolean = false;
+  public rethinkDbConnected: boolean = false;
 
   public systemTools = SystemTools;
 
@@ -33,18 +34,19 @@ export class App {
     this.portal.route(this.features, this.eventController.eventReduced$);
   }
 
-  public async grantDb() {
-    await SystemTools.use();
-    if (! await SystemTools.dbCheck()) {
-      await SystemTools.dbCreate();
-    }
+  public async connectStore() {
+    await connectStore();
   }
 
   public async start() {
-    await this.grantDb();
-    this.loadReducers();
-    this.startEventController();
-    await this.reducePast();
+    await EventTools.send({ command: SystemCommands.starting });
+
+    await this.connectStore();
+
+    this.eventController.loadReducers(this.features);
+
+    this.eventController.start();
+    await this.eventController.completePastReducing();
 
     this.timeLoaded = Date.now();
     const systemInfo = {
@@ -52,45 +54,17 @@ export class App {
     };
     await EventTools.send({ command: SystemCommands.started, request: systemInfo});
 
-    await this.startPortal();
+    await this.portal.start();
 
     await EventTools.send({ command: SystemCommands.apiOpened });
   }
 
-  public async startPortal() {
-    await this.portal.start();
-  }
-
-  public async stopPortal() {
-    await this.portal.stop();
-  }
-
-  public loadReducers() {
-    this.eventController.loadReducers(this.features);
-  }
-
-  public startEventController() {
-    this.eventController.start();
-  }
-
-  public stopEventController() {
-    this.eventController.stop();
-  }
-
-  public async reducePast() {
-    await this.eventController.completePastReducing();
-  }
-
   public async stop() {
-    await this.stopPortal();
-    await new Promise((resolve) => {
-      setTimeout(resolve, 100);
-    });
-
-    await this.stopEventController();
-    await new Promise((resolve) => {
-      setTimeout(resolve, 100);
-    });
+    await this.portal.stop();
+    // await ast.delay(100);
+    await this.eventController.stop();
+    // await ast.delay(100);
+    await closeStore();
   }
 
   public reloadFeatures() {

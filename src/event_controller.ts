@@ -8,7 +8,7 @@ import {
 import { EventEmitter } from "events";
 import { error } from "./error";
 import { ICommand, IFeature, IReducer } from "./interfaces";
-import { Store } from "./store";
+import { db } from "./store";
 
 export class EventController {
 
@@ -27,53 +27,57 @@ export class EventController {
     };
   }> = [];
   public closed: boolean = false;
-  public nextEventNumberToReduce: number = -1;
+  public nextEventNumberToReduce: number = 0;
   private credentials: ICredentials;
   private REDUCER_REST_TIME: number = 10;
-  private eventControllerSchema = {
-    modelName: "eventcontrol",
-    schema: {
-      properties: {
-        endEvent: { type: "number" },
-        id: { type: "string" },
-        startEvent: { type: "number" },
-      },
-      type: "object",
-    },
-  };
+  private eventControllerName: string = "event_control";
+  private reducing: boolean = false;
+  private lastTimeReducing: number = Date.now();
+  private restTimeToBeConsideredNotReducing = 100;
+  private stoped: boolean = false;
 
   constructor() {
-    ast.log("starting event controller");
+    ast.log("creating event controller");
     this.eventRead$ = new EventEmitter();
     this.eventReduced$ = new EventEmitter();
     this.reducers = {};
-    ast.log("loading reducers");
     this.credentials = {
       password: process.env.EVENT_SOURCE_PASSWORD || "changeit",
       username: process.env.EVENT_SOURCE_USERNAME || "admin",
     };
+    ast.log("creating connection to event store");
     this.connection = this.createConnection();
-    ast.log("reading past events from eventsource and reducing then");
+    ast.log("event store connected");
   }
 
   public async stop() {
+    ast.log("stoping event controller");
+    this.stoped = true;
+    while ( ! await this.isFree() ) { await ast.delay(10); }
     await this.unsubscribeStream();
+    ast.log("usubscribed from stream");
     await this.closeConnection();
+    ast.log("connection closed");
   }
 
   public async start() {
-    // await SystemTools.use();
+    ast.log("starting event controller");
     await this.registerDbControl();
+    ast.log("starting reducer");
     await this.startReducer();
+    ast.log("event controller ready");
   }
 
   public async startReducer() {
+    ast.log("reading past events from eventsource and reducing then");
     this.readAllPastEvents();
+    ast.log("starting reducers");
     this.reduce();
+    ast.log("started");
   }
 
   public async reduce() {
-    while (this.eventStack.length !== 0) {
+    while (this.eventStack.length !== 0 && !this.stoped) {
       const reduceRecipe = this.eventStack.shift();
       if ( reduceRecipe && reduceRecipe.reducer ) {
         await this.reduceMarkStart(reduceRecipe.eventRead.eventNumber);
@@ -87,19 +91,16 @@ export class EventController {
         this.eventReduced$.emit("new", reduceRecipe.eventRead.eventNumber);
       }
     }
-    await new Promise<void>((resolve) => {
-      setTimeout(resolve, this.REDUCER_REST_TIME);
-    });
-    this.startReducer();
+    await ast.delay(this.REDUCER_REST_TIME);
+    if ( !this.stoped ) { this.reduce(); }
   }
 
   public async completePastReducing() {
-    while (this.eventStack.length !== 0 && !this.live) {
+    while ( !(this.eventStack.length === 0 && this.live) ) {
       await new Promise<void>((resolve) => {
         setTimeout(resolve, this.REDUCER_REST_TIME * 5);
       });
     }
-    ast.log("past reducing completed, now open for live events");
   }
 
   public loadReducers(features: IFeature[]) {
@@ -110,7 +111,10 @@ export class EventController {
             const commandType = feature.featureName + " " + command.commandName;
             this.reducers[commandType] = {
               reducer: command.reducer,
-              subscription: this.eventRead$.addListener(commandType, ((eventRead) => {
+              subscription: this.eventRead$.addListener(
+                commandType,
+                ((eventRead: { eventNumber: number, request: any },
+              ) => {
                 this.eventStack.push({
                   commandType,
                   eventRead,
@@ -125,92 +129,51 @@ export class EventController {
   }
 
   public async registerDbControl() {
-    Store.defineMapper(this.eventControllerSchema.modelName, {
-      schema: this.eventControllerSchema.schema,
-    });
+    ast.log("registering db control");
+    const oldRegister: any = await db.collection(this.eventControllerName)
+      .find({id: this.eventControllerName}).toArray();
 
-    await ast.delay(10);
-
-    let oldRegister = await Store.as(this.eventControllerSchema.modelName)
-      .find(this.eventControllerSchema.modelName).catch((err: any) => {
-        console.log(err.msg);
-        if ( err.msg ) {
-          if ( !(err.msg.indexOf("does not exist") > 0) && ( !(err.msg.indexOf("Table") > 0)
-          || !(err.msg.indexOf("Database") > 0)) ) {
-            throw err;
-          } else {
-            return undefined;
-          }
-        } else {
-          throw err;
-        }
-      });
-
-    console.log(oldRegister);
-
-    if (!oldRegister) {
-      await Store.as(this.eventControllerSchema.modelName)
-        .create({
-          endEvent: -1,
-          id: this.eventControllerSchema.modelName,
-          startEvent: -1,
-        }).catch((err) => {
-          console.log(err.msg);
-        });
-
-      oldRegister = await Store.getMapper(this.eventControllerSchema.modelName)
-        .find(this.eventControllerSchema.modelName);
-
-      console.log(oldRegister);
+    if (oldRegister.length === 0) {
+      await db.collection(this.eventControllerName)
+        .insertOne({
+           endEvent: 0,
+           id: this.eventControllerName,
+           startEvent: 0,
+         });
       this.nextEventNumberToReduce = 0;
     } else {
-      if ( oldRegister.startEvent === oldRegister.endEvent ) {
-       this.nextEventNumberToReduce = oldRegister.endEvent;
+      if ( oldRegister[0].startEvent === oldRegister[0].endEvent ) {
+        this.nextEventNumberToReduce = oldRegister[0].endEvent;
       } else {
-       error.fatal("unsyncronization in event reduce",
-         "you must apply manual correction in db");
+        error.fatal("unsyncronization in event reduce",
+          "you must apply manual correction in db");
       }
     }
+  }
 
-    // const control = await Store.as(this.eventControllerSchema.modelName)
-    //   .find(this.eventControllerSchema.modelName)
-    //   .catch((err: any) => {
-    //     if ( err.msg.indexOf("Table") >= 0 && err.msg.indexOf("does not exist") >= 0 ) {
-    //       return undefined;
-    //     } else {
-    //       throw err;
-    //     }
-    //   });
-
-    // if ( !control ) {
-    //   while (!this.controlRegisterCreated) {
-    //     await this.createControlRegister();
-    //   }
-    //   this.nextEventNumberToReduce = 0;
-    // } else {
-    //   if ( control.startEvent === control.endEvent ) {
-    //     this.nextEventNumberToReduce = control.endEvent;
-    //   } else {
-    //     error.fatal("unsyncronization in event reduce",
-    //       "you must apply manual correction in db");
-    //   }
-    // }
+  public async isFree(): Promise<boolean> {
+    if (this.reducing) {
+      return false;
+    } else {
+      if ((Date.now() - this.lastTimeReducing) > this.restTimeToBeConsideredNotReducing) {
+        return !this.reducing;
+      }
+      return false;
+    }
   }
 
   private async reduceMarkStart(eventNumber: number) {
-    await Store.as(this.eventControllerSchema.modelName).update(
-      this.eventControllerSchema.modelName, {
-        startEvent: eventNumber,
-      },
-    );
+    this.reducing = true;
+    while ( db === undefined ) { await ast.delay(10); }
+    await db.collection(this.eventControllerName)
+      .updateOne({id: this.eventControllerName}, { $set: { startEvent: eventNumber } });
   }
 
   private async reduceMarkEnd(eventNumber: number) {
-    await Store.as(this.eventControllerSchema.modelName).update(
-      this.eventControllerSchema.modelName, {
-        endEvent: eventNumber,
-      },
-    );
+    await db.collection(this.eventControllerName)
+      .updateOne({id: this.eventControllerName}, { $set: { endEvent: eventNumber } });
+    this.lastTimeReducing = Date.now();
+    this.reducing = false;
   }
 
   private createConnection(): Connection {
@@ -232,10 +195,14 @@ export class EventController {
 
   private closeConnection(): Promise<void> {
     return new Promise<void>((resolve) => {
-      this.closed = true;
-      if (this.connection) {
-        this.connection.close();
-        resolve();
+      if (!this.closed) {
+        this.closed = true;
+        if (this.connection) {
+          this.connection.close();
+          resolve();
+        } else {
+          resolve();
+        }
       } else {
         resolve();
       }
@@ -246,26 +213,18 @@ export class EventController {
     this.eventStreamSubscription = this.listenToFrom(
       this.nextEventNumberToReduce,
       (event: StoredEvent) => {
-        // console.log(event.eventType);
-        // console.log(event.eventNumber);
-        // console.log(event.data);
         this.eventRead$.emit(event.eventType, {
           eventNumber: event.eventNumber,
           request: event.data,
         });
       },
       (eventStoreStreamCatchUpSubscription: any, reason: string, errorFound: any) => {
-        error.is("eventstore subscription dropped due to " + reason,
-          errorFound,
-          eventStoreStreamCatchUpSubscription,
-        );
-        /*
-        EventTools.send({ command: SystemCommands.streamAssure }).then(() => {
-          setTimeout(() => {
-            this.readAllPastEvents();
-          }, this.CONNECTION_DROP_REST_TIME);
-        });
-        */
+        if (reason !== "UserInitiated") {
+          error.is("eventstore subscription dropped due to " + reason,
+            errorFound,
+            eventStoreStreamCatchUpSubscription,
+          );
+        }
       },
       () => {
         this.live = true;

@@ -1,37 +1,39 @@
 // It is recommended to use the Container component in Node.js
-import { Container } from "js-data";
-import { RethinkDBAdapter } from "js-data-rethinkdb";
-import { r } from "rethinkdb-ts";
+import * as mongodb from "mongodb";
 
-const rethinkOptions = {
-  db: process.env.RETHINKDB_DATABASE || "dev",
-  host: process.env.RETHINKDB_HOST || "localhost",
-  password: process.env.RETHINKDB_PASSWORD || "",
-  port: +(process.env.RETHINKDB_PORT || 28015),
-  ssl: process.env.RETHINKDB_USE_SSL || false,
-  user: process.env.RETHINKDB_USER || "admin",
+const mongoOptions: any = {
+  db: process.env.MONGO_DATABASE || "dev",
+  host: process.env.MONGO_HOST || "localhost",
+  password: process.env.MONGO_PASSWORD || "password",
+  poolSize: +(process.env.POOL_SIZE || 10),
+  port: "" + (process.env.MONGO_PORT || 27017),
+  // ssl: process.env.MONGO_USE_SSL || "false",
+  user: process.env.MONGO_USER || "admin",
 };
 
-const connectRethinkDbDev = async () => await r.connectPool(rethinkOptions);
+// Connection URL
+const url = "mongodb://" +
+  mongoOptions.user + ":" +
+  mongoOptions.password + "@" +
+  mongoOptions.host + ":" +
+  mongoOptions.port;
 
-const rethinkDashOptions = Object.assign({}, rethinkOptions, {
-  discovery: process.env.RETHINKDB_DISCOVERY || false,
-  // servers: an array of objects {host: <string>, port: <number>} representing RethinkDB nodes to connect to
-});
+// Create the db connection
+let mongoClient: mongodb.MongoClient;
+let db: mongodb.Db;
+const connectStore = async () => {
+  mongoClient = await mongodb.MongoClient.connect(url, {
+    poolSize: mongoOptions.poolSize,
+  }).then((client: mongodb.MongoClient) => {
+    db = client.db(mongoOptions.db);
+    return client;
+  });
+};
 
-const rethinkdbAdapter = new RethinkDBAdapter({
-  // Pass config to rethinkdbdash here
-  rOpts: rethinkDashOptions,
-});
+const closeStore = async () => {
+  if (mongoClient) { await mongoClient.close(); }
+};
 
-class StoreDB extends Container {
-  constructor() {
-    super();
-  }
-}
-const Store: StoreDB = new StoreDB();
-// "store" will now use a RethinkDB adapter by default
-Store.registerAdapter("rethinkdb", rethinkdbAdapter, { default: true });
+const dbname: string = mongoOptions.db;
 
-export { connectRethinkDbDev, r, rethinkDashOptions, Store };
-export { Schema } from "js-data";
+export { connectStore, closeStore, db, dbname, mongoClient };

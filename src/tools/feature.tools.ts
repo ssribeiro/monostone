@@ -1,13 +1,11 @@
-import { ICommand, IFeature, IModelSheet } from "../interfaces";
-import { CommandTools, ModelTools, StringTools } from "./";
+import { ICommand, IFeature } from "../interfaces";
+import { CommandTools, StringTools } from "./";
 
 export function createFeature(featureRecipe: {
   commandNames: string[],
   featurePath: string,
-  modelSheets?: IModelSheet[],
 }): IFeature {
   const featureName: string = StringTools.lastNameOfFilePath(featureRecipe.featurePath);
-  if (featureRecipe.modelSheets) { ModelTools.loadModels(featureRecipe.modelSheets); }
   const commands: ICommand[] = CommandTools.createCommands({
     commandNames: featureRecipe.commandNames,
     featureName,

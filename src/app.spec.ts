@@ -17,10 +17,9 @@ describe("App", () => {
       // originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
       // jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
       app = new App();
-      app.systemTools.use().then(() => {
-        app.systemTools.dbWipe().then(() => {
+      app.connectStore().then(() => {
+        app.systemTools.dbDrop().then(() => {
           app.systemTools.eventClear().then(() => {
-            app = new App();
             app.start().then(() => {
               request = supertest(app.portal.expressApp);
               done();
@@ -41,9 +40,11 @@ describe("App", () => {
 
     afterAll((done) => {
       app = new App();
-      app.systemTools.use().then(() => {
-        app.systemTools.dbWipe().then(() => {
-          app.systemTools.eventClear().then(done);
+      app.connectStore().then(() => {
+        app.systemTools.dbDrop().then(() => {
+          app.systemTools.eventClear().then(() => {
+            app.stop().then(done);
+          });
         });
       });
     });
@@ -104,60 +105,87 @@ describe("App", () => {
 
   });
 
-  // describe("Server Restarted Tests", () => {
+  describe("Server Restarted Tests", () => {
 
-  //   let app: App;
-  //   let request: supertest.SuperTest<supertest.Test>;
-  //   // let originalTimeout: number;
+   let app: App;
+   let request: supertest.SuperTest<supertest.Test>;
+   // let originalTimeout: number;
 
-  //   beforeEach((done) => {
-  //     // originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
-  //     // jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
-  //     app = new App();
-  //     app.start().then(() => {
-  //       request = supertest(app.portal.expressApp);
-  //       done();
-  //     });
-  //   });
+   beforeEach((done) => {
+     app = new App();
+     app.start().then(() => {
+       request = supertest(app.portal.expressApp);
+       done();
+     });
+   });
 
-  //   afterEach((done) => {
-  //      // jasmine.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;
-  //      if (app) {
-  //        app.stop().then(done);
-  //      } else {
-  //        done();
-  //      }
-  //    });
+   afterEach((done) => {
+      // jasmine.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;
+      if (app) {
+        app.stop().then(done);
+      } else {
+        done();
+      }
+    });
 
-  //   it("should signup an user and give us the id", (done) => {
-  //      const userInfo = {
-  //        login: "user_two_login",
-  //        name: "user two",
-  //        password: "secret1234",
-  //        password_confirmation: "secret1234",
-  //      };
-  //      (request.post("/auth/signup") as supertest.Test)
-  //        .send(userInfo)
-  //        .expect(200)
-  //        .then((response) => {
-  //          expect(response.body.eventNumber).toBeNumber();
-  //          expect(response.body.eventNumber).toBeGreaterThan(-1);
-  //          done();
-  //        });
-  //    });
+   it("should signup an user and give us the id", (done) => {
+      const userInfo = {
+        login: "user_two_login",
+        name: "user two",
+        password: "secret1234",
+        password_confirmation: "secret1234",
+      };
+      (request.post("/auth/signup") as supertest.Test)
+        .send(userInfo)
+        .expect(200)
+        .then((response) => {
+          expect(response.body.eventNumber).toBeNumber();
+          expect(response.body.eventNumber).toBeGreaterThan(-1);
+          done();
+        });
+    });
 
-  //   it("should deny signup an user already signed", (done) => {
-  //      const userInfo = {
-  //        login: "userlogin",
-  //        name: "user name",
-  //        password: "secreto123",
-  //        password_confirmation: "secreto123",
-  //      };
-  //      (request.post("/auth/signup") as supertest.Test)
-  //        .send(userInfo)
-  //        .expect(400, messages.LOGIN_TAKEN, done);
-  //    });
+   it("should deny signup an user already signed", (done) => {
+      const userInfo = {
+        login: "user_two_login",
+        name: "user name two",
+        password: "secreto1234",
+        password_confirmation: "secreto1234",
+      };
+      (request.post("/auth/signup") as supertest.Test)
+        .send(userInfo)
+        .expect(400, messages.LOGIN_TAKEN, done);
+    });
 
-  // });
+   it("should signup a second user and give us the id", (done) => {
+       const userInfo = {
+         login: "user_three_login",
+         name: "user Three",
+         password: "secret1234",
+         password_confirmation: "secret1234",
+       };
+       (request.post("/auth/signup") as supertest.Test)
+         .send(userInfo)
+         .expect(200)
+         .then((response) => {
+           expect(response.body.eventNumber).toBeNumber();
+           expect(response.body.eventNumber).toBeGreaterThan(-1);
+           done();
+         });
+     });
+
+   it("should deny signup the second user already signed", (done) => {
+      const userInfo = {
+        login: "user_three_login",
+        name: "user name any",
+        password: "secreta1234",
+        password_confirmation: "secreta1234",
+      };
+      (request.post("/auth/signup") as supertest.Test)
+        .send(userInfo)
+        .expect(400, messages.LOGIN_TAKEN, done);
+    });
+
+  });
 
 });

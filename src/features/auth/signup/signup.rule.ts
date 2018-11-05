@@ -1,5 +1,5 @@
 import { IRuleSheet } from "../../../interfaces";
-import { Store } from "../../../store";
+import { db } from "../../../store";
 import { messages } from "./signup.messages";
 
 export const ruleSheet: IRuleSheet = {
@@ -23,10 +23,8 @@ export const ruleSheet: IRuleSheet = {
     }),
 
   validation: async (req: any): Promise<string|undefined> => {
-    const user = await Store.getMapper("user").findAll({ login: req.login}).catch((err: any) => {
-      if (err.msg === "Table `dev.user` does not exist.") { return []; } else { throw(err); }
-    });
-    return user.length > 0 ? messages.LOGIN_TAKEN : undefined;
+    const user = await db.collection("user").findOne({ login: req.login });
+    return user ? messages.LOGIN_TAKEN : undefined;
   },
 
   respond: (eventNumber: number, req: any): Promise<any> =>
