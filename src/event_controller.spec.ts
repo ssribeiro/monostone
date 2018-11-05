@@ -52,7 +52,7 @@ describe("EventController", () => {
             eventController.stop().then(done);
           });
         });
-      }, 300);
+      }, 150);
     });
   });
 
@@ -75,7 +75,7 @@ describe("EventController", () => {
         EventTools.send({ command, request }).then(() => {
           setTimeout(() => {
             eventController.stop().then(done);
-          }, 300);
+          }, 150);
         });
       });
     });

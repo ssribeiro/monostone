@@ -61,9 +61,7 @@ export class App {
 
   public async stop() {
     await this.portal.stop();
-    // await ast.delay(100);
     await this.eventController.stop();
-    // await ast.delay(100);
     await closeStore();
   }
 

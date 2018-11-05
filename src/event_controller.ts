@@ -30,10 +30,11 @@ export class EventController {
   public nextEventNumberToReduce: number = 0;
   private credentials: ICredentials;
   private REDUCER_REST_TIME: number = 10;
+  private MAX_LIVE_QUEUE_SIZE: number = 10000;
+  private READ_BATCH_SIZE: number = 500;
   private eventControllerName: string = "event_control";
   private reducing: boolean = false;
   private lastTimeReducing: number = Date.now();
-  private restTimeToBeConsideredNotReducing = 100;
   private stoped: boolean = false;
 
   constructor() {
@@ -53,7 +54,7 @@ export class EventController {
   public async stop() {
     ast.log("stoping event controller");
     this.stoped = true;
-    while ( ! await this.isFree() ) { await ast.delay(10); }
+    while ( ! await this.isFree() ) { await ast.delay(this.REDUCER_REST_TIME); }
     await this.unsubscribeStream();
     ast.log("usubscribed from stream");
     await this.closeConnection();
@@ -155,7 +156,7 @@ export class EventController {
     if (this.reducing) {
       return false;
     } else {
-      if ((Date.now() - this.lastTimeReducing) > this.restTimeToBeConsideredNotReducing) {
+      if ((Date.now() - this.lastTimeReducing) > 3 * this.REDUCER_REST_TIME) {
         return !this.reducing;
       }
       return false;
@@ -164,7 +165,7 @@ export class EventController {
 
   private async reduceMarkStart(eventNumber: number) {
     this.reducing = true;
-    while ( db === undefined ) { await ast.delay(10); }
+    while ( db === undefined ) { await ast.delay(this.REDUCER_REST_TIME); }
     await db.collection(this.eventControllerName)
       .updateOne({id: this.eventControllerName}, { $set: { startEvent: eventNumber } });
   }
@@ -246,8 +247,8 @@ export class EventController {
     const streamId: string = process.env.EVENT_STREAM_NAME || "mono";
     const settings: CatchUpSubscriptionSettings = {
       debug: false, // process.env.NODE_ENV === "development",
-      maxLiveQueueSize: 10000,
-      readBatchSize: 500,
+      maxLiveQueueSize: this.MAX_LIVE_QUEUE_SIZE,
+      readBatchSize: this.READ_BATCH_SIZE,
       resolveLinkTos: false,
     };
     return this.connection.subscribeToStreamFrom(
