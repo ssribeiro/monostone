@@ -31,11 +31,7 @@ describe("App", () => {
 
     afterEach((done) => {
        // jasmine.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;
-       if (app) {
-         app.stop().then(done);
-       } else {
-         done();
-       }
+       app.stop().then(done);
      });
 
     afterAll((done) => {
@@ -121,16 +117,23 @@ describe("App", () => {
 
    afterEach((done) => {
       // jasmine.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;
-      if (app) {
-        app.stop().then(done);
-      } else {
-        done();
-      }
+      app.stop().then(done);
     });
+
+   afterAll((done) => {
+     app = new App();
+     app.connectStore().then(() => {
+       app.systemTools.dbDrop().then(() => {
+         app.systemTools.eventClear().then(() => {
+           app.stop().then(done);
+         });
+       });
+     });
+   });
 
    it("should signup an user and give us the id", (done) => {
       const userInfo = {
-        login: "user_two_login",
+        login: "user_twodee_login",
         name: "user two",
         password: "secret1234",
         password_confirmation: "secret1234",
@@ -139,6 +142,9 @@ describe("App", () => {
         .send(userInfo)
         .expect(200)
         .then((response) => {
+          // console.log(response);
+          // console.log(response.text);
+          // console.log(response.body);
           expect(response.body.eventNumber).toBeNumber();
           expect(response.body.eventNumber).toBeGreaterThan(-1);
           done();
@@ -147,8 +153,8 @@ describe("App", () => {
 
    it("should deny signup an user already signed", (done) => {
       const userInfo = {
-        login: "user_two_login",
-        name: "user name two",
+        login: "user_twodee_login",
+        name: "User Name Two Boy",
         password: "secreto1234",
         password_confirmation: "secreto1234",
       };
@@ -159,7 +165,7 @@ describe("App", () => {
 
    it("should signup a second user and give us the id", (done) => {
        const userInfo = {
-         login: "user_three_login",
+         login: "threedee_login",
          name: "user Three",
          password: "secret1234",
          password_confirmation: "secret1234",
@@ -176,7 +182,89 @@ describe("App", () => {
 
    it("should deny signup the second user already signed", (done) => {
       const userInfo = {
-        login: "user_three_login",
+        login: "threedee_login",
+        name: "Name Only User",
+        password: "secreta1234",
+        password_confirmation: "secreta1234",
+      };
+      (request.post("/auth/signup") as supertest.Test)
+        .send(userInfo)
+        .expect(400, messages.LOGIN_TAKEN, done);
+    });
+
+  });
+
+  describe("One Instance Running Tests", () => {
+
+   let app: App;
+   let request: supertest.SuperTest<supertest.Test>;
+   // let originalTimeout: number;
+
+   beforeAll((done) => {
+     app = new App();
+     app.start().then(() => {
+       request = supertest(app.portal.expressApp);
+       done();
+     });
+   });
+
+   afterAll((done) => {
+     app.systemTools.dbDrop().then(() => {
+       app.systemTools.eventClear().then(() => {
+         app.stop().then(done);
+       });
+     });
+   });
+
+   it("should signup an user and give us the id", (done) => {
+      const userInfo = {
+        login: "user_tworun_login",
+        name: "user two",
+        password: "secret1234",
+        password_confirmation: "secret1234",
+      };
+      (request.post("/auth/signup") as supertest.Test)
+        .send(userInfo)
+        .expect(200)
+        .then((response) => {
+          expect(response.body.eventNumber).toBeNumber();
+          expect(response.body.eventNumber).toBeGreaterThan(-1);
+          done();
+        });
+    });
+
+   it("should deny signup an user already signed", (done) => {
+      const userInfo = {
+        login: "user_tworun_login",
+        name: "user name two",
+        password: "secreto1234",
+        password_confirmation: "secreto1234",
+      };
+      (request.post("/auth/signup") as supertest.Test)
+        .send(userInfo)
+        .expect(400, messages.LOGIN_TAKEN, done);
+    });
+
+   it("should signup a second user and give us the id", (done) => {
+       const userInfo = {
+         login: "user_threerun_login",
+         name: "user Three",
+         password: "secret1234",
+         password_confirmation: "secret1234",
+       };
+       (request.post("/auth/signup") as supertest.Test)
+         .send(userInfo)
+         .expect(200)
+         .then((response) => {
+           expect(response.body.eventNumber).toBeNumber();
+           expect(response.body.eventNumber).toBeGreaterThan(-1);
+           done();
+         });
+     });
+
+   it("should deny signup the second user already signed", (done) => {
+      const userInfo = {
+        login: "user_threerun_login",
         name: "user name any",
         password: "secreta1234",
         password_confirmation: "secreta1234",
@@ -185,6 +273,81 @@ describe("App", () => {
         .send(userInfo)
         .expect(400, messages.LOGIN_TAKEN, done);
     });
+
+   const password: string = "sameforall";
+   const password_confirmation: string = password;
+   const users: any[] = [
+     {
+       login: "johncarter",
+       name: "John Carter",
+       password, password_confirmation,
+     },
+     {
+       login: "mariaclarie",
+       name: "Marie clarie",
+       password, password_confirmation,
+     },
+     {
+       login: "powerguido",
+       name: "Tow The Power Guido",
+       password, password_confirmation,
+     },
+     {
+       login: "furacao2000",
+       name: "Furacão de 2000",
+       password, password_confirmation,
+     },
+     {
+       login: "SupergasBras",
+       name: "Super gás Bras",
+       password, password_confirmation,
+     },
+     {
+       login: "bolsomito",
+       name: "Jair Bolsonaro",
+       password, password_confirmation,
+     },
+     {
+       login: "postedebosta",
+       name: "Fernando Malddad",
+       password, password_confirmation,
+     },
+     {
+       login: "jeje1234clear",
+       name: "JEricó Master c-lear",
+       password, password_confirmation,
+     },
+     {
+       login: "sabadodesol",
+       name: "Sábado D'Sol",
+       password, password_confirmation,
+     },
+     {
+       login: "saihtanahs",
+       name: "Lúcifer Satan",
+       password, password_confirmation,
+     },
+     {
+       login: "bangladesh",
+       name: "Bang A desh",
+       password, password_confirmation,
+     },
+   ];
+
+   function test_user(input: any) {
+    it("should signup MANY users", (done) => {
+      (request.post("/auth/signup") as supertest.Test)
+        .send(input)
+        .expect(200)
+        .then((response) => {
+          done();
+        });
+    });
+   }
+
+   for (const user of users) {
+     test_user(user);
+   }
 
   });
 

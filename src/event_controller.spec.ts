@@ -5,9 +5,14 @@ import { EventController } from "./event_controller";
 import { features as basicFeatures } from "./features";
 import { ICommand } from "./interfaces";
 import { connectStore } from "./store";
+import * as SystemCommands from "./system_commands";
 import { EventTools } from "./tools";
 
 describe("EventController", () => {
+
+  beforeAll((done) => {
+    EventTools.send({ command: SystemCommands.starting }).then(done);
+  });
 
   it("should be created", () => {
     const eventController: EventController = new EventController();

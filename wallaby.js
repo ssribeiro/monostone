@@ -7,6 +7,7 @@ module.exports = function (w) {
     ],
 
     tests: [
+      { pattern: 'src/**/app.spec.ts', ignore: true },
       'src/**/*.spec.ts'
     ],
 
@@ -23,7 +24,7 @@ module.exports = function (w) {
         .forEach((k) => { delete require.cache[k]; });
 
       require("jasmine-expect");
-      w.testFramework.DEFAULT_TIMEOUT_INTERVAL = 2500;
+      w.testFramework.DEFAULT_TIMEOUT_INTERVAL = 5000;
     }
 
   };
