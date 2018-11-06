@@ -3,7 +3,7 @@ import { error } from "../error";
 import { ICommand, IReducer, IRuleSheet } from "../interfaces";
 import { EventTools, ReducerTools, RuleTools } from "./";
 
-const EVENT_REDUCE_TIMEOUT: number = +(process.env.EVENT_REDUCE_TIMEOUT || 3500);
+const EVENT_REDUCE_TIMEOUT: number = +(process.env.EVENT_REDUCE_TIMEOUT || 3000);
 
 export async function execute(command: ICommand, request: any, eventReduced$: EventEmitter ): Promise<any> {
 
@@ -37,7 +37,7 @@ export async function execute(command: ICommand, request: any, eventReduced$: Ev
       eventReduced$.addListener("new", resolveListener);
       setTimeout(() => {
         eventReduced$.removeListener("new", resolveListener);
-        reject("Server unable to process in time");
+        reject("Server was unable to reduce in time");
       }, EVENT_REDUCE_TIMEOUT);
     });
 

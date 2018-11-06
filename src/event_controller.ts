@@ -32,6 +32,7 @@ export class EventController {
   private REDUCER_REST_TIME: number = 10;
   private MAX_LIVE_QUEUE_SIZE: number = 10000;
   private READ_BATCH_SIZE: number = 500;
+  private SECURITY_TIME_DELAY_FOR_EMIT_REDUCED: number = 3;
   private eventControllerName: string = "event_control";
   private reducing: boolean = false;
   private lastTimeReducing: number = Date.now();
@@ -89,7 +90,9 @@ export class EventController {
           error.fatal("failed reducing command " + reduceRecipe.commandType, err);
         });
         await this.reduceMarkEnd(reduceRecipe.eventRead.eventNumber);
-        this.eventReduced$.emit("new", reduceRecipe.eventRead.eventNumber);
+        setTimeout(() => {
+          this.eventReduced$.emit("new", reduceRecipe.eventRead.eventNumber);
+        }, this.SECURITY_TIME_DELAY_FOR_EMIT_REDUCED);
       }
     }
     await ast.delay(this.REDUCER_REST_TIME);

@@ -11,7 +11,9 @@ import { EventTools } from "./tools";
 describe("EventController", () => {
 
   beforeAll((done) => {
-    EventTools.send({ command: SystemCommands.starting }).then(done);
+    EventTools.clearAllEvents().then(() => {
+      EventTools.send({ command: SystemCommands.starting }).then(done);
+    });
   });
 
   it("should be created", () => {
@@ -80,7 +82,7 @@ describe("EventController", () => {
         EventTools.send({ command, request }).then(() => {
           setTimeout(() => {
             eventController.stop().then(done);
-          }, 150);
+          }, 10);
         });
       });
     });

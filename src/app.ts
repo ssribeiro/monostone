@@ -16,6 +16,8 @@ export class App {
   public features: IFeature[];
   public portal: Portal;
 
+  public stoped: boolean = false;
+
   public timeLoaded: number | null = null;
   public timeStarted: number;
   public rethinkDbConnected: boolean = false;
@@ -63,6 +65,7 @@ export class App {
     await this.portal.stop();
     await this.eventController.stop();
     await closeStore();
+    this.stoped = true;
   }
 
   public reloadFeatures() {
