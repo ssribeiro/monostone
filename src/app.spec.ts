@@ -275,66 +275,66 @@ describe("App", () => {
     });
 
    const password: string = "sameforall";
-   const password_confirmation: string = password;
+   const passwordConfirmation: string = password;
    const users: any[] = [
      {
        login: "johncarter",
        name: "John Carter",
-       password, password_confirmation,
+       password, password_confirmation: passwordConfirmation,
      },
      {
        login: "mariaclarie",
        name: "Marie clarie",
-       password, password_confirmation,
+       password, password_confirmation: passwordConfirmation,
      },
      {
        login: "powerguido",
        name: "Tow The Power Guido",
-       password, password_confirmation,
+       password, password_confirmation: passwordConfirmation,
      },
      {
        login: "furacao2000",
        name: "Furacão de 2000",
-       password, password_confirmation,
+       password, password_confirmation: passwordConfirmation,
      },
      {
        login: "SupergasBras",
        name: "Super gás Bras",
-       password, password_confirmation,
+       password, password_confirmation: passwordConfirmation,
      },
      {
        login: "bolsomito",
        name: "Jair Bolsonaro",
-       password, password_confirmation,
+       password, password_confirmation: passwordConfirmation,
      },
      {
        login: "postedebosta",
        name: "Fernando Malddad",
-       password, password_confirmation,
+       password, password_confirmation: passwordConfirmation,
      },
      {
        login: "jeje1234clear",
        name: "JEricó Master c-lear",
-       password, password_confirmation,
+       password, password_confirmation: passwordConfirmation,
      },
      {
        login: "sabadodesol",
        name: "Sábado D'Sol",
-       password, password_confirmation,
+       password, password_confirmation: passwordConfirmation,
      },
      {
        login: "saihtanahs",
        name: "Lúcifer Satan",
-       password, password_confirmation,
+       password, password_confirmation: passwordConfirmation,
      },
      {
        login: "bangladesh",
        name: "Bang A desh",
-       password, password_confirmation,
+       password, password_confirmation: passwordConfirmation,
      },
    ];
 
-   function test_user(input: any) {
+   function signup_users(input: any) {
     it("should signup MANY users", (done) => {
       (request.post("/auth/signup") as supertest.Test)
         .send(input)
@@ -345,8 +345,20 @@ describe("App", () => {
     });
    }
 
+   function deny_users(input: any) {
+    it("should signup MANY users", (done) => {
+      (request.post("/auth/signup") as supertest.Test)
+        .send(input)
+        .expect(400, messages.LOGIN_TAKEN, done);
+    });
+   }
+
    for (const user of users) {
-     test_user(user);
+     signup_users(user);
+   }
+
+   for (const user of users) {
+     deny_users(user);
    }
 
   });

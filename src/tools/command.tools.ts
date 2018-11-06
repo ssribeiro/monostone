@@ -3,6 +3,8 @@ import { error } from "../error";
 import { ICommand, IReducer, IRuleSheet } from "../interfaces";
 import { EventTools, ReducerTools, RuleTools } from "./";
 
+const EVENT_REDUCE_TIMEOUT: number = +(process.env.EVENT_REDUCE_TIMEOUT || 3500);
+
 export async function execute(command: ICommand, request: any, eventReduced$: EventEmitter ): Promise<any> {
 
   let ruleBroken;
@@ -25,10 +27,18 @@ export async function execute(command: ICommand, request: any, eventReduced$: Ev
 
   if (command.rule && command.rule.respond) {
 
-    await new Promise((resolve) => {
-      eventReduced$.addListener("new", (eventNumberReduced: number) => {
-        if (eventNumberReduced === eventNumber) { resolve(); }
-      });
+    await new Promise((resolve, reject) => {
+      const resolveListener = (eventNumberReduced: number) => {
+        if (eventNumberReduced === eventNumber) {
+          resolve();
+          eventReduced$.removeListener("new", resolveListener);
+        }
+      };
+      eventReduced$.addListener("new", resolveListener);
+      setTimeout(() => {
+        eventReduced$.removeListener("new", resolveListener);
+        reject("Server unable to process in time");
+      }, EVENT_REDUCE_TIMEOUT);
     });
 
     return await command.rule.respond(eventNumber, request);

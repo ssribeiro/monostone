@@ -7,7 +7,7 @@ module.exports = function (w) {
     ],
 
     tests: [
-      { pattern: 'src/**/app.spec.ts', ignore: true },
+      // { pattern: 'src/**/app.spec.ts', ignore: true },
       'src/**/*.spec.ts'
     ],
 
