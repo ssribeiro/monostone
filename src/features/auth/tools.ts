@@ -25,3 +25,15 @@ export const createToken = (authentication: any, role: string): string => {
   };
   return jwt.sign(authToken, APPLICATION_KEY);
 };
+
+export const decodeToken = async (token: string): Promise<IAuthToken> => {
+  return new Promise<IAuthToken>((resolve, reject) => {
+    jwt.verify(token, APPLICATION_KEY, (err, decoded) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(decoded as IAuthToken);
+      }
+    });
+  });
+};

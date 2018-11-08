@@ -5,8 +5,12 @@ import * as express from "express";
 import * as http from "http";
 
 import { EventEmitter } from "events";
+import { IAuthToken } from "./features/auth/auth-token.i";
 import { ICommand, IFeature, IView } from "./interfaces";
 import { CommandTools, ViewTools } from "./tools";
+
+import { messages as authMessages } from "./features/auth/messages";
+import * as AuthTools from "./features/auth/tools";
 
 export class Portal {
 
@@ -57,6 +61,24 @@ export class Portal {
     });
   }
 
+  private authMiddleware(
+    req: any,
+    res: express.Response,
+    next: any,
+  ): void {
+    const tokenHeader = req.get("token");
+    if (tokenHeader) {
+      AuthTools.decodeToken(tokenHeader).then((decoded: IAuthToken) => {
+        req.token = decoded;
+        next();
+      }).catch((err: any) => {
+        res.status(401).send("Failure decoding token: " + err.message);
+      });
+    } else {
+      next();
+    }
+  }
+
   private routeSystem() {
     ast.log("adding system routes");
     const router = express.Router();
@@ -75,6 +97,7 @@ export class Portal {
 
       ast.log("found feature: " + feature.featureName);
       const featureRouter = express.Router();
+      featureRouter.use(this.authMiddleware);
 
       if (feature.commands) {
         feature.commands.forEach((command) => {
@@ -88,6 +111,7 @@ export class Portal {
       }
 
       if (feature.views) {
+
         feature.views.forEach((view) => {
           ast.log(" found view: " + view.viewName);
 
@@ -123,9 +147,15 @@ export class Portal {
     req: express.Request,
     res: express.Response,
   ) => void {
-    return (req: express.Request, res: express.Response) => {
-      ViewTools.renderRequestView(view, viewsData[viewTag])
-        .then((ans: any) => res.status(200).send(ans))
+    return (req: any, res: express.Response) => {
+      ViewTools.renderRequestView(view, viewsData[viewTag], req.token)
+        .then((ans: any|undefined) => {
+          if (ans) {
+            res.status(200).send(ans);
+          } else {
+            res.status(401).send(authMessages.NO_TOKEN_PROVIDED);
+          }
+        })
         .catch((err: Error) => {
           ast.dev(err);
           res.status(400).send(err);

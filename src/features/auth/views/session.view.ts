@@ -1,5 +1,6 @@
 import { IViewSheet } from "../../../interfaces";
 import { db } from "../../../store";
+import { IAuthToken } from "../auth-token.i";
 // import { messages } from "./signup.messages";
 
 export const viewSheet: IViewSheet = {
@@ -38,8 +39,12 @@ export const viewSheet: IViewSheet = {
     return lastData;
   },
 
-  renderPrivate: async (data: any): Promise<any> => {
-    return data.sessions;
+  renderPrivate: async (data: any, token: IAuthToken): Promise<any> => {
+    return data.sessions.filter((session: {
+      userId: number,
+      deviceType: string,
+      loggedSince: number,
+    }) => session.userId === token.uId);
   },
 
 };

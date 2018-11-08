@@ -3,6 +3,8 @@ import * as ast from "@angstone/node-util";
 import "jasmine-expect";
 import * as supertest from "supertest";
 
+import { messages } from "./features/auth/messages";
+
 import { App } from "./app";
 
 describe("App", () => {
@@ -169,6 +171,70 @@ describe("App", () => {
            appOneInstance.stop().then(done);
          });
        });
+     });
+   });
+
+   it("should ask for token when try to access private view", (done) => {
+     process.env.API_PORT = "" + 3442;
+     process.env.MONGO_DATABASE = "dev4001";
+     appOneInstance = new App();
+     appOneInstance.start().then(() => {
+       request = supertest(appOneInstance.portal.expressApp);
+       (request.get("/auth/session") as supertest.Test)
+         .expect(401, messages.NO_TOKEN_PROVIDED)
+         .then(() => {
+           appOneInstance.stop().then(done);
+         });
+     });
+   });
+
+   it("should render private view", (done) => {
+     process.env.API_PORT = "" + 3443;
+     process.env.MONGO_DATABASE = "dev4001";
+     appOneInstance = new App();
+     appOneInstance.start().then(() => {
+       request = supertest(appOneInstance.portal.expressApp);
+       const userInfo = {
+         login: "safelogin",
+         name: "safe user name",
+         password: "safepass123",
+         password_confirmation: "safepass123",
+       };
+       const loginInfo = {
+         deviceId: "rasp234jif4732f489348f",
+         deviceType: "android",
+         login: userInfo.login,
+         password: userInfo.password,
+       };
+       (request.post("/auth/signup") as supertest.Test)
+         .send(userInfo)
+         .expect(200)
+         .then((response) => {
+           expect(response.body.userId).toBeNumber();
+           expect(response.body.userId).toBeGreaterThan(-1);
+           (request.post("/auth/login") as supertest.Test)
+            .send(loginInfo)
+            .expect(200)
+            .then((responseTwo) => {
+              expect(responseTwo.body).toBeDefined();
+              expect(responseTwo.body.token).toBeDefined();
+              expect(responseTwo.body.token).toBeString();
+              request = supertest(appOneInstance.portal.expressApp);
+              (request.get("/auth/session") as supertest.Test)
+                .set("token", responseTwo.body.token)
+                .expect(200)
+                .then((responseThree) => {
+                  expect(responseThree.body).toBeNonEmptyArray();
+                  expect(responseThree.body.length).toEqual(1);
+                  expect(responseThree.body[0].userId).toEqual(response.body.userId);
+                  expect(responseThree.body[0].deviceType).toEqual(loginInfo.deviceType);
+                  expect(responseThree.body[0].loggedSince).toBeNumber();
+                  expect(responseThree.body[0].loggedSince).toBeGreaterThan(10);
+                  expect(responseThree.body[0].loggedSince).toBeLessThan(Date.now());
+                  appOneInstance.stop().then(done);
+                });
+            });
+         });
      });
    });
 

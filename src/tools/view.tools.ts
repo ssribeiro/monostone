@@ -1,57 +1,27 @@
 // import { EventEmitter } from "events";
 import { error } from "../error";
+import { IAuthToken } from "../features/auth/auth-token.i";
 import { IView } from "../interfaces";
-// import { EventTools, ReducerTools, RuleTools } from "./";
 
-// const EVENT_REDUCE_TIMEOUT: number = +(process.env.EVENT_REDUCE_TIMEOUT || 3000);
-
-// export async function execute(command: ICommand, request: any, eventReduced$: EventEmitter ): Promise<any> {
-//
-//   let ruleBroken;
-//
-//   if (command.rule) {
-//
-//     if (command.rule.preValidation) {
-//       ruleBroken = await command.rule.preValidation(request);
-//       if (ruleBroken) { return Promise.reject(ruleBroken); }
-//     }
-//
-//     if (command.rule.validation) {
-//       ruleBroken = await command.rule.validation(request);
-//       if (ruleBroken) { return Promise.reject(ruleBroken); }
-//     }
-//
-//   }
-//
-//   const eventNumber = await EventTools.send({ command, request});
-//
-//   if (command.rule && command.rule.respond) {
-//
-//     await new Promise((resolve, reject) => {
-//       const resolveListener = (eventNumberReduced: number) => {
-//         if (eventNumberReduced === eventNumber) {
-//           resolve();
-//           eventReduced$.removeListener("new", resolveListener);
-//         }
-//       };
-//       eventReduced$.addListener("new", resolveListener);
-//       setTimeout(() => {
-//         eventReduced$.removeListener("new", resolveListener);
-//         reject("Server was unable to reduce in time");
-//       }, EVENT_REDUCE_TIMEOUT);
-//     });
-//
-//     return await command.rule.respond(eventNumber, request);
-//   } else {
-//     return { eventNumber };
-//   }
-// }
-
-export async function renderRequestView(view: IView, data: any): Promise<any> {
-  if (view.renderPublic) {
-    return await view.renderPublic(data);
+export async function renderRequestView(view: IView, data: any, token?: IAuthToken|undefined): Promise<any|undefined> {
+  if (view.renderPrivate && !view.renderPublic) {
+    if (token) {
+      return await view.renderPrivate(data, token);
+    } else {
+      return undefined;
+    }
+  } else if (view.renderPrivate && view.renderPublic) {
+    if (token) {
+      return await view.renderPrivate(data, token);
+    } else {
+      return await view.renderPublic(data);
+    }
   } else {
-    return {};
+    if (view.renderPublic) {
+      return await view.renderPublic(data);
+    } else {
+      return {};
+    }
   }
 }
 
