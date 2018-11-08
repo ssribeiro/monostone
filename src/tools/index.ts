@@ -5,5 +5,6 @@ import * as ReducerTools from "./reducer.tools";
 import * as RuleTools from "./rule.tools";
 import * as StringTools from "./string.tools";
 import * as SystemTools from "./system.tools";
+import * as ViewTools from "./view.tools";
 
-export { CommandTools, SystemTools, EventTools, FeatureTools, StringTools, ReducerTools, RuleTools };
+export { CommandTools, SystemTools, EventTools, FeatureTools, StringTools, ReducerTools, RuleTools, ViewTools };

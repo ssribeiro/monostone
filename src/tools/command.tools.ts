@@ -17,8 +17,14 @@ export async function execute(command: ICommand, request: any, eventReduced$: Ev
     }
 
     if (command.rule.validation) {
-      ruleBroken = await command.rule.validation(request);
-      if (ruleBroken) { return Promise.reject(ruleBroken); }
+      const ruleBrokenOrNewRequest = await command.rule.validation(request);
+      if (ruleBrokenOrNewRequest) {
+        if (typeof ruleBrokenOrNewRequest === "string") {
+          return Promise.reject(ruleBrokenOrNewRequest);
+        } else {
+          request = ruleBrokenOrNewRequest.req;
+        }
+      }
     }
 
   }

@@ -15,6 +15,11 @@ module.exports = function (w) {
       type: 'node'
     },
 
+    workers: {
+      initial: 1,
+      regular: 1
+    },
+
     // or any other supported testing framework:
     // https://wallabyjs.com/docs/integration/overview.html#supported-testing-frameworks
     testFramework: 'jasmine',

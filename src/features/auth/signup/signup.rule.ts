@@ -5,7 +5,7 @@ import { messages } from "./signup.messages";
 export const ruleSheet: IRuleSheet = {
 
   preValidation: (req: any): Promise<string|undefined> =>
-    new Promise<string>((resolve, reject) => {
+    new Promise<string>((resolve) => {
       if (!req.name) { resolve(messages.NO_NAME); }
       if (!req.login) { resolve(messages.NO_LOGIN); }
       if (!req.password) { resolve(messages.NO_PASSWORD); }
@@ -22,14 +22,20 @@ export const ruleSheet: IRuleSheet = {
       resolve(undefined);
     }),
 
-  validation: async (req: any): Promise<string|undefined> => {
+  validation: async (req: any): Promise<string|undefined|{ req: any }> => {
     const user = await db.collection("user").findOne({ login: req.login });
-    return user ? messages.LOGIN_TAKEN : undefined;
+    if (user) {
+      return messages.LOGIN_TAKEN;
+    } else {
+      req.createdAt = Date.now();
+      req.role = "newuser";
+      return { req };
+    }
   },
 
   respond: (eventNumber: number, req: any): Promise<any> =>
-    new Promise<any>((resolve, reject) => {
-      resolve({ eventNumber });
+    new Promise<any>((resolve) => {
+      resolve({ userId: eventNumber });
     }),
 
 };

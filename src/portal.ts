@@ -5,8 +5,8 @@ import * as express from "express";
 import * as http from "http";
 
 import { EventEmitter } from "events";
-import { ICommand, IFeature } from "./interfaces";
-import { CommandTools } from "./tools";
+import { ICommand, IFeature, IView } from "./interfaces";
+import { CommandTools, ViewTools } from "./tools";
 
 export class Portal {
 
@@ -20,10 +20,10 @@ export class Portal {
     this.expressApp.use(bodyParser.json());
   }
 
-  public route(features: IFeature[], eventReduced$: EventEmitter) {
+  public route(features: IFeature[], eventReduced$: EventEmitter, viewsData: any) {
     ast.log("creating routes");
     this.routeSystem();
-    this.routeFeatures(features, eventReduced$);
+    this.routeFeatures(features, eventReduced$, viewsData);
   }
 
   public start(): Promise<void> {
@@ -69,7 +69,7 @@ export class Portal {
     ast.log("system routes added");
   }
 
-  private routeFeatures(features: IFeature[], eventReduced$: EventEmitter) {
+  private routeFeatures(features: IFeature[], eventReduced$: EventEmitter, viewsData: any) {
     ast.log("adding the feature routes");
     features.forEach((feature) => {
 
@@ -87,6 +87,18 @@ export class Portal {
         });
       }
 
+      if (feature.views) {
+        feature.views.forEach((view) => {
+          ast.log(" found view: " + view.viewName);
+
+          const viewTag: string = view.featureName + " " + view.viewName;
+          featureRouter.get("/" + view.viewName,
+            this.viewRequest(view, viewTag, viewsData));
+
+          ast.log(" routed view " + view.viewName);
+        });
+      }
+
       this.expressApp.use("/" + feature.featureName, featureRouter);
       ast.log("routed feature " + feature.featureName);
 
@@ -99,6 +111,20 @@ export class Portal {
   ) => void {
     return (req: express.Request, res: express.Response) => {
       CommandTools.execute(command, req.body, eventReduced$)
+        .then((ans: any) => res.status(200).send(ans))
+        .catch((err: Error) => {
+          ast.dev(err);
+          res.status(400).send(err);
+        });
+    };
+  }
+
+  private viewRequest(view: IView, viewTag: string, viewsData: any): (
+    req: express.Request,
+    res: express.Response,
+  ) => void {
+    return (req: express.Request, res: express.Response) => {
+      ViewTools.renderRequestView(view, viewsData[viewTag])
         .then((ans: any) => res.status(200).send(ans))
         .catch((err: Error) => {
           ast.dev(err);

@@ -66,8 +66,8 @@ describe("App", () => {
        .send(userInfo)
        .expect(200)
        .then((response) => {
-         expect(response.body.eventNumber).toBeNumber();
-         expect(response.body.eventNumber).toBeGreaterThan(-1);
+         expect(response.body.userId).toBeNumber();
+         expect(response.body.userId).toBeGreaterThan(-1);
          appOneInstance.stop().then(done);
        });
      });
@@ -89,8 +89,8 @@ describe("App", () => {
        .send(userInfo)
        .expect(200)
        .then((response) => {
-         expect(response.body.eventNumber).toBeNumber();
-         expect(response.body.eventNumber).toBeGreaterThan(-1);
+         expect(response.body.userId).toBeNumber();
+         expect(response.body.userId).toBeGreaterThan(-1);
          (request.post("/auth/signup") as supertest.Test)
            .send(userInfo)
            .expect(400, messages.LOGIN_TAKEN, () => {
@@ -116,8 +116,8 @@ describe("App", () => {
         .send(userInfo)
         .expect(200)
         .then((response) => {
-          expect(response.body.eventNumber).toBeNumber();
-          expect(response.body.eventNumber).toBeGreaterThan(-1);
+          expect(response.body.userId).toBeNumber();
+          expect(response.body.userId).toBeGreaterThan(-1);
           appOneInstance.stop().then(done);
         });
       });
@@ -139,8 +139,8 @@ describe("App", () => {
         .send(userInfo)
         .expect(200)
         .then((response) => {
-          expect(response.body.eventNumber).toBeNumber();
-          expect(response.body.eventNumber).toBeGreaterThan(-1);
+          expect(response.body.userId).toBeNumber();
+          expect(response.body.userId).toBeGreaterThan(-1);
           (request.post("/auth/signup") as supertest.Test)
             .send(userInfo)
             .expect(400, messages.LOGIN_TAKEN, () => {

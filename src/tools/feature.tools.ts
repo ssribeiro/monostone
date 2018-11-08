@@ -1,9 +1,10 @@
-import { ICommand, IFeature } from "../interfaces";
-import { CommandTools, StringTools } from "./";
+import { ICommand, IFeature, IView } from "../interfaces";
+import { CommandTools, StringTools, ViewTools } from "./";
 
 export function createFeature(featureRecipe: {
   commandNames: string[],
   featurePath: string,
+  viewNames: string[],
 }): IFeature {
   const featureName: string = StringTools.lastNameOfFilePath(featureRecipe.featurePath);
   const commands: ICommand[] = CommandTools.createCommands({
@@ -11,5 +12,10 @@ export function createFeature(featureRecipe: {
     featureName,
     featurePath: featureRecipe.featurePath,
   });
-  return { featureName, commands };
+  const views: IView[] = ViewTools.createViews({
+    featureName,
+    featurePath: featureRecipe.featurePath,
+    viewNames: featureRecipe.viewNames,
+  });
+  return { featureName, commands, views };
 }

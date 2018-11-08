@@ -33,7 +33,9 @@ export class App {
     this.features = this.loadFeatures();
     this.eventController = new EventController();
 
-    this.portal.route(this.features, this.eventController.eventReduced$);
+    this.portal.route(this.features,
+      this.eventController.eventReduced$,
+      this.eventController.viewsData);
   }
 
   public async connectStore() {
@@ -49,6 +51,7 @@ export class App {
 
     this.eventController.start();
     await this.eventController.completePastReducing();
+    await this.eventController.renderViews();
 
     this.timeLoaded = Date.now();
     const systemInfo = {

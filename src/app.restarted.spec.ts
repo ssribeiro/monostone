@@ -65,8 +65,8 @@ describe("App", () => {
          // console.log(response);
          // console.log(response.text);
          // console.log(response.body);
-         expect(response.body.eventNumber).toBeNumber();
-         expect(response.body.eventNumber).toBeGreaterThan(1);
+         expect(response.body.userId).toBeNumber();
+         expect(response.body.userId).toBeGreaterThan(1);
          done();
        });
     });
@@ -85,8 +85,8 @@ describe("App", () => {
          // console.log(response);
          // console.log(response.text);
          // console.log(response.body);
-         expect(response.body.eventNumber).toBeNumber();
-         expect(response.body.eventNumber).toBeGreaterThan(1);
+         expect(response.body.userId).toBeNumber();
+         expect(response.body.userId).toBeGreaterThan(1);
          appRestarted.stop().then(() => {
            appRestarted = new App();
            appRestarted.start().then(() => {
@@ -113,8 +113,8 @@ describe("App", () => {
           // console.log(response);
           // console.log(response.text);
           // console.log(response.body);
-          expect(response.body.eventNumber).toBeNumber();
-          expect(response.body.eventNumber).toBeGreaterThan(1);
+          expect(response.body.userId).toBeNumber();
+          expect(response.body.userId).toBeGreaterThan(1);
           done();
         });
      });
@@ -133,8 +133,8 @@ describe("App", () => {
            // console.log(response);
            // console.log(response.text);
            // console.log(response.body);
-           expect(response.body.eventNumber).toBeNumber();
-           expect(response.body.eventNumber).toBeGreaterThan(1);
+           expect(response.body.userId).toBeNumber();
+           expect(response.body.userId).toBeGreaterThan(1);
            appRestarted.stop().then(() => {
              appRestarted = new App();
              request = supertest(appRestarted.portal.expressApp);

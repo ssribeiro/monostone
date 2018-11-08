@@ -7,14 +7,29 @@ import {
   StoredEvent } from "event-store-client";
 import { EventEmitter } from "events";
 import { error } from "./error";
-import { ICommand, IFeature, IReducer } from "./interfaces";
+import { ICommand, IFeature, IReducer, IView } from "./interfaces";
 import { db } from "./store";
 
 export class EventController {
 
   public eventRead$: EventEmitter;
   public eventReduced$: EventEmitter;
+
   public reducers: any;
+
+  public viewsData: any = {};
+  public initialRenders: Array<{
+    viewTag: string,
+    method: () => Promise<any>,
+  }> = [];
+  public watchers: Array<{
+    event: string,
+    views: Array<{
+      viewTag: string,
+      method: (lastData?: any, event?: any) => Promise<any>,
+    }>,
+  }> = [];
+
   public connection: Connection;
   public live: boolean = false;
   public eventStreamSubscription: EventStoreStreamCatchUpSubscription | undefined;
@@ -30,12 +45,18 @@ export class EventController {
   public nextEventNumberToReduce: number = 0;
   private credentials: ICredentials;
   private REDUCER_REST_TIME: number = 10;
+  private RENDER_REST_TIME: number = 10;
   private MAX_LIVE_QUEUE_SIZE: number = 10000;
   private READ_BATCH_SIZE: number = 500;
   private SECURITY_TIME_DELAY_FOR_EMIT_REDUCED: number = 3;
   private eventControllerName: string = "event_control";
+
   private reducing: boolean = false;
   private lastTimeReducing: number = Date.now();
+
+  private rendering: boolean = false;
+  private lastTimeRendering: number = Date.now();
+
   private stoped: boolean = false;
 
   constructor() {
@@ -130,6 +151,45 @@ export class EventController {
         });
       }
     });
+    features.forEach((feature: IFeature) => {
+      if (feature.views) {
+        feature.views.forEach((view: IView) => {
+
+          this.viewsData[view.featureName + " " + view.viewName] = {};
+
+          if (view.renderUpdate && view.watchEvents) {
+            view.watchEvents.forEach((watchEvent: string) => {
+              const alreadyInitiatedWatcher = this.watchers.filter((watch) => {
+                return watch.event === watchEvent;
+              });
+              if ( alreadyInitiatedWatcher.length === 0 ) {
+                this.watchers.push({
+                  event: watchEvent,
+                  views: [],
+                });
+              }
+              this.watchers = this.watchers.map((watch) => {
+                if (watch.event === watchEvent) {
+                  watch.views.push({
+                    method: view.renderUpdate as (lastData?: any, event?: any) => Promise<any>,
+                    viewTag: view.featureName + " " + view.viewName,
+                  });
+                }
+                return watch;
+              });
+            });
+          }
+
+          if (view.renderInitial) {
+            this.initialRenders.push({
+              method: view.renderInitial,
+              viewTag: view.featureName + " " + view.viewName,
+            });
+          }
+
+        });
+      }
+    });
   }
 
   public async registerDbControl() {
@@ -156,6 +216,10 @@ export class EventController {
   }
 
   public async isFree(): Promise<boolean> {
+    return await this.isReducerFree() && await this.isRenderFree();
+  }
+
+  public async isReducerFree(): Promise<boolean> {
     if (this.reducing) {
       return false;
     } else {
@@ -164,6 +228,60 @@ export class EventController {
       }
       return false;
     }
+  }
+
+  public async isRenderFree(): Promise<boolean> {
+    if (this.rendering) {
+      return false;
+    } else {
+      if ((Date.now() - this.lastTimeRendering) > 3 * this.RENDER_REST_TIME) {
+        return !this.rendering;
+      }
+      return false;
+    }
+  }
+
+  public async renderViews() {
+    this.rendering = true;
+    for (const initialRenderIndex in this.initialRenders) {
+      if (this.initialRenders[initialRenderIndex]) {
+        this.viewsData[ this.initialRenders[initialRenderIndex].viewTag ] =
+          await this.initialRenders[initialRenderIndex].method();
+      }
+    }
+    this.rendering = false;
+    this.lastTimeRendering = Date.now();
+
+    this.watchEvents();
+
+    await ast.delay(2);
+  }
+
+  public watchEvents() {
+    this.watchers.forEach((watcher: {
+      event: string,
+      views: Array<{
+        viewTag: string,
+        method: (lastData?: any, event?: any) => Promise<any>,
+      }>,
+    }) => {
+      this.eventRead$.addListener(watcher.event, (event: {
+        eventNumber: number,
+        request: any,
+      }) => {
+        this.rendering = true;
+        watcher.views.forEach((view: {
+          viewTag: string,
+          method: (lastData?: any, event?: any) => Promise<any>,
+        }) => {
+          view.method(this.viewsData[view.viewTag], event).then((newData: any) => {
+            this.viewsData[view.viewTag] = newData;
+          });
+        });
+        this.lastTimeRendering = Date.now();
+        this.rendering = false;
+      });
+    });
   }
 
   private async reduceMarkStart(eventNumber: number) {
