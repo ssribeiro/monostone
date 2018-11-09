@@ -3,9 +3,9 @@ import * as ast from "@angstone/node-util";
 import "jasmine-expect";
 import * as supertest from "supertest";
 
-import { messages } from "./features/auth/messages";
+import { messages } from "../features/auth/messages";
 
-import { App } from "./app";
+import { App } from "../app";
 
 describe("App", () => {
 

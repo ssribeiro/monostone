@@ -2,7 +2,7 @@
 import "jasmine-expect";
 import * as supertest from "supertest";
 
-import { App } from "./app";
+import { App } from "../app";
 
 import * as jwt from "jsonwebtoken";
 

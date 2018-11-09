@@ -1,9 +1,9 @@
 import "jasmine-expect";
 import * as supertest from "supertest";
 
-import { App } from "./app";
-import { features as basicFeatures } from "./features";
-import { messages } from "./features/auth/signup/signup.messages";
+import { App } from "../app";
+import { features as basicFeatures } from "../features";
+import { messages } from "../features/auth/signup/signup.messages";
 
 describe("App", () => {
 
