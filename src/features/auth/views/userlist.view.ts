@@ -9,7 +9,7 @@ export const viewSheet: IViewSheet = {
   ],
 
   renderInitial: async (): Promise<any> => {
-    const usersInside = await db.collection("user").find();
+    const usersInside = db.collection("user").find();
     const users: Array<{
       name: string,
       memberSince: number,

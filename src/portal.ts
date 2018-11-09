@@ -72,7 +72,7 @@ export class Portal {
         req.token = decoded;
         next();
       }).catch((err: any) => {
-        res.status(401).send("Failure decoding token: " + err.message);
+        res.status(401).send(err.message || err.msg || "unknown");
       });
     } else {
       next();

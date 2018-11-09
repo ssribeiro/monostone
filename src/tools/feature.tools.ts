@@ -1,10 +1,11 @@
-import { ICommand, IFeature, IView } from "../interfaces";
+import { ICommand, ICronjob, IFeature, IView } from "../interfaces";
 import { CommandTools, StringTools, ViewTools } from "./";
 
 export function createFeature(featureRecipe: {
   commandNames: string[],
   featurePath: string,
   viewNames: string[],
+  cronjobs: ICronjob[],
 }): IFeature {
   const featureName: string = StringTools.lastNameOfFilePath(featureRecipe.featurePath);
   const commands: ICommand[] = CommandTools.createCommands({
@@ -17,5 +18,5 @@ export function createFeature(featureRecipe: {
     featurePath: featureRecipe.featurePath,
     viewNames: featureRecipe.viewNames,
   });
-  return { featureName, commands, views };
+  return { featureName, commands, views, cronjobs: featureRecipe.cronjobs };
 }

@@ -3,8 +3,6 @@ import { db } from "../../../store";
 import * as authTools from "../tools";
 import { messages } from "./login.messages";
 
-export const DEFAULT_EXPIRATION = (1000 * 60 * 60 * 24 * 28); // 28 days
-
 export const ruleSheet: IRuleSheet = {
 
   preValidation: (req: any): Promise<string|undefined> =>
@@ -33,8 +31,16 @@ export const ruleSheet: IRuleSheet = {
       return messages.TYPED_WRONG_PASSWORD;
     }
     req.createdAt = Date.now();
-    const expiration = process.env.FEATURE_AUTH_EXPIRATION ? +process.env.FEATURE_AUTH_EXPIRATION : DEFAULT_EXPIRATION;
-    req.expiresAt = Date.now() + expiration;
+    const DEFAULT_EXPIRATION: number =
+      process.env.FEATURE_AUTH_EXPIRATION ?
+      +process.env.FEATURE_AUTH_EXPIRATION :
+      (1000 * 60 * 60 * 24 * 28); // 28 days
+    // console.log(DEFAULT_EXPIRATION);
+    // console.log(DEFAULT_EXPIRATION === +process.env.FEATURE_AUTH_EXPIRATION);
+    // console.log(process.env.FEATURE_AUTH_EXPIRATION);
+    // console.log(Date.now());
+    // console.log(Date.now() + DEFAULT_EXPIRATION);
+    req.expiresAt = Date.now() + DEFAULT_EXPIRATION;
     req.userId = user.id;
     req.role = user.role;
     return { req };

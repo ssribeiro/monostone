@@ -1,4 +1,3 @@
-// import { EventEmitter } from "events";
 import { error } from "../error";
 import { IAuthToken } from "../features/auth/auth-token.i";
 import { IView } from "../interfaces";

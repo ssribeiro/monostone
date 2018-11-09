@@ -1,5 +1,7 @@
 import * as jwt from "jsonwebtoken";
+import { db } from "../../store";
 import { IAuthToken } from "./auth-token.i";
+import { messages } from "./messages";
 import { IPermission } from "./permission.i";
 
 export const APPLICATION_KEY: string = process.env.FEATURE_AUTH_APPLICATION_KEY || "klapaucius !;!;!;";
@@ -32,7 +34,20 @@ export const decodeToken = async (token: string): Promise<IAuthToken> => {
       if (err) {
         reject(err);
       } else {
-        resolve(decoded as IAuthToken);
+        const decodedToken: IAuthToken = decoded as IAuthToken;
+        db.collection("authentication").findOne({ id: decodedToken.id }).then((authentication: any) => {
+          if (authentication) {
+            if (authentication.userId === decodedToken.uId) {
+              resolve(decodedToken);
+            } else {
+              reject(new Error(messages.TOKEN_NOT_VERIFIED_AS_CLAIMED));
+            }
+          } else {
+            reject(new Error(messages.TOKEN_EXPIRED));
+          }
+        }).catch((error: any) => {
+          reject(error);
+        });
       }
     });
   });

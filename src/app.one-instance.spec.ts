@@ -266,6 +266,37 @@ describe("App", () => {
        name: "Bang A desh",
        password, password_confirmation: passwordConfirmation,
      },
+     // * test for load *
+     {
+       login: "bolsomitodenyload",
+       name: "Jair Bolsonaro",
+       password, password_confirmation: passwordConfirmation,
+     },
+     {
+       login: "postedebostadenyload",
+       name: "Fernando Malddad",
+       password, password_confirmation: passwordConfirmation,
+     },
+     {
+       login: "jeje1234cleardenyload",
+       name: "JEricó Master c-lear",
+       password, password_confirmation: passwordConfirmation,
+     },
+     {
+       login: "sabadodesoldenyload",
+       name: "Sábado D'Sol",
+       password, password_confirmation: passwordConfirmation,
+     },
+     {
+       login: "saihtanahsdenyload",
+       name: "Lúcifer Satan",
+       password, password_confirmation: passwordConfirmation,
+     },
+     {
+       login: "bangladeshdenyload",
+       name: "Bang A desh",
+       password, password_confirmation: passwordConfirmation,
+     },
    ];
 
    function deny_user(input: any, done: any) {

@@ -2,18 +2,26 @@ import * as ast from "@angstone/node-util";
 
 import { config } from "./config";
 import { error } from "./error";
+
+import { CronjobController } from "./cronjob_controller";
 import { EventController } from "./event_controller";
 import { features as basicFeatures } from "./features";
 import { IFeature } from "./interfaces";
+
 import { Portal } from "./portal";
+
 import { closeStore, connectStore } from "./store";
+
 import * as SystemCommands from "./system_commands";
 import { EventTools, SystemTools } from "./tools";
 
 export class App {
 
+  public cronjobController: CronjobController;
+
   public eventController: EventController;
   public features: IFeature[];
+
   public portal: Portal;
 
   public stoped: boolean = false;
@@ -31,7 +39,9 @@ export class App {
     this.portal = new Portal();
 
     this.features = this.loadFeatures();
+
     this.eventController = new EventController();
+    this.cronjobController = new CronjobController();
 
     this.portal.route(this.features,
       this.eventController.eventReduced$,
@@ -47,11 +57,14 @@ export class App {
 
     await this.connectStore();
 
-    this.eventController.loadReducers(this.features);
+    this.eventController.loadFeatures(this.features);
 
     this.eventController.start();
     await this.eventController.completePastReducing();
     await this.eventController.renderViews();
+
+    this.cronjobController.loadCronjobs(this.features);
+    this.cronjobController.start();
 
     this.timeLoaded = Date.now();
     const systemInfo = {
@@ -66,6 +79,7 @@ export class App {
 
   public async stop() {
     await this.portal.stop();
+    await this.cronjobController.stop();
     await this.eventController.stop();
     await closeStore();
     this.stoped = true;

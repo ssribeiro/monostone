@@ -61,8 +61,12 @@ export class EventController {
 
   constructor() {
     ast.log("creating event controller");
+
     this.eventRead$ = new EventEmitter();
+    this.eventRead$.setMaxListeners(Infinity);
     this.eventReduced$ = new EventEmitter();
+    this.eventReduced$.setMaxListeners(Infinity);
+
     this.reducers = {};
     this.credentials = {
       password: process.env.EVENT_SOURCE_PASSWORD || "changeit",
@@ -128,6 +132,11 @@ export class EventController {
     }
   }
 
+  public loadFeatures(features: IFeature[]) {
+    this.loadReducers(features);
+    this.loadViews(features);
+  }
+
   public loadReducers(features: IFeature[]) {
     features.forEach((feature: IFeature) => {
       if (feature.commands) {
@@ -151,6 +160,9 @@ export class EventController {
         });
       }
     });
+  }
+
+  public loadViews(features: IFeature[]) {
     features.forEach((feature: IFeature) => {
       if (feature.views) {
         feature.views.forEach((view: IView) => {
