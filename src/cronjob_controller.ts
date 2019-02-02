@@ -1,11 +1,20 @@
-
 import * as ast from "@angstone/node-util";
 import { CronJob, CronJobParameters } from "cron";
 import { ICronjob, IFeature } from "./interfaces";
 
+/**
+ * Control the cronjobs of server
+ */
 export class CronjobController {
 
+  /**
+   * list of cronjobs loaded
+   */
   public cronjobs: CronJob[] = [];
+
+  /**
+   * list of cronjobs running now
+   */
   public runningJobs: boolean[] = [];
   public RUNNING_VERIFIER_REST_TIME: number = 50;
   public DEFAULT_TIMEZONE: string|undefined =
@@ -17,6 +26,9 @@ export class CronjobController {
     ast.log("creating cronjob controller");
   }
 
+  /**
+   * stop all cronjobs
+   */
   public async stop() {
     ast.log("stoping cronjobs");
     this.cronjobs.forEach((cronjob: CronJob) => {
@@ -33,6 +45,9 @@ export class CronjobController {
     ast.log("cronjobs stoped");
   }
 
+  /**
+   * start all cronjobs
+   */
   public async start() {
     ast.log("starting cronjob controller");
     this.cronjobs.forEach((cronjob: CronJob) => {
@@ -41,6 +56,10 @@ export class CronjobController {
     ast.log("cronjobs started");
   }
 
+  /**
+   * load cronjobs
+   * @param  features list of the features loaded by server
+   */
   public loadCronjobs(features: IFeature[]) {
     ast.log("loading cronjobs");
 

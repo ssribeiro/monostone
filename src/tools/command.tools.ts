@@ -61,7 +61,7 @@ export function createCommand(commandRecipe: {
       commandRecipe.commandName + "/" +
       commandRecipe.commandName + ".rule").ruleSheet;
   } catch (e) {
-    error.fatal("failed to load ruleSheet for command " + commandRecipe.commandName, e);
+    error.fatal(e, "failed to load ruleSheet for command " + commandRecipe.commandName);
   }
   if (!ruleSheet) { error.fatal("failed to load ruleSheet for command " + commandRecipe.commandName); }
   const rule: IRuleSheet = RuleTools.loadRule(ruleSheet);

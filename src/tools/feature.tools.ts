@@ -1,4 +1,4 @@
-import { ICommand, ICronjob, IFeature, IView } from "../interfaces";
+import { ICommand, ICronjob, IEffect, IFeature, IView } from "../interfaces";
 import { CommandTools, StringTools, ViewTools } from "./";
 
 export function createFeature(featureRecipe: {
@@ -6,6 +6,7 @@ export function createFeature(featureRecipe: {
   featurePath: string,
   viewNames: string[],
   cronjobs: ICronjob[],
+  effects: IEffect[],
 }): IFeature {
   const featureName: string = StringTools.lastNameOfFilePath(featureRecipe.featurePath);
   const commands: ICommand[] = CommandTools.createCommands({

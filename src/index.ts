@@ -1,8 +1,9 @@
+// Monostone Starter
 import * as ast from "@angstone/node-util";
 import { App } from "./app";
 import { error } from "./error";
 
-/* Boot Process */
+// Boot Process
 ast.log("booting monostone framework");
 ast.log("loading configuration");
 

@@ -32,7 +32,7 @@ export function createView(viewRecipe: {
       "views/" +
       viewRecipe.viewName + ".view").viewSheet;
   } catch (e) {
-    error.fatal("failed to load viewSheet for view " + viewRecipe.viewName, e);
+    error.fatal(e, "failed to load viewSheet for view " + viewRecipe.viewName);
   }
   if (!viewSheet) { error.fatal("failed to load viewSheet for view " + viewRecipe.viewName); }
   return Object.assign({}, viewSheet, { featureName: viewRecipe.featureName, viewName: viewRecipe.viewName }) as IView;

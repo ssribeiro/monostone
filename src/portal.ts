@@ -12,6 +12,9 @@ import { CommandTools, ViewTools } from "./tools";
 import { messages as authMessages } from "./features/auth/messages";
 import * as AuthTools from "./features/auth/tools";
 
+/**
+ * Portal to expose api resources
+ */
 export class Portal {
 
   public apiPort: number;
@@ -61,6 +64,12 @@ export class Portal {
     });
   }
 
+  /**
+   * Middleware to handle authentication
+   * @param req  the request
+   * @param res  the response
+   * @param next called at end
+   */
   private authMiddleware(
     req: any,
     res: express.Response,
@@ -91,6 +100,12 @@ export class Portal {
     ast.log("system routes added");
   }
 
+  /**
+   * Route each feature
+   * @param  features      loaded features
+   * @param  eventReduced$ reduced events stream
+   * @param  viewsData     stored data from views
+   */
   private routeFeatures(features: IFeature[], eventReduced$: EventEmitter, viewsData: any) {
     ast.log("adding the feature routes");
     features.forEach((feature) => {
@@ -129,6 +144,12 @@ export class Portal {
     });
   }
 
+  /**
+   * Generate the request for each command
+   * @param  command       [description]
+   * @param  eventReduced$ stream of reduced events
+   * @return               express function midlleware
+   */
   private commandRequest(command: ICommand, eventReduced$: EventEmitter): (
     req: express.Request,
     res: express.Response,
@@ -143,6 +164,13 @@ export class Portal {
     };
   }
 
+  /**
+   * Generate the request for each view
+   * @param  view      [description]
+   * @param  viewTag   [description]
+   * @param  viewsData [description]
+   * @return           express function middleware
+   */
   private viewRequest(view: IView, viewTag: string, viewsData: any): (
     req: express.Request,
     res: express.Response,

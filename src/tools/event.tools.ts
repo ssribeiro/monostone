@@ -1,11 +1,14 @@
 
 import fetch from "node-fetch";
 import { v4 as uuid } from "uuid";
-import { ICommand } from "../interfaces";
+import { IEventRecipe } from "../interfaces";
 
-export async function send( eventRecipe: {
-  command: ICommand;
-  request?: any }): Promise<number> {
+/**
+ * send an event to event store
+ * @param  eventRecipe recipe with the command and the request
+ * @return eventNumber
+ */
+export async function send( eventRecipe: IEventRecipe): Promise<number> {
 
     const evt = {
       payload: eventRecipe.request || {},
@@ -37,6 +40,9 @@ export async function send( eventRecipe: {
     }
 }
 
+/**
+ * deletes all events
+ */
 export async function clearAllEvents() {
   const url: string =
   (process.env.EVENT_SOURCE_GATEWAY || "http://localhost:2113") +

@@ -10,19 +10,36 @@ import { error } from "./error";
 import { ICommand, IFeature, IReducer, IView } from "./interfaces";
 import { db } from "./store";
 
+/**
+ * Controlls the events toolchain
+ */
 export class EventController {
 
+  /**
+   * Stream of events read from event store
+   */
   public eventRead$: EventEmitter;
+  /**
+   * Stream of events already reduced
+   */
   public eventReduced$: EventEmitter;
 
+  /**
+   * list of reducers loaded
+   */
   public reducers: any;
 
+  /**
+   * Object to store all data from views that are required to
+   * be persisted across iterations within the reducer
+   */
   public viewsData: any = {};
-  public initialRenders: Array<{
+
+  private initialRenders: Array<{
     viewTag: string,
     method: () => Promise<any>,
   }> = [];
-  public watchers: Array<{
+  private watchers: Array<{
     event: string,
     views: Array<{
       viewTag: string,
@@ -30,10 +47,21 @@ export class EventController {
     }>,
   }> = [];
 
-  public connection: Connection;
+  /**
+   * Connection with Event Store
+   */
+  private connection: Connection;
+
+  /**
+   * If already read all past events and now are reducing live events
+   */
   public live: boolean = false;
-  public eventStreamSubscription: EventStoreStreamCatchUpSubscription | undefined;
-  public eventStack: Array<{
+  private eventStreamSubscription: EventStoreStreamCatchUpSubscription | undefined;
+
+  /**
+   * Stack of events to reduce
+   */
+  private eventStack: Array<{
     commandType: string;
     reducer: IReducer | undefined;
     eventRead: {
@@ -77,6 +105,9 @@ export class EventController {
     ast.log("event store connected");
   }
 
+  /**
+   * stops the event controller after free all tasks
+   */
   public async stop() {
     ast.log("stoping event controller");
     this.stoped = true;
@@ -87,6 +118,9 @@ export class EventController {
     ast.log("connection closed");
   }
 
+  /**
+   * starts event controller
+   */
   public async start() {
     ast.log("starting event controller");
     await this.registerDbControl();
@@ -95,6 +129,9 @@ export class EventController {
     ast.log("event controller ready");
   }
 
+  /**
+   * starts the reducer reading and reducing all past events
+   */
   public async startReducer() {
     ast.log("reading past events from eventsource and reducing then");
     this.readAllPastEvents();
@@ -103,6 +140,9 @@ export class EventController {
     ast.log("started");
   }
 
+  /**
+   * reduces all non reduced yet events on stack
+   */
   public async reduce() {
     while (this.eventStack.length !== 0 && !this.stoped) {
       const reduceRecipe = this.eventStack.shift();
@@ -112,7 +152,7 @@ export class EventController {
           reduceRecipe.eventRead.request,
           reduceRecipe.eventRead.eventNumber,
         ).catch((err: any) => {
-          error.fatal("failed reducing command " + reduceRecipe.commandType, err);
+          error.fatal(err, "failed reducing command " + reduceRecipe.commandType);
         });
         await this.reduceMarkEnd(reduceRecipe.eventRead.eventNumber);
         setTimeout(() => {
@@ -124,6 +164,9 @@ export class EventController {
     if ( !this.stoped ) { this.reduce(); }
   }
 
+  /**
+   * await all past events to be reduced
+   */
   public async completePastReducing() {
     while ( !(this.eventStack.length === 0 && this.live) ) {
       await new Promise<void>((resolve) => {
@@ -204,6 +247,10 @@ export class EventController {
     });
   }
 
+  /**
+   * Register the control data on database. This is necessary to coordinate
+   * and grant stability and roughness to the system
+   */
   public async registerDbControl() {
     ast.log("registering db control");
     const oldRegister: any = await db.collection(this.eventControllerName)
@@ -227,6 +274,10 @@ export class EventController {
     }
   }
 
+  /**
+   * check if it does not have ongoing tasks
+   * @return boolean
+   */
   public async isFree(): Promise<boolean> {
     return await this.isReducerFree() && await this.isRenderFree();
   }
@@ -253,6 +304,9 @@ export class EventController {
     }
   }
 
+  /**
+   * renders views
+   */
   public async renderViews() {
     this.rendering = true;
     for (const initialRenderIndex in this.initialRenders) {
@@ -269,6 +323,9 @@ export class EventController {
     await ast.delay(2);
   }
 
+  /**
+   * watch for events
+   */
   public watchEvents() {
     this.watchers.forEach((watcher: {
       event: string,
@@ -310,6 +367,9 @@ export class EventController {
     this.reducing = false;
   }
 
+  /**
+   * Creates connection with Event Store
+   */
   private createConnection(): Connection {
     const options = {
       debug: false, // process.env.NODE_ENV === "development",
@@ -320,7 +380,7 @@ export class EventController {
         }
       },
       onError: (err: any) => {
-        if (!this.closed) { error.fatal("EventController could not connect to eventstore", err); }
+        if (!this.closed) { error.fatal(err, "EventController could not connect to eventstore"); }
       },
       port: process.env.EVENT_SOURCE_PORT,
     };
@@ -354,7 +414,7 @@ export class EventController {
       },
       (eventStoreStreamCatchUpSubscription: any, reason: string, errorFound: any) => {
         if (reason !== "UserInitiated") {
-          error.is("eventstore subscription dropped due to " + reason,
+          error.op("eventstore subscription dropped due to " + reason,
             errorFound,
             eventStoreStreamCatchUpSubscription,
           );
