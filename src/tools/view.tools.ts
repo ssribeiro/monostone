@@ -1,6 +1,7 @@
 import { error } from "../error";
 import { IAuthToken } from "../features/auth/interfaces/auth-token.i";
 import { IViewLoaded } from "../interfaces";
+import { FolderTools, StringTools } from './';
 
 export async function renderRequestView(view: IViewLoaded, data: any, token?: IAuthToken|undefined): Promise<any|undefined> {
   if (view.renderPrivate && !view.renderPublic) {
@@ -38,9 +39,21 @@ export function createView(viewRecipe: {
   return Object.assign({}, viewSheet, { featureName: viewRecipe.featureName, viewName: viewRecipe.viewName }) as IViewLoaded;
 }
 
-export function createViews(viewsRecipe: {
-  featureName: string,
-  viewNames: string[], featurePath: string }): IViewLoaded[] {
+export function createViews(
+  viewsRecipe: {
+    featureName: string,
+    viewNames: string[],
+    featurePath: string
+  }): IViewLoaded[] {
+
+  if(viewsRecipe.viewNames.length == 0) {
+    viewsRecipe.viewNames = FolderTools.getFiles( viewsRecipe.featurePath+'/views' )
+    .filter(StringTools.filters.lastCharactersMustBe('ts'))
+    .map(FolderTools.firstNameOfFile);
+  }
+
+  console.log(viewsRecipe.viewNames);
+
   const views: IViewLoaded[] = [];
   viewsRecipe.viewNames.forEach((viewName, index) => {
     views[index] = createView({

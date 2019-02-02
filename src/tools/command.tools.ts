@@ -1,7 +1,7 @@
 import { EventEmitter } from "events";
 import { error } from "../error";
 import { ICommand, IReducer, IRule } from "../interfaces";
-import { EventTools, ReducerTools, RuleTools } from "./";
+import { EventTools, ReducerTools, RuleTools, FolderTools } from "./";
 
 const EVENT_REDUCE_TIMEOUT: number = +(process.env.EVENT_REDUCE_TIMEOUT || 3000);
 
@@ -72,9 +72,21 @@ export function createCommand(commandRecipe: {
   return { featureName: commandRecipe.featureName, commandName: commandRecipe.commandName, rule, reducer };
 }
 
-export function createCommands(commandsRecipe: {
-  featureName: string,
-  commandNames: string[], featurePath: string }): ICommand[] {
+export function createCommands(
+  commandsRecipe:
+    {
+      featureName: string,
+      commandNames: string[],
+      featurePath: string
+    }
+  ): ICommand[] {
+
+  if(commandsRecipe.commandNames.length == 0) {
+    commandsRecipe.commandNames = FolderTools.getDirectories(
+      commandsRecipe.featurePath+'/commands'
+    ).map(FolderTools.lastNameOfFilePath);
+  }
+
   const commands: ICommand[] = [];
   commandsRecipe.commandNames.forEach((commandName, index) => {
     commands[index] = createCommand({
@@ -82,5 +94,7 @@ export function createCommands(commandsRecipe: {
       featureName: commandsRecipe.featureName,
       featurePath: commandsRecipe.featurePath });
   });
+
   return commands;
+
 }
