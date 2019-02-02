@@ -6,13 +6,13 @@ import * as http from "http";
 import * as net from "net";
 
 import { EventEmitter } from "events";
-import { IAuthToken } from "./features/auth/interfaces/auth-token.i";
-import { ICommand, IFeatureLoaded, IViewLoaded } from "./interfaces";
-import { CommandTools, ViewTools } from "./tools";
-import { error } from './error';
+import { IAuthToken } from "features/auth/interfaces/auth-token.i";
+import { ICommand, IFeatureLoaded, IViewLoaded } from "interfaces";
+import { CommandTools, ViewTools } from "tools";
+import { error } from 'error';
 
-import { messages as authMessages } from "./features/auth/messages";
-import * as AuthTools from "./features/auth/tools";
+import { messages as authMessages } from "features/auth/messages";
+import * as AuthTools from "features/auth/tools";
 
 interface ServerError extends Error {
   code: string | number;

@@ -1,3 +1,13 @@
+// Name resolution fixes for nodejs:
+const moduleAlias = require('module-alias');
+moduleAlias.addAliases({
+  'store'  : __dirname + '/store',
+  'interfaces'  : __dirname + '/interfaces',
+  'tools'  : __dirname + '/tools',
+  'error'  : __dirname + '/error',
+  'features'  : __dirname + '/features',
+});
+
 // Monostone Starter
 import * as ast from "@angstone/node-util";
 import { App } from "./app";
@@ -16,7 +26,7 @@ if (app) {
   error.fatal("fail in creating express app");
 }
 
-global.monoApp = app;
+// global.monoApp = app;
 
 // Start Express App
 ast.log("starting express app");

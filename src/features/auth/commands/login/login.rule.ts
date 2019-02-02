@@ -3,7 +3,7 @@ import { db } from "store";
 import * as authTools from "../../tools";
 import { messages } from "./login.messages";
 
-export const ruleSheet: IRule = {
+export const rule: IRule = {
 
   preValidation: (req: any): Promise<string|undefined> =>
     new Promise<string>((resolve) => {

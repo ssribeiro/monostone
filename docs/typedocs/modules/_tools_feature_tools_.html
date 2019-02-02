@@ -912,6 +912,12 @@ img { max-width: 100%; }
 		<li class=" tsd-kind-function tsd-parent-kind-external-module">
 			<a href="_tools_feature_tools_.html#createfeature" class="tsd-kind-icon">create<wbr>Feature</a>
 		</li>
+		<li class=" tsd-kind-function tsd-parent-kind-external-module">
+			<a href="_tools_feature_tools_.html#createfeatures" class="tsd-kind-icon">create<wbr>Features</a>
+		</li>
+		<li class=" tsd-kind-function tsd-parent-kind-external-module">
+			<a href="_tools_feature_tools_.html#getrecipesfromfolderstructure" class="tsd-kind-icon">get<wbr>Recipes<wbr>From<wbr>Folder<wbr>Structure</a>
+		</li>
 	</ul>
 </nav>
 <div class="container container-main">
@@ -924,6 +930,8 @@ img { max-width: 100%; }
 						<h3>Functions</h3>
 						<ul class="tsd-index-list">
 							<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_tools_feature_tools_.html#createfeature" class="tsd-kind-icon">create<wbr>Feature</a></li>
+							<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_tools_feature_tools_.html#createfeatures" class="tsd-kind-icon">create<wbr>Features</a></li>
+							<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_tools_feature_tools_.html#getrecipesfromfolderstructure" class="tsd-kind-icon">get<wbr>Recipes<wbr>From<wbr>Folder<wbr>Structure</a></li>
 						</ul>
 					</section>
 				</div>
@@ -935,7 +943,7 @@ img { max-width: 100%; }
 				<a name="createfeature" class="tsd-anchor"></a>
 				<h3>create<wbr>Feature</h3>
 				<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
-					<li class="tsd-signature tsd-kind-icon">create<wbr>Feature<span class="tsd-signature-symbol">(</span>featureRecipe<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/_interfaces_feature_i_.ifeature.html" class="tsd-signature-type">IFeature</a></li>
+					<li class="tsd-signature tsd-kind-icon">create<wbr>Feature<span class="tsd-signature-symbol">(</span>featureRecipe<span class="tsd-signature-symbol">: </span><a href="../interfaces/_interfaces_feature_i_.ifeature.html" class="tsd-signature-type">IFeature</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/_interfaces_feature_loaded_i_.ifeatureloaded.html" class="tsd-signature-type">IFeatureLoaded</a></li>
 				</ul>
 				<ul class="tsd-descriptions">
 					<li class="tsd-description">
@@ -947,27 +955,50 @@ img { max-width: 100%; }
 						<h4 class="tsd-parameters-title">Parameters</h4>
 						<ul class="tsd-parameters">
 							<li>
-								<h5>featureRecipe: <span class="tsd-signature-type">object</span></h5>
-								<ul class="tsd-parameters">
-									<li class="tsd-parameter">
-										<h5>command<wbr>Names<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></h5>
-									</li>
-									<li class="tsd-parameter">
-										<h5>cronjobs<span class="tsd-signature-symbol">: </span><a href="../interfaces/_interfaces_cronjob_i_.icronjob.html" class="tsd-signature-type">ICronjob</a><span class="tsd-signature-symbol">[]</span></h5>
-									</li>
-									<li class="tsd-parameter">
-										<h5>effects<span class="tsd-signature-symbol">: </span><a href="../interfaces/_interfaces_effect_i_.ieffect.html" class="tsd-signature-type">IEffect</a><span class="tsd-signature-symbol">[]</span></h5>
-									</li>
-									<li class="tsd-parameter">
-										<h5>feature<wbr>Path<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
-									</li>
-									<li class="tsd-parameter">
-										<h5>view<wbr>Names<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></h5>
-									</li>
-								</ul>
+								<h5>featureRecipe: <a href="../interfaces/_interfaces_feature_i_.ifeature.html" class="tsd-signature-type">IFeature</a></h5>
 							</li>
 						</ul>
-						<h4 class="tsd-returns-title">Returns <a href="../interfaces/_interfaces_feature_i_.ifeature.html" class="tsd-signature-type">IFeature</a></h4>
+						<h4 class="tsd-returns-title">Returns <a href="../interfaces/_interfaces_feature_loaded_i_.ifeatureloaded.html" class="tsd-signature-type">IFeatureLoaded</a></h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
+				<a name="createfeatures" class="tsd-anchor"></a>
+				<h3>create<wbr>Features</h3>
+				<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
+					<li class="tsd-signature tsd-kind-icon">create<wbr>Features<span class="tsd-signature-symbol">(</span>featureRecipes<span class="tsd-signature-symbol">: </span><a href="../interfaces/_interfaces_feature_i_.ifeature.html" class="tsd-signature-type">IFeature</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/_interfaces_feature_loaded_i_.ifeatureloaded.html" class="tsd-signature-type">IFeatureLoaded</a><span class="tsd-signature-symbol">[]</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in tools/feature.tools.ts:24</li>
+							</ul>
+						</aside>
+						<h4 class="tsd-parameters-title">Parameters</h4>
+						<ul class="tsd-parameters">
+							<li>
+								<h5>featureRecipes: <a href="../interfaces/_interfaces_feature_i_.ifeature.html" class="tsd-signature-type">IFeature</a><span class="tsd-signature-symbol">[]</span></h5>
+							</li>
+						</ul>
+						<h4 class="tsd-returns-title">Returns <a href="../interfaces/_interfaces_feature_loaded_i_.ifeatureloaded.html" class="tsd-signature-type">IFeatureLoaded</a><span class="tsd-signature-symbol">[]</span></h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
+				<a name="getrecipesfromfolderstructure" class="tsd-anchor"></a>
+				<h3>get<wbr>Recipes<wbr>From<wbr>Folder<wbr>Structure</h3>
+				<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
+					<li class="tsd-signature tsd-kind-icon">get<wbr>Recipes<wbr>From<wbr>Folder<wbr>Structure<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/_interfaces_feature_i_.ifeature.html" class="tsd-signature-type">IFeature</a><span class="tsd-signature-symbol">[]</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in tools/feature.tools.ts:32</li>
+							</ul>
+						</aside>
+						<h4 class="tsd-returns-title">Returns <a href="../interfaces/_interfaces_feature_i_.ifeature.html" class="tsd-signature-type">IFeature</a><span class="tsd-signature-symbol">[]</span></h4>
 					</li>
 				</ul>
 			</section>

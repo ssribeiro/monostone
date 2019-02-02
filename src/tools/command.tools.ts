@@ -59,7 +59,7 @@ export function createCommand(commandRecipe: {
   try {
     ruleSheet = require(commandRecipe.featurePath + "/commands/" +
       commandRecipe.commandName + "/" +
-      commandRecipe.commandName + ".rule").ruleSheet;
+      commandRecipe.commandName + ".rule").rule;
   } catch (e) {
     error.fatal(e, "failed to load ruleSheet for command " + commandRecipe.commandName);
   }

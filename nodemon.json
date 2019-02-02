@@ -2,6 +2,6 @@
   "stdout": true,
   "ignore": [".git", "node_modules"],
   "watch": ["./src"],
-  "exec": "ts-node --cache-directory .tscache -- ./src/index.ts",
+  "exec": "ts-node -r tsconfig-paths/register --cache-directory .tscache -- ./src/index.ts",
   "ext": "ts"
 }

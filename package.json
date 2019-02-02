@@ -2,9 +2,9 @@
   "name": "monostone",
   "version": "0.0.1",
   "description": "monolitic event-sourced framework",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
-    "start": "npm run dev",
+    "start": "node dist/index.js",
     "dev": "node --inspect=9239 ./node_modules/nodemon/bin/nodemon.js",
     "build": "npm run clean && ./node_modules/typescript/bin/tsc",
     "test": "jasmine-ts --config=jasmine.json \"./src/**/*.spec.ts\"",
@@ -34,6 +34,7 @@
     "event-store-client": "^1.0.0",
     "express": "^4.16.4",
     "jsonwebtoken": "^8.4.0",
+    "module-alias": "^2.1.0",
     "mongodb": "^3.1.10",
     "node-fetch": "^2.3.0",
     "uuid": "^3.3.2"
@@ -59,6 +60,7 @@
     "rimraf": "^2.6.2",
     "supertest": "^3.3.0",
     "ts-node": "^7.0.1",
+    "tsconfig-paths": "^3.7.0",
     "tslint": "^5.12.0",
     "tslint-eslint-rules": "^5.4.0",
     "typedoc": "^0.14.0",

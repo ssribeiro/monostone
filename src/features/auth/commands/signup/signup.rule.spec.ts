@@ -2,23 +2,23 @@ import "jasmine";
 import "jasmine-expect";
 
 import { messages } from "./signup.messages";
-import { ruleSheet } from "./signup.rule";
+import { rule } from "./signup.rule";
 
 describe("Signup Rule", () => {
 
   describe("preValidation logic and messages", () => {
 
     it("should have the preValidation rule", () => {
-      expect(ruleSheet).toBeDefined();
-      expect(ruleSheet.preValidation).toBeDefined();
+      expect(rule).toBeDefined();
+      expect(rule.preValidation).toBeDefined();
     });
 
     it("should invalidate missing name", (done) => {
-      if (ruleSheet.preValidation) {
-        ruleSheet.preValidation({}).then((res) => {
+      if (rule.preValidation) {
+        rule.preValidation({}).then((res) => {
           expect(res).toEqual(messages.NO_NAME);
-          if (ruleSheet.preValidation) {
-            ruleSheet.preValidation({ name: "" }).then((res2) => {
+          if (rule.preValidation) {
+            rule.preValidation({ name: "" }).then((res2) => {
               expect(res2).toEqual(messages.NO_NAME);
               done();
             });
@@ -28,8 +28,8 @@ describe("Signup Rule", () => {
     });
 
     it("should invalidate missing login", (done) => {
-      if (ruleSheet.preValidation) {
-        ruleSheet.preValidation({ name: "fulano" }).then((res) => {
+      if (rule.preValidation) {
+        rule.preValidation({ name: "fulano" }).then((res) => {
           expect(res).toEqual(messages.NO_LOGIN);
           done();
         });
@@ -37,8 +37,8 @@ describe("Signup Rule", () => {
     });
 
     it("should invalidate missing passord", (done) => {
-      if (ruleSheet.preValidation) {
-        ruleSheet.preValidation({
+      if (rule.preValidation) {
+        rule.preValidation({
           login: "fulano",
           name: "fulano",
         }).then((res) => {
@@ -49,8 +49,8 @@ describe("Signup Rule", () => {
     });
 
     it("should invalidate missing passord_confirmation", (done) => {
-      if (ruleSheet.preValidation) {
-        ruleSheet.preValidation(
+      if (rule.preValidation) {
+        rule.preValidation(
           {
             login: "fulano",
             name: "fulano",
@@ -63,8 +63,8 @@ describe("Signup Rule", () => {
     });
 
     it("should invalidate wrong name", (done) => {
-      if (ruleSheet.preValidation) {
-        ruleSheet.preValidation(
+      if (rule.preValidation) {
+        rule.preValidation(
           {
             login: "fulano",
             name: "fulano",
@@ -78,8 +78,8 @@ describe("Signup Rule", () => {
     });
 
     it("should invalidate wrong login", (done) => {
-      if (ruleSheet.preValidation) {
-        ruleSheet.preValidation(
+      if (rule.preValidation) {
+        rule.preValidation(
           {
             login: "fulan",
             name: "valid one",
@@ -93,8 +93,8 @@ describe("Signup Rule", () => {
     });
 
     it("should invalidate wrong passord", (done) => {
-      if (ruleSheet.preValidation) {
-        ruleSheet.preValidation(
+      if (rule.preValidation) {
+        rule.preValidation(
           {
             login: "fulano",
             name: "valid one",
@@ -108,8 +108,8 @@ describe("Signup Rule", () => {
     });
 
     it("should invalidate wrong passord_confirmation", (done) => {
-      if (ruleSheet.preValidation) {
-        ruleSheet.preValidation(
+      if (rule.preValidation) {
+        rule.preValidation(
           {
             login: "fulano",
             name: "valid one",
@@ -123,8 +123,8 @@ describe("Signup Rule", () => {
     });
 
     it("should validate data", (done) => {
-      if (ruleSheet.preValidation) {
-        ruleSheet.preValidation(
+      if (rule.preValidation) {
+        rule.preValidation(
           {
             login: "fulano",
             name: "valid one",
@@ -142,7 +142,7 @@ describe("Signup Rule", () => {
   describe("validation data", () => {
 
     it("should have a validation function", () => {
-      expect(ruleSheet.validation).toBeDefined();
+      expect(rule.validation).toBeDefined();
     });
 
   });
@@ -150,7 +150,7 @@ describe("Signup Rule", () => {
   describe("respond function", () => {
 
     it("should have a respond function", () => {
-      expect(ruleSheet.respond).toBeDefined();
+      expect(rule.respond).toBeDefined();
     });
 
   });
