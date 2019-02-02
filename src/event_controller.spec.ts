@@ -6,7 +6,7 @@ import { features as basicFeatures } from "./features";
 import { ICommand } from "./interfaces";
 import { connectStore } from "./store";
 import * as SystemCommands from "./system_commands";
-import { EventTools } from "./tools";
+import { EventTools, FeatureTools } from "./tools";
 
 describe("EventController", () => {
 
@@ -23,13 +23,13 @@ describe("EventController", () => {
 
   it("should load reducers", () => {
     const eventController: EventController = new EventController();
-    eventController.loadReducers(basicFeatures());
+    eventController.loadReducers( FeatureTools.createFeatures( basicFeatures ) );
     expect(EventController).toBeDefined();
   });
 
   it("should start reducer and stop gracefully", (done) => {
     const eventController: EventController = new EventController();
-    eventController.loadReducers(basicFeatures());
+    eventController.loadReducers( FeatureTools.createFeatures( basicFeatures ) );
     connectStore().then(() => {
       eventController.start();
       eventController.completePastReducing().then(() => {
@@ -52,7 +52,7 @@ describe("EventController", () => {
     EventTools.send({ command, request }).then(() => {
       setTimeout(() => {
         const eventController: EventController = new EventController();
-        eventController.loadReducers(basicFeatures());
+        eventController.loadReducers( FeatureTools.createFeatures( basicFeatures ) );
         connectStore().then(() => {
           eventController.start();
           eventController.completePastReducing().then(() => {
@@ -75,7 +75,7 @@ describe("EventController", () => {
       password_confirmation: "12345678",
     };
     const eventController: EventController = new EventController();
-    eventController.loadReducers(basicFeatures());
+    eventController.loadReducers(FeatureTools.createFeatures(basicFeatures));
     connectStore().then(() => {
       eventController.start();
       eventController.completePastReducing().then(() => {

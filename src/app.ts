@@ -2,34 +2,35 @@
 import * as ast from "@angstone/node-util";
 
 // configurations
-import { config } from "./config";
+import { config as configTool } from "./config";
 // error handler
 import { error } from "./error";
 
 import { CronjobController } from "./cronjob_controller";
 import { EventController } from "./event_controller";
-import { features as basicFeatures } from "./features";
-import { IFeature } from "./interfaces";
+import { features as BasicFeatures } from "./features";
+import { IFeatureLoaded } from "./interfaces";
 
 import { Portal } from "./portal";
 
 import { closeStore, connectStore } from "./store";
 
 import * as SystemCommands from "./system_commands";
-import { EventTools, SystemTools } from "./tools";
+import { EventTools, SystemTools, FeatureTools } from "./tools";
 
 export class App {
 
   public cronjobController: CronjobController;
   public eventController: EventController;
-  public features: IFeature[];
+  public features: IFeatureLoaded[];
 
   public portal: Portal;
 
   /**
    * used when application stops
    */
-  public stoped: boolean = false;
+  public stopped: boolean = false;
+  public stopping: boolean = false;
 
   /**
    * time in milliseconds gmt 0 since aplication was loaded
@@ -94,11 +95,14 @@ export class App {
   }
 
   public async stop() {
-    await this.portal.stop();
-    await this.cronjobController.stop();
-    await this.eventController.stop();
-    await closeStore();
-    this.stoped = true;
+    if ( !this.stopping && !this.stopped ) {
+      this.stopping = true;
+      await this.portal.stop();
+      await this.cronjobController.stop();
+      await this.eventController.stop();
+      await closeStore();
+      this.stopped = true;
+    }
   }
 
   public reloadFeatures() {
@@ -106,7 +110,7 @@ export class App {
   }
 
   private config() {
-    config();
+    configTool();
     if (process.env.NODE_ENV === "production"
       || process.env.NODE_ENV === "development") {
       ast.success("configuration loaded");
@@ -115,10 +119,12 @@ export class App {
     }
     ast.info("configured environment: " + process.env.NODE_ENV);
   }
-  
-  private loadFeatures(): IFeature[] {
+
+  private loadFeatures(): IFeatureLoaded[] {
     ast.log("loadind features");
-    return [...basicFeatures()];
+    // TODO: Add support for loading external features here in future.
+    const features = [...BasicFeatures];
+    return FeatureTools.createFeatures( features );
   }
 
 }

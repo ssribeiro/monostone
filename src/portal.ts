@@ -3,14 +3,20 @@ import * as ast from "@angstone/node-util";
 import * as bodyParser from "body-parser";
 import * as express from "express";
 import * as http from "http";
+import * as net from "net";
 
 import { EventEmitter } from "events";
-import { IAuthToken } from "./features/auth/auth-token.i";
-import { ICommand, IFeature, IView } from "./interfaces";
+import { IAuthToken } from "./features/auth/interfaces/auth-token.i";
+import { ICommand, IFeatureLoaded, IViewLoaded } from "./interfaces";
 import { CommandTools, ViewTools } from "./tools";
+import { error } from './error';
 
 import { messages as authMessages } from "./features/auth/messages";
 import * as AuthTools from "./features/auth/tools";
+
+interface ServerError extends Error {
+  code: string | number;
+}
 
 /**
  * Portal to expose api resources
@@ -19,7 +25,7 @@ export class Portal {
 
   public apiPort: number;
   public expressApp: express.Express;
-  public expressServer: http.Server | null = null;
+  public httpServer: http.Server | null = null;
 
   constructor() {
     this.apiPort = +(process.env.API_PORT || 3002);
@@ -27,38 +33,57 @@ export class Portal {
     this.expressApp.use(bodyParser.json());
   }
 
-  public route(features: IFeature[], eventReduced$: EventEmitter, viewsData: any) {
+  public route(features: IFeatureLoaded[], eventReduced$: EventEmitter, viewsData: any) {
     ast.log("creating routes");
     this.routeSystem();
     this.routeFeatures(features, eventReduced$, viewsData);
   }
 
   public start(): Promise<void> {
-    return new Promise<void>((resolve, reject) => {
-      this.expressServer = this.expressApp.listen(this.apiPort, (error: any) => {
-        if (error) {
-          reject(error);
+    return new Promise<void>( (resolve, reject) => {
+      ast.log("testing http port use");
+
+      this.isPortTaken(this.apiPort).then( (isTaken: boolean) => {
+        if (isTaken) {
+          reject("The port '" + this.apiPort + "' is already being used!'");
         } else {
-          ast.log("Express Server listening on port " + this.apiPort);
-          resolve();
+
+          this.httpServer = http.createServer(this.expressApp);
+          this.httpServer.once('listening', () => {
+            ast.log("Express Server listening on port " + this.apiPort);
+            resolve();
+          });
+          this.httpServer.on('error', (e: ServerError) => {
+            error.fatal(e);
+            reject();
+          });
+
+          this.httpServer.listen.apply(this.httpServer, [{
+            host: 'localhost',
+            port: this.apiPort,
+          }]);
+
         }
+      }).catch( (err: any) => {
+        reject("failure when testing http server api port");
       });
+
     });
   }
 
   public stop(): Promise<void> {
     return new Promise<void>((resolve, reject) => {
-      if (this.expressServer) {
-        this.expressServer.close((error: any) => {
+      if (this.httpServer) {
+        this.httpServer.close((error: any) => {
           if (error) {
             reject(error);
           } else {
-            ast.info("server closed");
+            ast.info("http server closed");
             resolve();
           }
         });
       } else {
-        ast.info("server never started");
+        ast.info("http server never started");
         resolve();
       }
     });
@@ -106,7 +131,7 @@ export class Portal {
    * @param  eventReduced$ reduced events stream
    * @param  viewsData     stored data from views
    */
-  private routeFeatures(features: IFeature[], eventReduced$: EventEmitter, viewsData: any) {
+  private routeFeatures(features: IFeatureLoaded[], eventReduced$: EventEmitter, viewsData: any) {
     ast.log("adding the feature routes");
     features.forEach((feature) => {
 
@@ -171,7 +196,7 @@ export class Portal {
    * @param  viewsData [description]
    * @return           express function middleware
    */
-  private viewRequest(view: IView, viewTag: string, viewsData: any): (
+  private viewRequest(view: IViewLoaded, viewTag: string, viewsData: any): (
     req: express.Request,
     res: express.Response,
   ) => void {
@@ -190,5 +215,20 @@ export class Portal {
         });
     };
   }
+
+  public isPortTaken (port: number): Promise<boolean> {
+    return new Promise<boolean>( (resolve) => {
+      const tester = net.createServer()
+        .once('error', (err: ServerError) => {
+          if (err.code == 'EADDRINUSE') resolve(true);
+          else resolve(false);
+        })
+        .once('listening', () => {
+          tester.once('close', () => { resolve(false); } )
+          .close();
+        })
+        .listen(port);
+    });
+  };
 
 }

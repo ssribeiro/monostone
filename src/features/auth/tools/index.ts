@@ -1,8 +1,8 @@
 import * as jwt from "jsonwebtoken";
-import { db } from "../../store";
-import { IAuthToken } from "./auth-token.i";
-import { messages } from "./messages";
-import { IPermission } from "./permission.i";
+import { db } from "../../../store";
+import { IAuthToken } from "../interfaces/auth-token.i";
+import { messages } from "../messages";
+import { IPermission } from "../interfaces/permission.i";
 
 export const APPLICATION_KEY: string = process.env.FEATURE_AUTH_APPLICATION_KEY || "klapaucius !;!;!;";
 

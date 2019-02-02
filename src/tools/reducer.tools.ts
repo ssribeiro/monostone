@@ -8,7 +8,7 @@ export function loadReducer(reducerRecipe: {
 }): IReducer {
   let reducer;
   try {
-    reducer = require(reducerRecipe.featurePath + "/" +
+    reducer = require(reducerRecipe.featurePath + "/commands/" +
       reducerRecipe.commandName + "/" +
       reducerRecipe.commandName + ".reducer").reducer;
   } catch (e) {

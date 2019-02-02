@@ -1,7 +1,7 @@
 /**
  * A file loaded to generate the business rule object for the command
  */
-export interface IRuleSheet {
+export interface IRule {
   /**
    * pre-validates the request (used for validation that does not require database access)
    */

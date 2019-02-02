@@ -1,8 +1,6 @@
 import { IFeature } from "../interfaces";
-import { feature as auth } from "./auth";
+import { feature as AuthFeature } from "./auth";
 
-export const features = (): IFeature[] => {
-  return [
-    auth(),
-  ];
-};
+export const features: IFeature[] = [
+  AuthFeature,
+];

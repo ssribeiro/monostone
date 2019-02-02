@@ -1,4 +1,4 @@
-// import { IReducer, IRuleSheet } from "./";
+// import { IReducer, IRule } from "./";
 
 /**
  * Cron Job Object

@@ -10,9 +10,10 @@ export interface IReducer {
 
 /**
  * check if the object is a reducer
- * @param  object 
+ * @param  object
  * @return boolean
  */
 export function isIReducer(object: any): object is IReducer {
-  return "process" in object;
+  if( object ) return "process" in object;
+  else return false;
 }

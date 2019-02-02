@@ -17,7 +17,8 @@ module.exports = function (w) {
 
     workers: {
       initial: 1,
-      regular: 1
+      regular: 1,
+      recycle: true,
     },
 
     // or any other supported testing framework:

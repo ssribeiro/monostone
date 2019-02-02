@@ -84,6 +84,8 @@ export const error = {
      }
 
      // It should terminate the application to avoid unpredicted states
+     // try it gracefully
+
      process.exit(1);
 
    },

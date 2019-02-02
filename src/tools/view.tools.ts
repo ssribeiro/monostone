@@ -1,8 +1,8 @@
 import { error } from "../error";
-import { IAuthToken } from "../features/auth/auth-token.i";
-import { IView } from "../interfaces";
+import { IAuthToken } from "../features/auth/interfaces/auth-token.i";
+import { IViewLoaded } from "../interfaces";
 
-export async function renderRequestView(view: IView, data: any, token?: IAuthToken|undefined): Promise<any|undefined> {
+export async function renderRequestView(view: IViewLoaded, data: any, token?: IAuthToken|undefined): Promise<any|undefined> {
   if (view.renderPrivate && !view.renderPublic) {
     if (token) {
       return await view.renderPrivate(data, token);
@@ -25,7 +25,7 @@ export async function renderRequestView(view: IView, data: any, token?: IAuthTok
 }
 
 export function createView(viewRecipe: {
-  featureName: string, featurePath: string, viewName: string }): IView {
+  featureName: string, featurePath: string, viewName: string }): IViewLoaded {
   let viewSheet;
   try {
     viewSheet = require(viewRecipe.featurePath + "/" +
@@ -35,13 +35,13 @@ export function createView(viewRecipe: {
     error.fatal(e, "failed to load viewSheet for view " + viewRecipe.viewName);
   }
   if (!viewSheet) { error.fatal("failed to load viewSheet for view " + viewRecipe.viewName); }
-  return Object.assign({}, viewSheet, { featureName: viewRecipe.featureName, viewName: viewRecipe.viewName }) as IView;
+  return Object.assign({}, viewSheet, { featureName: viewRecipe.featureName, viewName: viewRecipe.viewName }) as IViewLoaded;
 }
 
 export function createViews(viewsRecipe: {
   featureName: string,
-  viewNames: string[], featurePath: string }): IView[] {
-  const views: IView[] = [];
+  viewNames: string[], featurePath: string }): IViewLoaded[] {
+  const views: IViewLoaded[] = [];
   viewsRecipe.viewNames.forEach((viewName, index) => {
     views[index] = createView({
       featureName: viewsRecipe.featureName,

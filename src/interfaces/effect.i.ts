@@ -1,4 +1,4 @@
-// import { IReducer, IRuleSheet } from "./";
+// import { IReducer, IRule } from "./";
 
 /**
  * effect to be triggered by an event or cron schedule

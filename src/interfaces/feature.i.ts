@@ -1,21 +1,12 @@
-import { ICommand, ICronjob, IEffect, IView } from "./";
+import { ICronjob, IEffect } from "./";
 
 /**
  * A Feature Supported by the Api
  */
 export interface IFeature {
-  /**
-   * unique name of the feature (spaces/special chars not allowed)
-   */
-  featureName: string;
-  /**
-   * The commands it adds
-   */
-  commands?: ICommand[];
-  /**
-   * The views it has
-   */
-  views?: IView[];
+  featurePath: string;
+  commandNames?: string[];
+  viewNames?: string[];
   /**
    * The effects it takes care
    */

@@ -3,7 +3,8 @@ import * as supertest from "supertest";
 
 import { App } from "../app";
 import { features as basicFeatures } from "../features";
-import { messages } from "../features/auth/signup/signup.messages";
+import { messages } from "../features/auth/commands/signup/signup.messages";
+import { FeatureTools } from "../tools";
 
 describe("App", () => {
 
@@ -67,7 +68,7 @@ describe("App", () => {
     describe("loadFeatures function", () => {
 
       it("should load features", () => {
-        expect(appWiped.features).toEqual(basicFeatures());
+        expect(appWiped.features).toEqual( FeatureTools.createFeatures( basicFeatures ) );
       });
 
     });

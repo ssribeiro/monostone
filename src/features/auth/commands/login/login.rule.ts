@@ -1,9 +1,9 @@
-import { IRuleSheet } from "../../../interfaces";
-import { db } from "../../../store";
-import * as authTools from "../tools";
+import { IRule } from "../../../../interfaces";
+import { db } from "../../../../store";
+import * as authTools from "../../tools";
 import { messages } from "./login.messages";
 
-export const ruleSheet: IRuleSheet = {
+export const ruleSheet: IRule = {
 
   preValidation: (req: any): Promise<string|undefined> =>
     new Promise<string>((resolve) => {

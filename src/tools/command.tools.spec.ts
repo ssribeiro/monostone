@@ -1,7 +1,7 @@
 import "jasmine";
 import "jasmine-expect";
 
-import { ruleSheet } from "../features/auth/signup/signup.rule";
+import { ruleSheet } from "../features/auth/commands/signup/signup.rule";
 import { ICommand } from "../interfaces";
 import { CommandTools } from "../tools";
 

@@ -1,6 +1,6 @@
 import * as ast from "@angstone/node-util";
 import { CronJob, CronJobParameters } from "cron";
-import { ICronjob, IFeature } from "./interfaces";
+import { ICronjob, IFeatureLoaded } from "./interfaces";
 
 /**
  * Control the cronjobs of server
@@ -60,11 +60,11 @@ export class CronjobController {
    * load cronjobs
    * @param  features list of the features loaded by server
    */
-  public loadCronjobs(features: IFeature[]) {
+  public loadCronjobs(features: IFeatureLoaded[]) {
     ast.log("loading cronjobs");
 
     const cronjobs: ICronjob[] = [];
-    features.forEach((feature: IFeature) => {
+    features.forEach((feature: IFeatureLoaded) => {
       if (feature.cronjobs) {
         feature.cronjobs.forEach((cronjob: ICronjob) => {
           cronjobs.push(cronjob);

@@ -1,4 +1,4 @@
-import { IReducer, IRuleSheet } from "./";
+import { IReducer, IRule } from "./";
 
 /**
  * a command to api
@@ -13,5 +13,5 @@ export interface ICommand {
    */
   commandName: string;
   reducer?: IReducer;
-  rule?: IRuleSheet;
+  rule?: IRule;
 }

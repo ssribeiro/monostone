@@ -16,6 +16,8 @@ if (app) {
   error.fatal("fail in creating express app");
 }
 
+global.monoApp = app;
+
 // Start Express App
 ast.log("starting express app");
 app.start().then(() => {

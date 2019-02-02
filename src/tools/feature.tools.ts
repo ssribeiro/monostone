@@ -1,23 +1,25 @@
-import { ICommand, ICronjob, IEffect, IFeature, IView } from "../interfaces";
+import { ICommand, IFeature, IFeatureLoaded, IViewLoaded } from "../interfaces";
 import { CommandTools, StringTools, ViewTools } from "./";
 
-export function createFeature(featureRecipe: {
-  commandNames: string[],
-  featurePath: string,
-  viewNames: string[],
-  cronjobs: ICronjob[],
-  effects: IEffect[],
-}): IFeature {
+export function createFeature(featureRecipe: IFeature): IFeatureLoaded {
   const featureName: string = StringTools.lastNameOfFilePath(featureRecipe.featurePath);
   const commands: ICommand[] = CommandTools.createCommands({
-    commandNames: featureRecipe.commandNames,
+    commandNames: featureRecipe.commandNames || [],
     featureName,
     featurePath: featureRecipe.featurePath,
   });
-  const views: IView[] = ViewTools.createViews({
+  const views: IViewLoaded[] = ViewTools.createViews({
     featureName,
     featurePath: featureRecipe.featurePath,
-    viewNames: featureRecipe.viewNames,
+    viewNames: featureRecipe.viewNames || [],
   });
   return { featureName, commands, views, cronjobs: featureRecipe.cronjobs };
+}
+
+export function createFeatures(featureRecipes: IFeature[]): IFeatureLoaded[] {
+  const featureLoadeds: IFeatureLoaded[] = [];
+  featureRecipes.forEach( featureRecipe => {
+    featureLoadeds.push( createFeature(featureRecipe) );
+  })
+  return featureLoadeds;
 }

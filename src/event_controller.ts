@@ -7,7 +7,7 @@ import {
   StoredEvent } from "event-store-client";
 import { EventEmitter } from "events";
 import { error } from "./error";
-import { ICommand, IFeature, IReducer, IView } from "./interfaces";
+import { ICommand, IFeatureLoaded, IReducer, IViewLoaded } from "./interfaces";
 import { db } from "./store";
 
 /**
@@ -175,13 +175,13 @@ export class EventController {
     }
   }
 
-  public loadFeatures(features: IFeature[]) {
+  public loadFeatures(features: IFeatureLoaded[]) {
     this.loadReducers(features);
     this.loadViews(features);
   }
 
-  public loadReducers(features: IFeature[]) {
-    features.forEach((feature: IFeature) => {
+  public loadReducers(features: IFeatureLoaded[]) {
+    features.forEach((feature: IFeatureLoaded) => {
       if (feature.commands) {
         feature.commands.forEach((command: ICommand) => {
           if (command.reducer !== undefined) {
@@ -205,10 +205,10 @@ export class EventController {
     });
   }
 
-  public loadViews(features: IFeature[]) {
-    features.forEach((feature: IFeature) => {
+  public loadViews(features: IFeatureLoaded[]) {
+    features.forEach((feature: IFeatureLoaded) => {
       if (feature.views) {
-        feature.views.forEach((view: IView) => {
+        feature.views.forEach((view: IViewLoaded) => {
 
           this.viewsData[view.featureName + " " + view.viewName] = {};
 

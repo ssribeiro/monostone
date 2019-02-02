@@ -1,5 +1,5 @@
-import { IRuleSheet } from "../interfaces";
+import { IRule } from "../interfaces";
 
-export function loadRule(ruleSheet: IRuleSheet): IRuleSheet {
+export function loadRule(ruleSheet: IRule): IRule {
   return {...ruleSheet};
 }
