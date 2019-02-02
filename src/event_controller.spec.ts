@@ -2,7 +2,7 @@ import "jasmine";
 import "jasmine-expect";
 
 import { EventController } from "./event_controller";
-import { features as basicFeatures } from "./features";
+import { features as basicFeatures } from "./features/optional.index";
 import { ICommand } from "./interfaces";
 import { connectStore } from "./store";
 import * as SystemCommands from "./system_commands";

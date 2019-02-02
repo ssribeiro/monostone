@@ -8,7 +8,7 @@ import {
 import { EventEmitter } from "events";
 import { error } from "./error";
 import { ICommand, IFeatureLoaded, IReducer, IViewLoaded } from "./interfaces";
-import { db } from "./store";
+import { db } from "store";
 
 /**
  * Controlls the events toolchain

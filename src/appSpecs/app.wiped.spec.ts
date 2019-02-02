@@ -2,7 +2,7 @@ import "jasmine-expect";
 import * as supertest from "supertest";
 
 import { App } from "../app";
-import { features as basicFeatures } from "../features";
+import { features as basicFeatures } from "../features/optional.index";
 import { messages } from "../features/auth/commands/signup/signup.messages";
 import { FeatureTools } from "../tools";
 

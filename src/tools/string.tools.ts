@@ -10,6 +10,12 @@ export function firstNameOfFile(filePath: string): string {
   ).toLowerCase();
 }
 
+export function firstNameOfFileSeparatedBySlashes(filePath: string): string {
+  return nameUntilFirstDot(
+    lastNameOfFilePath(filePath).replace(/^.*[\\\/]/, "")
+  ).toLowerCase();
+}
+
 export function nameUntilFirstDot(name: string): string {
   return name.substr(0, name.indexOf('.'));
 }

@@ -8,8 +8,7 @@ import { error } from "./error";
 
 import { CronjobController } from "./cronjob_controller";
 import { EventController } from "./event_controller";
-import { features as BasicFeatures } from "./features";
-import { IFeatureLoaded } from "./interfaces";
+import { IFeature, IFeatureLoaded } from "./interfaces";
 
 import { Portal } from "./portal";
 
@@ -122,9 +121,20 @@ export class App {
 
   private loadFeatures(): IFeatureLoaded[] {
     ast.log("loadind features");
-    // TODO: Add support for loading external features here in future.
-    const features = [...BasicFeatures];
-    return FeatureTools.createFeatures( features );
+
+    let BasicFeatures: IFeature[] = [];
+
+    try {
+      BasicFeatures = require('./features').features;
+    } catch (e) {
+      BasicFeatures = FeatureTools.getRecipesFromFolderStructure();
+    } finally {
+
+      // TODO: Add support for loading external features here in future.
+      const features = [...BasicFeatures];
+      return FeatureTools.createFeatures( features );
+    }
+
   }
 
 }

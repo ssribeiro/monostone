@@ -31,7 +31,7 @@ export function createView(viewRecipe: {
   try {
     viewSheet = require(viewRecipe.featurePath + "/" +
       "views/" +
-      viewRecipe.viewName + ".view").viewSheet;
+      viewRecipe.viewName + ".view").view;
   } catch (e) {
     error.fatal(e, "failed to load viewSheet for view " + viewRecipe.viewName);
   }
@@ -51,8 +51,6 @@ export function createViews(
     .filter(StringTools.filters.lastCharactersMustBe('ts'))
     .map(FolderTools.firstNameOfFile);
   }
-
-  console.log(viewsRecipe.viewNames);
 
   const views: IViewLoaded[] = [];
   viewsRecipe.viewNames.forEach((viewName, index) => {

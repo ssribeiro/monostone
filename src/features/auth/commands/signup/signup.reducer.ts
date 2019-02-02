@@ -1,6 +1,6 @@
-import { IReducer } from "../../../../interfaces";
-import { db } from "../../../../store";
-import { IdbUser } from "../../../../schemas/user.db.i";
+import { IReducer } from "interfaces";
+import { db } from "store";
+import { IdbUser } from "schemas/user.db.i";
 
 export const reducer: IReducer = {
   async process(request: any, eventNumber: number): Promise<void> {

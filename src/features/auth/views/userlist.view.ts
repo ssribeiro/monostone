@@ -1,8 +1,8 @@
-import { IView } from "../../../interfaces";
-import { db } from "../../../store";
+import { IView } from "interfaces";
+import { db } from "store";
 // import { messages } from "./signup.messages";
 
-export const viewSheet: IView = {
+export const view: IView = {
 
   watchEvents: [
     "auth signup",

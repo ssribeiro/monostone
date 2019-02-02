@@ -1,5 +1,11 @@
 module.exports = function (w) {
 
+  var path = require("path");
+
+  process.env.NODE_PATH +=
+    path.delimiter +
+    path.join(w.projectCacheDir, "src");
+
   return {
     files: [
       { pattern: 'src/**/*.spec.ts', ignore: true },

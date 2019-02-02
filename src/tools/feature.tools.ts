@@ -1,5 +1,5 @@
-import { ICommand, IFeature, IFeatureLoaded, IViewLoaded } from "../interfaces";
-import { CommandTools, StringTools, ViewTools } from "./";
+import { ICommand, IFeature, IFeatureLoaded, IViewLoaded, ICronjob } from "../interfaces";
+import { CommandTools, StringTools, ViewTools, CronjobTools, FolderTools } from "./";
 
 export function createFeature(featureRecipe: IFeature): IFeatureLoaded {
   const featureName: string = StringTools.lastNameOfFilePath(featureRecipe.featurePath);
@@ -13,7 +13,12 @@ export function createFeature(featureRecipe: IFeature): IFeatureLoaded {
     featurePath: featureRecipe.featurePath,
     viewNames: featureRecipe.viewNames || [],
   });
-  return { featureName, commands, views, cronjobs: featureRecipe.cronjobs };
+  const cronjobs: ICronjob[] = CronjobTools.createCronjobs({
+    featureName,
+    featurePath: featureRecipe.featurePath,
+    cronjobs: featureRecipe.cronjobs || [],
+  });
+  return { featureName, commands, views, cronjobs };
 }
 
 export function createFeatures(featureRecipes: IFeature[]): IFeatureLoaded[] {
@@ -22,4 +27,10 @@ export function createFeatures(featureRecipes: IFeature[]): IFeatureLoaded[] {
     featureLoadeds.push( createFeature(featureRecipe) );
   })
   return featureLoadeds;
+}
+
+export function getRecipesFromFolderStructure(): IFeature[] {
+  return FolderTools.getDirectories( __dirname+'/../features' ).map((featurePath: string) => {
+    return { featurePath } as IFeature;
+  });
 }

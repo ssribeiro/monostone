@@ -1,8 +1,8 @@
-import { IView } from "../../../interfaces";
-import { db } from "../../../store";
+import { IView } from "interfaces";
+import { db } from "store";
 import { IAuthToken } from "../interfaces/auth-token.i";
 
-export const viewSheet: IView = {
+export const view: IView = {
 
   watchEvents: [
     "auth login",
