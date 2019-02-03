@@ -7,7 +7,7 @@ import {
   StoredEvent } from "event-store-client";
 import { EventEmitter } from "events";
 import { error } from "./error";
-import { ICommand, IFeatureLoaded, IReducer, IViewLoaded } from "./interfaces";
+import { ICommand, IFeatureLoaded, IReducer, IViewLoaded, IEffectLoaded } from "./interfaces";
 import { db } from "store";
 
 /**
@@ -44,6 +44,14 @@ export class EventController {
     views: Array<{
       viewTag: string,
       method: (lastData?: any, event?: any) => Promise<any>,
+    }>,
+  }> = [];
+
+  private effectWatchers: Array<{
+    eventTrigger: string,
+    effects: Array<{
+      effectName: string,
+      effectMethodRun: (eventNumber?: number | undefined, request?: any) => Promise<void>,
     }>,
   }> = [];
 
@@ -245,6 +253,73 @@ export class EventController {
         });
       }
     });
+  }
+
+  loadEffects(features: IFeatureLoaded[]) {
+
+    /**
+     * TODO: create a function to subscribe for the eventTriggers in watchers
+     * and a function to resolve all past events (in async start chain)
+     */
+    features.forEach((feature: IFeatureLoaded) => {
+
+      if(feature.effects) {
+        feature.effects.forEach((effect: IEffectLoaded) => {
+          if( effect.triggerAfterCommand ) {
+
+            let commandTriggers: string[] = [];
+            if( Array.isArray(effect.triggerAfterCommand) ) commandTriggers = effect.triggerAfterCommand;
+            else commandTriggers.push(effect.triggerAfterCommand);
+
+            commandTriggers.forEach((commandTrigger: string) => {
+
+              const alreadyAddedTriggerArray = this.effectWatchers.filter((effectWatcher) => {
+                effectWatcher.eventTrigger === commandTrigger;
+              });
+
+              let trigger: {
+                eventTrigger: string,
+                effects: Array<{
+                  effectName: string,
+                  effectMethodRun: (eventNumber?: number | undefined, request?: any) => Promise<void>
+                }>
+              };
+
+              if( alreadyAddedTriggerArray.length == 0 ) {
+
+                trigger = {
+                  eventTrigger: commandTrigger,
+                  effects: [],
+                };
+
+                trigger.effects.push({
+                  effectName: effect.name,
+                  effectMethodRun: effect.run,
+                });
+
+                this.effectWatchers.push(trigger);
+              } else {
+                trigger = alreadyAddedTriggerArray[0];
+
+                trigger.effects.push({
+                  effectName: effect.name,
+                  effectMethodRun: effect.run,
+                });
+
+                this.effectWatchers.map((effectWatcher) => {
+                  if(effectWatcher.eventTrigger === trigger.eventTrigger) return trigger;
+                  return effectWatcher;
+                });
+              }
+
+            });
+
+          }
+        });
+      }
+
+    });
+
   }
 
   /**

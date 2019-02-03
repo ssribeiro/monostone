@@ -1,4 +1,4 @@
-import { ICommand, ICronjob, IEffect, IViewLoaded } from "./";
+import { ICommand, ICronjob, IEffectLoaded, IViewLoaded } from "./";
 
 /**
  * A Feature Supported by the Api
@@ -19,7 +19,7 @@ export interface IFeatureLoaded {
   /**
    * The effects it takes care
    */
-  effects?: IEffect[];
+  effects?: IEffectLoaded[];
   /**
    * cronjobs it has
    */

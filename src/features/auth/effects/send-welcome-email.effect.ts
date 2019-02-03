@@ -8,15 +8,13 @@ import * as path from 'path';
 
 export const effect: IEffect = {
 
-  name: "SendWelcomeEmailEffect",
+  triggerAfterCommand: "auth signup",
 
-  triggerAfterCommand: "signup",
-
-  run: async (): Promise<void> => {
+  run: async (eventNumber: number | undefined, request: any): Promise<void> => {
     // Fake email creation
     let fakedir = './fake';
-    let filename = 'email_'+Date.now();
-    let emailtext = 'This is supposed to be a fake email to test effect';
+    let filename = 'email_'+request.email+Date.now();
+    let emailtext = 'This is supposed to be a fake email to test effect: number is '+eventNumber;
 
     if (!fs.existsSync(fakedir)) {
       fs.mkdirSync(fakedir);

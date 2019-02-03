@@ -2,6 +2,7 @@ import { ICommand } from "./command.i";
 import { IConfigRecipe } from './config-recipe.i';
 import { ICronjob } from "./cronjob.i";
 import { IEffect } from "./effect.i";
+import { IEffectLoaded } from "./effect-loaded.i";
 import { IEventRecipe } from "./event-recipe.i";
 import { IFeature } from "./feature.i";
 import { IFeatureLoaded } from "./feature-loaded.i";
@@ -21,5 +22,6 @@ export {
   IView,
   IViewLoaded,
   IEventRecipe,
-  IEffect
+  IEffect,
+  IEffectLoaded
 };

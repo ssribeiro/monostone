@@ -1,5 +1,5 @@
-import { ICommand, IFeature, IFeatureLoaded, IViewLoaded, ICronjob } from "../interfaces";
-import { CommandTools, StringTools, ViewTools, CronjobTools, FolderTools } from "./";
+import { ICommand, IFeature, IFeatureLoaded, IViewLoaded, ICronjob, IEffectLoaded } from "../interfaces";
+import { CommandTools, EffectTools, StringTools, ViewTools, CronjobTools, FolderTools } from "./";
 
 export function createFeature(featureRecipe: IFeature): IFeatureLoaded {
   const featureName: string = StringTools.lastNameOfFilePath(featureRecipe.featurePath);
@@ -18,7 +18,12 @@ export function createFeature(featureRecipe: IFeature): IFeatureLoaded {
     featurePath: featureRecipe.featurePath,
     cronjobs: featureRecipe.cronjobs || [],
   });
-  return { featureName, commands, views, cronjobs };
+  const effects: IEffectLoaded[] = EffectTools.createEffects({
+    featureName,
+    featurePath: featureRecipe.featurePath,
+    effects: featureRecipe.effects || [],
+  });
+  return { featureName, commands, views, cronjobs, effects };
 }
 
 export function createFeatures(featureRecipes: IFeature[]): IFeatureLoaded[] {

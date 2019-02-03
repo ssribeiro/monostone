@@ -1,5 +1,6 @@
 import * as CommandTools from "./command.tools";
 import * as CronjobTools from "./cronjob.tools";
+import * as EffectTools from "./effect.tools";
 import * as EventTools from "./event.tools";
 import * as FeatureTools from "./feature.tools";
 import * as FolderTools from "./folder.tools";
@@ -12,6 +13,7 @@ import * as ViewTools from "./view.tools";
 export {
   CommandTools,
   CronjobTools,
+  EffectTools,
   SystemTools,
   EventTools,
   FeatureTools,
