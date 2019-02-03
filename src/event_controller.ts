@@ -9,6 +9,8 @@ import { IFeatureLoaded, IViewLoaded, IEffectLoaded } from "./interfaces";
 
 import { ReducerController } from './reducer_controller';
 
+// TODO: Create view controller and effect controller separated files
+
 /**
  * Controlls the events toolchain
  */
