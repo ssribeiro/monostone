@@ -76,7 +76,7 @@ export class App {
     this.eventController.loadFeatures(this.features);
 
     this.eventController.start();
-    await this.eventController.completePastReducing();
+    await this.eventController.completePastEventTasks();
     await this.eventController.renderViews();
 
     this.cronjobController.loadCronjobs(this.features);

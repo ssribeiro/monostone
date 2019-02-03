@@ -1,14 +1,13 @@
 import * as ast from "@angstone/node-util";
 import {
-  CatchUpSubscriptionSettings,
   Connection,
-  EventStoreStreamCatchUpSubscription,
-  ICredentials,
-  StoredEvent } from "event-store-client";
+  ICredentials
+} from "event-store-client";
 import { EventEmitter } from "events";
 import { error } from "./error";
-import { ICommand, IFeatureLoaded, IReducer, IViewLoaded, IEffectLoaded } from "./interfaces";
-import { db } from "store";
+import { IFeatureLoaded, IViewLoaded, IEffectLoaded } from "./interfaces";
+
+import { ReducerController } from './reducer_controller';
 
 /**
  * Controlls the events toolchain
@@ -23,11 +22,6 @@ export class EventController {
    * Stream of events already reduced
    */
   public eventReduced$: EventEmitter;
-
-  /**
-   * list of reducers loaded
-   */
-  public reducers: any;
 
   /**
    * Object to store all data from views that are required to
@@ -60,40 +54,17 @@ export class EventController {
    */
   private connection: Connection;
 
-  /**
-   * If already read all past events and now are reducing live events
-   */
-  public live: boolean = false;
-  private eventStreamSubscription: EventStoreStreamCatchUpSubscription | undefined;
-
-  /**
-   * Stack of events to reduce
-   */
-  private eventStack: Array<{
-    commandType: string;
-    reducer: IReducer | undefined;
-    eventRead: {
-      eventNumber: number;
-      request: any;
-    };
-  }> = [];
-  public closed: boolean = false;
   public nextEventNumberToReduce: number = 0;
+  public closed: boolean = false;
   private credentials: ICredentials;
-  private REDUCER_REST_TIME: number = 10;
   private RENDER_REST_TIME: number = 10;
-  private MAX_LIVE_QUEUE_SIZE: number = 10000;
-  private READ_BATCH_SIZE: number = 500;
-  private SECURITY_TIME_DELAY_FOR_EMIT_REDUCED: number = 3;
-  private eventControllerName: string = "event_control";
-
-  private reducing: boolean = false;
-  private lastTimeReducing: number = Date.now();
 
   private rendering: boolean = false;
   private lastTimeRendering: number = Date.now();
 
-  private stoped: boolean = false;
+  public reducerController: ReducerController;
+
+  private FREE_REST_TIME: number = 10;
 
   constructor() {
     ast.log("creating event controller");
@@ -103,7 +74,6 @@ export class EventController {
     this.eventReduced$ = new EventEmitter();
     this.eventReduced$.setMaxListeners(Infinity);
 
-    this.reducers = {};
     this.credentials = {
       password: process.env.EVENT_SOURCE_PASSWORD || "changeit",
       username: process.env.EVENT_SOURCE_USERNAME || "admin",
@@ -111,6 +81,13 @@ export class EventController {
     ast.log("creating connection to event store");
     this.connection = this.createConnection();
     ast.log("event store connected");
+
+    this.reducerController = new ReducerController(
+      this.connection,
+      this.credentials,
+      this.eventRead$,
+      this.eventReduced$
+    );
   }
 
   /**
@@ -118,10 +95,8 @@ export class EventController {
    */
   public async stop() {
     ast.log("stoping event controller");
-    this.stoped = true;
-    while ( ! await this.isFree() ) { await ast.delay(this.REDUCER_REST_TIME); }
-    await this.unsubscribeStream();
-    ast.log("usubscribed from stream");
+    await this.reducerController.stop();
+    while ( ! await this.isFree() ) { await ast.delay(this.FREE_REST_TIME); }
     await this.closeConnection();
     ast.log("connection closed");
   }
@@ -131,86 +106,14 @@ export class EventController {
    */
   public async start() {
     ast.log("starting event controller");
-    await this.registerDbControl();
     ast.log("starting reducer");
-    await this.startReducer();
+    await this.reducerController.start();
     ast.log("event controller ready");
   }
 
-  /**
-   * starts the reducer reading and reducing all past events
-   */
-  public async startReducer() {
-    ast.log("reading past events from eventsource and reducing then");
-    this.readAllPastEvents();
-    ast.log("starting reducers");
-    this.reduce();
-    ast.log("started");
-  }
-
-  /**
-   * reduces all non reduced yet events on stack
-   */
-  public async reduce() {
-    while (this.eventStack.length !== 0 && !this.stoped) {
-      const reduceRecipe = this.eventStack.shift();
-      if ( reduceRecipe && reduceRecipe.reducer ) {
-        await this.reduceMarkStart(reduceRecipe.eventRead.eventNumber);
-        await reduceRecipe.reducer.process(
-          reduceRecipe.eventRead.request,
-          reduceRecipe.eventRead.eventNumber,
-        ).catch((err: any) => {
-          error.fatal(err, "failed reducing command " + reduceRecipe.commandType);
-        });
-        await this.reduceMarkEnd(reduceRecipe.eventRead.eventNumber);
-        setTimeout(() => {
-          this.eventReduced$.emit("new", reduceRecipe.eventRead.eventNumber);
-        }, this.SECURITY_TIME_DELAY_FOR_EMIT_REDUCED);
-      }
-    }
-    await ast.delay(this.REDUCER_REST_TIME);
-    if ( !this.stoped ) { this.reduce(); }
-  }
-
-  /**
-   * await all past events to be reduced
-   */
-  public async completePastReducing() {
-    while ( !(this.eventStack.length === 0 && this.live) ) {
-      await new Promise<void>((resolve) => {
-        setTimeout(resolve, this.REDUCER_REST_TIME * 5);
-      });
-    }
-  }
-
   public loadFeatures(features: IFeatureLoaded[]) {
-    this.loadReducers(features);
+    this.reducerController.loadReducers(features);
     this.loadViews(features);
-  }
-
-  public loadReducers(features: IFeatureLoaded[]) {
-    features.forEach((feature: IFeatureLoaded) => {
-      if (feature.commands) {
-        feature.commands.forEach((command: ICommand) => {
-          if (command.reducer !== undefined) {
-            const commandType = feature.featureName + " " + command.commandName;
-            this.reducers[commandType] = {
-              reducer: command.reducer,
-              subscription: this.eventRead$.addListener(
-                commandType,
-                ((eventRead: { eventNumber: number, request: any },
-              ) => {
-                this.eventStack.push({
-                  commandType,
-                  eventRead,
-                  reducer: command.reducer,
-                });
-              })),
-            };
-          }
-        });
-      }
-    });
   }
 
   public loadViews(features: IFeatureLoaded[]) {
@@ -323,49 +226,11 @@ export class EventController {
   }
 
   /**
-   * Register the control data on database. This is necessary to coordinate
-   * and grant stability and roughness to the system
-   */
-  public async registerDbControl() {
-    ast.log("registering db control");
-    const oldRegister: any = await db.collection(this.eventControllerName)
-      .find({id: this.eventControllerName}).toArray();
-
-    if (oldRegister.length === 0) {
-      await db.collection(this.eventControllerName)
-        .insertOne({
-           endEvent: 0,
-           id: this.eventControllerName,
-           startEvent: 0,
-         });
-      this.nextEventNumberToReduce = 0;
-    } else {
-      if ( oldRegister[0].startEvent === oldRegister[0].endEvent ) {
-        this.nextEventNumberToReduce = oldRegister[0].endEvent;
-      } else {
-        error.fatal("unsyncronization in event reduce",
-          "you must apply manual correction in db");
-      }
-    }
-  }
-
-  /**
    * check if it does not have ongoing tasks
    * @return boolean
    */
   public async isFree(): Promise<boolean> {
-    return await this.isReducerFree() && await this.isRenderFree();
-  }
-
-  public async isReducerFree(): Promise<boolean> {
-    if (this.reducing) {
-      return false;
-    } else {
-      if ((Date.now() - this.lastTimeReducing) > 3 * this.REDUCER_REST_TIME) {
-        return !this.reducing;
-      }
-      return false;
-    }
+    return await this.reducerController.isFree() && await this.isRenderFree();
   }
 
   public async isRenderFree(): Promise<boolean> {
@@ -399,6 +264,7 @@ export class EventController {
   }
 
   /**
+
    * watch for events
    */
   public watchEvents() {
@@ -426,20 +292,6 @@ export class EventController {
         this.rendering = false;
       });
     });
-  }
-
-  private async reduceMarkStart(eventNumber: number) {
-    this.reducing = true;
-    while ( db === undefined ) { await ast.delay(this.REDUCER_REST_TIME); }
-    await db.collection(this.eventControllerName)
-      .updateOne({id: this.eventControllerName}, { $set: { startEvent: eventNumber } });
-  }
-
-  private async reduceMarkEnd(eventNumber: number) {
-    await db.collection(this.eventControllerName)
-      .updateOne({id: this.eventControllerName}, { $set: { endEvent: eventNumber } });
-    this.lastTimeReducing = Date.now();
-    this.reducing = false;
   }
 
   /**
@@ -478,69 +330,8 @@ export class EventController {
     });
   }
 
-  private readAllPastEvents() {
-    this.eventStreamSubscription = this.listenToFrom(
-      this.nextEventNumberToReduce,
-      (event: StoredEvent) => {
-        this.eventRead$.emit(event.eventType, {
-          eventNumber: event.eventNumber,
-          request: event.data,
-        });
-      },
-      (eventStoreStreamCatchUpSubscription: any, reason: string, errorFound: any) => {
-        if (reason !== "UserInitiated") {
-          error.op("eventstore subscription dropped due to " + reason,
-            errorFound,
-            eventStoreStreamCatchUpSubscription,
-          );
-        }
-      },
-      () => {
-        this.live = true;
-      },
-    );
-  }
-
-  /*
-    Executes a catch-up subscription on the given stream,
-    reading events from a given event number,
-    and continuing with a live subscription when all historical events have been read.
-  */
-  private listenToFrom(
-    fromEventNumber: number,
-    onEventAppeared: (event: StoredEvent) => void,
-    onDropped: (eventStoreCatchUpSubscription: any, reason: string, error: any) => void,
-    onLiveProcessingStarted: () => void,
-  ): EventStoreStreamCatchUpSubscription {
-    const streamId: string = process.env.EVENT_STREAM_NAME || "mono";
-    const settings: CatchUpSubscriptionSettings = {
-      debug: false, // process.env.NODE_ENV === "development",
-      maxLiveQueueSize: this.MAX_LIVE_QUEUE_SIZE,
-      readBatchSize: this.READ_BATCH_SIZE,
-      resolveLinkTos: false,
-    };
-    return this.connection.subscribeToStreamFrom(
-      streamId, // streamId - The name of the stream in the Event Store (string)
-      fromEventNumber, // fromEventNumber - Which event number to start after
-      this.credentials, // credentials - The user name and password needed for permission to subscribe to the stream.
-      onEventAppeared, // onEventAppeared - Callback for each event received (historical or live)
-      onLiveProcessingStarted, /* onLiveProcessingStarted - Callback when historical events have been read
-      and live events are about to be read.*/
-      onDropped, // onDropped - Callback when subscription drops or is dropped.
-      settings, // settings
-    );
-  }
-
-  private unsubscribeStream(): Promise<void> {
-    return new Promise<void>((resolve) => {
-      if (this.eventStreamSubscription) {
-        this.eventStreamSubscription.stop();
-        this.eventStreamSubscription = undefined;
-        resolve();
-      } else {
-        resolve();
-      }
-    });
+  public async completePastEventTasks() {
+    await this.reducerController.completePastReducing();
   }
 
 }

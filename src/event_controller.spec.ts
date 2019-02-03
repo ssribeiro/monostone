@@ -23,16 +23,16 @@ describe("EventController", () => {
 
   it("should load reducers", () => {
     const eventController: EventController = new EventController();
-    eventController.loadReducers( FeatureTools.createFeatures( basicFeatures ) );
+    eventController.reducerController.loadReducers( FeatureTools.createFeatures( basicFeatures ) );
     expect(EventController).toBeDefined();
   });
 
   it("should start reducer and stop gracefully", (done) => {
     const eventController: EventController = new EventController();
-    eventController.loadReducers( FeatureTools.createFeatures( basicFeatures ) );
+    eventController.reducerController.loadReducers( FeatureTools.createFeatures( basicFeatures ) );
     connectStore().then(() => {
       eventController.start();
-      eventController.completePastReducing().then(() => {
+      eventController.completePastEventTasks().then(() => {
         eventController.stop().then(done);
       });
     });
@@ -52,10 +52,10 @@ describe("EventController", () => {
     EventTools.send({ command, request }).then(() => {
       setTimeout(() => {
         const eventController: EventController = new EventController();
-        eventController.loadReducers( FeatureTools.createFeatures( basicFeatures ) );
+        eventController.reducerController.loadReducers( FeatureTools.createFeatures( basicFeatures ) );
         connectStore().then(() => {
           eventController.start();
-          eventController.completePastReducing().then(() => {
+          eventController.completePastEventTasks().then(() => {
             eventController.stop().then(done);
           });
         });
@@ -75,10 +75,10 @@ describe("EventController", () => {
       password_confirmation: "12345678",
     };
     const eventController: EventController = new EventController();
-    eventController.loadReducers(FeatureTools.createFeatures(basicFeatures));
+    eventController.reducerController.loadReducers(FeatureTools.createFeatures(basicFeatures));
     connectStore().then(() => {
       eventController.start();
-      eventController.completePastReducing().then(() => {
+      eventController.completePastEventTasks().then(() => {
         EventTools.send({ command, request }).then(() => {
           setTimeout(() => {
             eventController.stop().then(done);
