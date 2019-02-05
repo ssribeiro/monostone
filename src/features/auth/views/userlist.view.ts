@@ -31,6 +31,8 @@ export const view: IView = {
   },
 
   renderUpdate: async (lastData: any, event: IEventRead): Promise<any> => {
+    console.log('goting for update old: ', lastData)
+    console.log('goting for update old: ', lastData.users)
     const userNew = {
       login: event.request.login,
       memberSince: event.request.createdAt,
@@ -38,10 +40,13 @@ export const view: IView = {
       role: event.request.role,
     };
     lastData.users = [ ...lastData.users, userNew ];
+    console.log('sending back: ', lastData)
+    console.log('sending back: ', lastData.users)
     return lastData;
   },
 
   renderPublic: async (data: any): Promise<any> => {
+    console.log('what view feature is gotting: ', data)
     return data.users;
   },
 

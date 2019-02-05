@@ -25,7 +25,7 @@ describe("App", () => {
         appWiped.systemTools.dbDrop().then(() => {
           appWiped.systemTools.eventClear().then(() => {
             appWiped.start().then(() => {
-              request = supertest(PortalModule.getExpressApp());
+              request = supertest(PortalModule.state.expressApp);
               done();
             });
           });
@@ -51,9 +51,9 @@ describe("App", () => {
 
     it("should load the apiPort", () => {
       if (process.env.API_PORT) {
-        expect(PortalModule.getApiPort()).toBe(+process.env.API_PORT);
+        expect(PortalModule.state.apiPort).toBe(+process.env.API_PORT);
       } else {
-        expect(PortalModule.getApiPort()).toBe(3002);
+        expect(PortalModule.state.apiPort).toBe(3002);
       }
     });
 

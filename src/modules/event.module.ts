@@ -183,14 +183,13 @@ const listenToFrom = (
   }
 }
 
-const isStreamInLive = (): boolean => state.isStreamInLive
-const getEventReadStream = (): EventEmitter => state.eventRead$
+// const isStreamInLive = (): boolean => state.isStreamInLive
+// const getEventReadStream = (): EventEmitter => state.eventRead$
 
 export const EventModule = {
   ...BasicModule,
   config,
   start,
   stop,
-  getEventReadStream,
-  isStreamInLive,
+  state
 }

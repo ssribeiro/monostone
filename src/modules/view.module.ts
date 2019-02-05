@@ -118,17 +118,22 @@ const renderInitialViews = async () => {
 const watchEvents = () => {
   state.viewWatchers.forEach((watcher: IViewWatcher) => {
 
-    EventModule.getEventReadStream().addListener(
+    EventModule.state.eventRead$.addListener(
       watcher.event,
       (eventRead: IEventRead) => {
         state.rendering = true
+
+        console.log('got the event: ', eventRead)
 
         watcher.renderUpdates.forEach((render: IRenderUpdate) => {
           render.methodRenderUpdate(
             state.viewsData[render.viewTag],
             eventRead
           ).then((newViewData: any) => {
+            console.log('got the new data: ', newViewData)
+            console.log('see the state of viewsData befor: ', state.viewsData[render.viewTag])
             state.viewsData[render.viewTag] = newViewData
+            console.log('see the state of viewsData now: ', state.viewsData[render.viewTag])
           })
         })
 
@@ -156,5 +161,5 @@ export const ViewModule = {
   loadFeatures,
   start,
   isFree,
-  getViewData,
+  getViewData
 }

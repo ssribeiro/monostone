@@ -36,7 +36,7 @@ module.exports = function (w) {
         .forEach((k) => { delete require.cache[k]; });
 
       require("jasmine-expect");
-      w.testFramework.DEFAULT_TIMEOUT_INTERVAL = 1000;
+      w.testFramework.DEFAULT_TIMEOUT_INTERVAL = 5000;
     }
 
   };

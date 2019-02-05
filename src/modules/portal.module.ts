@@ -131,7 +131,7 @@ const commandRequest = (command: ICommandLoaded): (
     CommandTools.execute(
       command,
       req.body,
-      ReducerModule.getEventReducedStream()
+      ReducerModule.state.eventReduced$
     )
       .then((ans: any) => res.status(200).send(ans))
       .catch((err: Error) => {
@@ -153,13 +153,11 @@ const viewRequest = (view: IViewLoaded): (
   res: express.Response,
 ) => void => {
 
-  const viewData = ViewModule.getViewData(view)
-
   if (view.renderPrivate && !view.renderPublic) {
 
     return (req: any, res: express.Response) => {
       if (req.token && view.renderPrivate) {
-        view.renderPrivate( viewData, req.token )
+        view.renderPrivate( ViewModule.getViewData(view), req.token )
           .then((ans: any) => res.status(200).send(ans))
           .catch((err: Error) => res.status(400).send(err))
       } else {
@@ -171,11 +169,11 @@ const viewRequest = (view: IViewLoaded): (
 
     return (req: any, res: express.Response) => {
       if (req.token && view.renderPrivate) {
-        view.renderPrivate( viewData, req.token )
+        view.renderPrivate( ViewModule.getViewData(view), req.token )
           .then((ans: any) => res.status(200).send(ans))
           .catch((err: Error) => res.status(400).send(err))
       } else if (view.renderPublic){
-        view.renderPublic( viewData )
+        view.renderPublic( ViewModule.getViewData(view) )
           .then((ans: any) => res.status(200).send(ans))
           .catch((err: Error) => res.status(400).send(err))
       }
@@ -186,9 +184,9 @@ const viewRequest = (view: IViewLoaded): (
 
       return (req: any, res: express.Response) => {
         if(view.renderPublic) {
-          view.renderPublic( viewData )
-            .then((ans: any) => res.status(200).send(ans))
-            .catch((err: Error) => res.status(400).send(err))
+          view.renderPublic( ViewModule.getViewData(view) )
+            .then( (ans: any) => res.status(200).send(ans) )
+            .catch( (err: Error) => res.status(400).send(err) )
         }
       }
 
@@ -263,12 +261,14 @@ const stop = (): Promise<void> => {
   })
 }
 
+/*
 const getExpressApp = (): express.Express => state.expressApp
 const getApiPort = (): number => state.apiPort
 const setApiPort = (newApiPort: number) => {
   state.apiPort = newApiPort
   config()
 }
+*/
 
 export const PortalModule = {
   ...BasicModule,
@@ -276,7 +276,5 @@ export const PortalModule = {
   loadFeatures,
   start,
   stop,
-  getExpressApp,
-  getApiPort,
-  setApiPort,
+  state
 }

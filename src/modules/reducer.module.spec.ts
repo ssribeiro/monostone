@@ -10,6 +10,7 @@ import { EventTools, FeatureTools } from "../tools";
 describe("ReducerModule", () => {
 
   it("should load reducers", () => {
+    EventModule.config();
     ReducerModule.config();
     ReducerModule.loadFeatures( FeatureTools.createFeatures( basicFeatures ) );
     expect(ReducerModule).toBeDefined();
@@ -82,7 +83,7 @@ describe("ReducerModule", () => {
                ReducerModule.stop().then(() => {
                  EventModule.stop().then(done);
                });
-             }, 10);
+             }, 150);
            });
          });
        });

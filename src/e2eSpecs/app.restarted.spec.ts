@@ -15,13 +15,13 @@ describe("App", () => {
    // let originalTimeout: number;
 
    beforeEach((done) => {
-     jasmine.DEFAULT_TIMEOUT_INTERVAL = 200;
+     // jasmine.DEFAULT_TIMEOUT_INTERVAL = 2000;
      process.env.MONGO_DATABASE = "dev" + i;
      process.env.API_PORT = "" + 0;
      i++;
      appRestarted = new App();
      appRestarted.start().then(() => {
-       request = supertest(PortalModule.getExpressApp());
+       request = supertest(PortalModule.state.expressApp);
        done();
      });
    });
@@ -53,7 +53,7 @@ describe("App", () => {
      });
    });
 
-   it("should signup an user and give us the id", (done) => {      
+   it("should signup an user and give us the id", (done) => {
      const userInfo = {
        login: "user_twodee_login",
        name: "user two",
@@ -93,7 +93,7 @@ describe("App", () => {
          appRestarted.stop().then(() => {
            appRestarted = new App();
            appRestarted.start().then(() => {
-             request = supertest(PortalModule.getExpressApp());
+             request = supertest(PortalModule.state.expressApp);
              (request.post("/auth/signup") as supertest.Test)
                .send(userInfo)
                .expect(400, messages.LOGIN_TAKEN, done);
@@ -140,7 +140,7 @@ describe("App", () => {
            expect(response.body.userId).toBeGreaterThan(1);
            appRestarted.stop().then(() => {
              appRestarted = new App();
-             request = supertest(PortalModule.getExpressApp());
+             request = supertest(PortalModule.state.expressApp);
              appRestarted.start().then(() => {
                (request.post("/auth/signup") as supertest.Test)
                  .send(userInfo)
