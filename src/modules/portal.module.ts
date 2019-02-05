@@ -18,14 +18,22 @@ interface ServerError extends Error {
   code: string | number
 }
 
-let apiPort: number = 0
-let expressApp: express.Express = express()
-  .use(bodyParser.json())
+interface IPortalModuleState {
+  apiPort: number;
+  expressApp: express.Express;
+  httpServer: http.Server | null;
+}
 
-let httpServer: http.Server | null = null
+const state: IPortalModuleState = {
+  apiPort: 0,
+  expressApp: express().use(bodyParser.json()),
+  httpServer:  null,
+}
 
 const config = () => {
-  apiPort = +(process.env.API_PORT || 3002)
+  state.apiPort = +(process.env.API_PORT || 3002)
+  state.expressApp = express().use(bodyParser.json())
+  state.httpServer = null
 }
 
 const loadFeatures = (features: IFeatureLoaded[]) => {
@@ -40,7 +48,7 @@ const routeSystem = () => {
   router.get("/ping", (req: express.Request, res: express.Response) => {
     res.send("pong")
   })
-  expressApp.use("/", router)
+  state.expressApp.use("/", router)
   ast.log("system routes added")
 }
 
@@ -79,7 +87,7 @@ const routeFeatures = (features: IFeatureLoaded[]) => {
       })
     }
 
-    expressApp.use("/" + feature.featureName, featureRouter)
+    state.expressApp.use("/" + feature.featureName, featureRouter)
     ast.log("routed feature " + feature.featureName)
 
   })
@@ -190,24 +198,24 @@ const viewRequest = (view: IViewLoaded): (
 const start = (): Promise<void> => {
   return new Promise<void>( (resolve, reject) => {
     ast.log("testing http port use")
-    isPortTaken(apiPort).then( (isTaken: boolean) => {
+    isPortTaken(state.apiPort).then( (isTaken: boolean) => {
       if (isTaken) {
-        reject("The port '" + apiPort + "' is already being used!'")
+        reject("The port '" + state.apiPort + "' is already being used!'")
       } else {
 
-        httpServer = http.createServer(expressApp)
-        httpServer.once('listening', () => {
-          ast.log("Express Server listening on port " + apiPort)
+        state.httpServer = http.createServer(state.expressApp)
+        state.httpServer.once('listening', () => {
+          ast.log("Express Server listening on port " + state.apiPort)
           resolve()
         })
-        httpServer.on('error', (e: ServerError) => {
+        state.httpServer.on('error', (e: ServerError) => {
           error.fatal(e)
           reject()
         })
 
-        httpServer.listen.apply(httpServer, [{
+        state.httpServer.listen.apply(state.httpServer, [{
           host: 'localhost',
-          port: apiPort,
+          port: state.apiPort,
         }])
 
       }
@@ -236,8 +244,8 @@ const isPortTaken  = (port: number): Promise<boolean> => {
 
 const stop = (): Promise<void> => {
   return new Promise<void>((resolve, reject) => {
-    if (httpServer) {
-      httpServer.close((error: any) => {
+    if (state.httpServer) {
+      state.httpServer.close((error: any) => {
         if (error) reject(error)
         else {
           ast.info("http server closed")
@@ -251,12 +259,20 @@ const stop = (): Promise<void> => {
   })
 }
 
+const getExpressApp = (): express.Express => state.expressApp
+const getApiPort = (): number => state.apiPort
+const setApiPort = (newApiPort: number) => {
+  state.apiPort = newApiPort
+  config()
+}
+
 export const PortalModule = {
   ...BasicModule,
   config,
   loadFeatures,
   start,
   stop,
-  expressApp,
-  apiPort
+  getExpressApp,
+  getApiPort,
+  setApiPort,
 }

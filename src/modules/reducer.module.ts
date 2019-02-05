@@ -12,46 +12,64 @@ import {
 } from "../interfaces"
 import { db } from "store"
 
-export interface EventToReduce {
+interface EventToReduce {
   commandType: string
   reducer: IReducer | undefined
   eventRead: IEventRead
 };
 
+interface IReducerModuleState {
+  firstEventNumberToReduce: number;
+  /**
+  * list of reducers loaded
+  */
+  reducers: any;
+  /**
+  * Stack of events to reduce
+  */
+  eventStack: EventToReduce[];
+  reducing: boolean;
+  lastTimeReducing: number;
+  moduleStopped: boolean;
+}
+
 const REDUCER_CONTROLLER_NAME: string = "reducer_control"
 const REDUCER_REST_TIME: number = 10
 const SECURITY_TIME_DELAY_FOR_EMIT_REDUCED: number = 3
 
-let firstEventNumberToReduce: number = 0
-
-/**
-* list of reducers loaded
-*/
-let reducers: any = {}
-
-/**
-* Stack of events to reduce
-*/
-const eventStack: EventToReduce[] = []
-let reducing: boolean = false
-let lastTimeReducing: number = Date.now()
-let moduleStopped: boolean = false
-
 const eventReduced$: events.EventEmitter = new events.EventEmitter()
   .setMaxListeners(Infinity)
+
+const state: IReducerModuleState = {
+  firstEventNumberToReduce: 0,
+  reducers: {},
+  eventStack: [],
+  reducing: false,
+  lastTimeReducing: Date.now(),
+  moduleStopped: false,
+}
+
+const config = () => {
+  state.firstEventNumberToReduce = 0
+  state.reducers = {}
+  state.eventStack = []
+  state.reducing = false
+  state.lastTimeReducing = Date.now()
+  state.moduleStopped = false
+}
 
 const loadFeatures = async (features: IFeatureLoaded[]) => {
   features.forEach((feature: IFeatureLoaded) => {
     if (feature.commands) {
       feature.commands.forEach((command: ICommandLoaded) => {
         if (command.reducer !== undefined) {
-          reducers[command.commandType] = {
+          state.reducers[command.commandType] = {
             reducer: command.reducer,
             subscription: EventModule.eventRead$.addListener(
               command.commandType,
               ((eventRead: IEventRead,
             ) => {
-              eventStack.push({
+              state.eventStack.push({
                 commandType: command.commandType,
                 eventRead,
                 reducer: command.reducer,
@@ -66,7 +84,7 @@ const loadFeatures = async (features: IFeatureLoaded[]) => {
 
 const getFirstEventNumberToReduce = async (): Promise<number> => {
   await registerDbControl()
-  return firstEventNumberToReduce
+  return state.firstEventNumberToReduce
 }
 
 /**
@@ -85,10 +103,10 @@ const registerDbControl = async () => {
          id: REDUCER_CONTROLLER_NAME,
          startEvent: 0,
        })
-    firstEventNumberToReduce = 0
+    state.firstEventNumberToReduce = 0
   } else {
     if ( oldRegister[0].startEvent === oldRegister[0].endEvent ) {
-      firstEventNumberToReduce = oldRegister[0].endEvent
+      state.firstEventNumberToReduce = oldRegister[0].endEvent
     } else {
       error.fatal("unsyncronization in event reduce",
         "you must apply manual correction in db")
@@ -100,7 +118,7 @@ const registerDbControl = async () => {
  * starts the reducer reading and reducing all past events
  */
 const start = async () => {
-  await reduce()
+  reduce()
   await completePastReducing()
   ast.log("reducer controller started")
 }
@@ -109,8 +127,8 @@ const start = async () => {
  * reduces all non reduced yet events on stack
  */
 const reduce = async () => {
-  while (eventStack.length !== 0 && !moduleStopped) {
-    const reduceRecipe = eventStack.shift()
+  while (state.eventStack.length !== 0 && !state.moduleStopped) {
+    const reduceRecipe = state.eventStack.shift()
     if ( reduceRecipe && reduceRecipe.reducer ) {
       await reduceMarkStart(reduceRecipe.eventRead.eventNumber)
       await reduceRecipe.reducer.process(
@@ -129,11 +147,11 @@ const reduce = async () => {
     }
   }
   await ast.delay(REDUCER_REST_TIME)
-  if ( !moduleStopped ) { reduce() }
+  if ( !state.moduleStopped ) { reduce() }
 }
 
 const reduceMarkStart = async (eventNumber: number) => {
-  reducing = true
+  state.reducing = true
   while ( db === undefined ) { await ast.delay(REDUCER_REST_TIME) }
   await db.collection(REDUCER_CONTROLLER_NAME)
     .updateOne({id: REDUCER_CONTROLLER_NAME},
@@ -144,15 +162,15 @@ const reduceMarkEnd = async (eventNumber: number) => {
   await db.collection(REDUCER_CONTROLLER_NAME)
     .updateOne({id: REDUCER_CONTROLLER_NAME},
       { $set: { endEvent: eventNumber } })
-  lastTimeReducing = Date.now()
-  reducing = false
+  state.lastTimeReducing = Date.now()
+  state.reducing = false
 }
 
 /**
  * await all past events to be reduced
  */
 const completePastReducing = async () => {
-  while ( !(eventStack.length === 0 && EventModule.isStreamInLive) ) {
+  while ( !(state.eventStack.length === 0 && EventModule.isStreamInLive()) ) {
     await new Promise<void>((resolve) => {
       setTimeout(resolve, REDUCER_REST_TIME * 5)
     })
@@ -160,21 +178,22 @@ const completePastReducing = async () => {
 }
 
 const stop = async () => {
-  moduleStopped = true
+  state.moduleStopped = true
   while ( ! await isFree() ) { await ast.delay(REDUCER_REST_TIME) }
 }
 
 const isFree = async (): Promise<boolean> => {
-  if (reducing) return false
+  if (state.reducing) return false
   else {
-    if ((Date.now() - lastTimeReducing) > 3 * REDUCER_REST_TIME)
-      return !reducing
+    if ((Date.now() - state.lastTimeReducing) > 3 * REDUCER_REST_TIME)
+      return !state.reducing
     return false
   }
 }
 
 export const ReducerModule = {
   ...BasicModule,
+  config,
   loadFeatures,
   start,
   stop,

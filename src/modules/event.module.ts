@@ -17,7 +17,14 @@ import {
   StoredEvent
 } from "event-store-client"
 
-ast.log("creating event controller")
+interface IEventModuleState {
+  isStreamInLive: boolean;
+  connection: Connection | undefined;
+  credentials: ICredentials | undefined;
+  eventStreamSubscription: EventStoreStreamCatchUpSubscription | undefined;
+  firstEventNumberToReduce: number;
+  moduleClosed: boolean;
+}
 
 const MAX_LIVE_QUEUE_SIZE: number = 10000
 const READ_BATCH_SIZE: number = 500
@@ -25,21 +32,27 @@ const READ_BATCH_SIZE: number = 500
 const eventRead$: events.EventEmitter = new events.EventEmitter()
   .setMaxListeners(Infinity)
 
-let connection: Connection | undefined
-let credentials: ICredentials
-let eventStreamSubscription: EventStoreStreamCatchUpSubscription | undefined
-let isStreamInLive: boolean = false
-let moduleClosed: boolean = false
-
-let firstEventNumberToReduce: number = 0
+const state: IEventModuleState = {
+  isStreamInLive: false,
+  connection: undefined,
+  credentials: undefined,
+  eventStreamSubscription: undefined,
+  firstEventNumberToReduce: 0,
+  moduleClosed: false,
+}
 
 const config = () => {
-  credentials = {
+  ast.log("creating event controller")
+  state.isStreamInLive = false
+  state.eventStreamSubscription = undefined
+  state.firstEventNumberToReduce = 0
+  state.moduleClosed = false
+  state.credentials = {
     password: process.env.EVENT_SOURCE_PASSWORD || "changeit",
     username: process.env.EVENT_SOURCE_USERNAME || "admin",
   }
   ast.log("creating connection to event store")
-  connection = createConnection()
+  state.connection = createConnection()
   ast.log("event store connected")
 }
 
@@ -51,10 +64,10 @@ const createConnection = (): Connection => {
     debug: false, // process.env.NODE_ENV === "development",
     host: process.env.EVENT_SOURCE_HOST,
     onClose: () => {
-      if (!moduleClosed) error.fatal("connection to eventstore was closed");
+      if (!state.moduleClosed) error.fatal("connection to eventstore was closed");
     },
     onError: (err: any) => {
-      if (!moduleClosed) error.fatal(err,
+      if (!state.moduleClosed) error.fatal(err,
         "EventController could not connect to eventstore");
     },
     port: process.env.EVENT_SOURCE_PORT,
@@ -72,9 +85,9 @@ const stop = async() => {
 
 const unsubscribeStream = (): Promise<void> => {
   return new Promise<void>((resolve) => {
-    if (eventStreamSubscription) {
-      eventStreamSubscription.stop()
-      eventStreamSubscription = undefined
+    if (state.eventStreamSubscription) {
+      state.eventStreamSubscription.stop()
+      state.eventStreamSubscription = undefined
       resolve()
     } else {
       resolve()
@@ -84,11 +97,11 @@ const unsubscribeStream = (): Promise<void> => {
 
 const closeConnection = (): Promise<void> => {
   return new Promise<void>((resolve) => {
-    if (!moduleClosed) {
-      moduleClosed = true
-      if (connection) {
-        connection.close()
-        connection = undefined
+    if (!state.moduleClosed) {
+      state.moduleClosed = true
+      if (state.connection) {
+        state.connection.close()
+        state.connection = undefined
         resolve()
       } else {
         resolve()
@@ -108,32 +121,32 @@ const start = async () => {
 }
 
 const calculateFirstEventNumberToReduce = async () => {
-  firstEventNumberToReduce = Math.min(...[
+  state.firstEventNumberToReduce = Math.min(...[
     await ReducerModule.getFirstEventNumberToReduce()
   ]);
 }
 
 const readAllPastEvents = () => {
-  eventStreamSubscription = listenToFrom(
-  firstEventNumberToReduce,
-  (event: StoredEvent) => {
-    const eventRead: IEventRead = {
-      eventNumber: event.eventNumber,
-      request: event.data,
-    }
-    // console.log("this is an emit of: ", eventRead);
-    eventRead$.emit(event.eventType, eventRead)
-  },
-  (eventStoreStreamCatchUpSubscription: any, reason: string, errorFound: any) => {
-    if (reason !== "UserInitiated") {
-      error.op("eventstore subscription dropped due to " + reason,
-        errorFound,
-        eventStoreStreamCatchUpSubscription,
-      )
-    }
-  },
+  state.eventStreamSubscription = listenToFrom(
+    state.firstEventNumberToReduce,
+    (event: StoredEvent) => {
+      const eventRead: IEventRead = {
+        eventNumber: event.eventNumber,
+        request: event.data,
+      }
+      // console.log("this is an emit of: ", eventRead);
+      eventRead$.emit(event.eventType, eventRead)
+    },
+    (eventStoreStreamCatchUpSubscription: any, reason: string, errorFound: any) => {
+      if (reason !== "UserInitiated") {
+        error.op("eventstore subscription dropped due to " + reason,
+          errorFound,
+          eventStoreStreamCatchUpSubscription,
+        )
+      }
+    },
     () => {
-      isStreamInLive = true;
+      state.isStreamInLive = true
     },
   )
 }
@@ -156,11 +169,11 @@ const listenToFrom = (
     readBatchSize: READ_BATCH_SIZE,
     resolveLinkTos: false,
   }
-  if( connection ) {
-    return connection.subscribeToStreamFrom(
+  if( state.connection && state.credentials ) {
+    return state.connection.subscribeToStreamFrom(
       streamId, // streamId - The name of the stream in the Event Store (string)
       fromEventNumber, // fromEventNumber - Which event number to start after
-      credentials, // credentials - The user name and password needed for permission to subscribe to the stream.
+      state.credentials, // credentials - The user name and password needed for permission to subscribe to the stream.
       onEventAppeared, // onEventAppeared - Callback for each event received (historical or live)
       onLiveProcessingStarted, /* onLiveProcessingStarted - Callback when historical events have been read
       and live events are about to be read.*/
@@ -169,6 +182,8 @@ const listenToFrom = (
     )
   }
 }
+
+const isStreamInLive = (): boolean => state.isStreamInLive
 
 export const EventModule = {
   ...BasicModule,

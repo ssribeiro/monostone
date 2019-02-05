@@ -16,6 +16,7 @@ describe("ReducerModule", () => {
   });
 
   it("should start reducer and stop gracefully", (done) => {
+    // jasmine.DEFAULT_TIMEOUT_INTERVAL = 200;
     EventModule.config();
     ReducerModule.config();
     ReducerModule.loadFeatures( FeatureTools.createFeatures( basicFeatures ) );
@@ -30,62 +31,62 @@ describe("ReducerModule", () => {
     });
   });
 
-  it("should complete life cycle when an event exists", (done) => {
-    const command: ICommand = {
-      commandName: "signup",
-      featureName: "auth",
-    };
-    const request = {
-      login: "luannosilas",
-      name: "Luan Nosi",
-      password: "12345678",
-      password_confirmation: "12345678",
-    };
-    EventTools.send({ command, request }).then(() => {
-      setTimeout(() => {
-        EventModule.config();
-        ReducerModule.config();
-        ReducerModule.loadFeatures( FeatureTools.createFeatures( basicFeatures ) );
-        connectStore().then(() => {
-          EventModule.start().then(() => {
-            ReducerModule.start().then(() => {
-              ReducerModule.stop().then(() => {
-                EventModule.stop().then(done);
-              });
-            });
-          });
-        });
-      }, 150);
-    });
-  });
+   it("should complete life cycle when an event exists", (done) => {
+     const command: ICommand = {
+       commandName: "signup",
+       featureName: "auth",
+     };
+     const request = {
+       login: "luannosilas",
+       name: "Luan Nosi",
+       password: "12345678",
+       password_confirmation: "12345678",
+     };
+     EventTools.send({ command, request }).then(() => {
+       setTimeout(() => {
+         EventModule.config();
+         ReducerModule.config();
+         ReducerModule.loadFeatures( FeatureTools.createFeatures( basicFeatures ) );
+         connectStore().then(() => {
+           EventModule.start().then(() => {
+             ReducerModule.start().then(() => {
+               ReducerModule.stop().then(() => {
+                 EventModule.stop().then(done);
+               });
+             });
+           });
+         });
+       }, 50);
+     });
+   });
 
-  it("should complete life cycle when an event appears", (done) => {
-    const command: ICommand = {
-      commandName: "signup",
-      featureName: "auth",
-    };
-    const request = {
-      login: "lethinciasindra",
-      nome: "Lethincia Sindra",
-      password: "12345678",
-      password_confirmation: "12345678",
-    };
-    EventModule.config();
-    ReducerModule.config();
-    ReducerModule.loadFeatures(FeatureTools.createFeatures(basicFeatures));
-    connectStore().then(() => {
-      EventModule.start().then(() => {
-        ReducerModule.start().then(() => {
-          EventTools.send({ command, request }).then(() => {
-            setTimeout(() => {
-              ReducerModule.stop().then(() => {
-                EventModule.stop().then(done);
-              });
-            }, 10);
-          });
-        });
-      });
-    });
-  });
+   it("should complete life cycle when an event appears", (done) => {
+     const command: ICommand = {
+       commandName: "signup",
+       featureName: "auth",
+     };
+     const request = {
+       login: "lethinciasindra",
+       nome: "Lethincia Sindra",
+       password: "12345678",
+       password_confirmation: "12345678",
+     };
+     EventModule.config();
+     ReducerModule.config();
+     ReducerModule.loadFeatures(FeatureTools.createFeatures(basicFeatures));
+     connectStore().then(() => {
+       EventModule.start().then(() => {
+         ReducerModule.start().then(() => {
+           EventTools.send({ command, request }).then(() => {
+             setTimeout(() => {
+               ReducerModule.stop().then(() => {
+                 EventModule.stop().then(done);
+               });
+             }, 10);
+           });
+         });
+       });
+     });
+   });
 
 });
