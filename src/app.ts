@@ -2,10 +2,8 @@
 import * as ast from "@angstone/node-util"
 // error handler
 import { error } from "./error"
-
 // configurations
 import { config as configTool } from "./config"
-
 // framework modules
 import {
   EventModule,
@@ -14,16 +12,12 @@ import {
   ViewModule
 } from "./modules"
 // import { CronjobController } from "./cronjob_controller";
-
 // framework store
 import { closeStore, connectStore } from "./store"
-
 // framework tools
 import { GeneralTools, EventTools, SystemTools, FeatureTools } from "./tools"
-
 // interfaces
 import { IFeature, IFeatureLoaded, IMonoModule } from "./interfaces"
-
 // framework system commands
 import * as SystemCommands from "./system_commands"
 
@@ -33,27 +27,21 @@ export class App {
 
   public monoModules: IMonoModule[]
   // public cronjobController: CronjobController;
-
   public features: IFeatureLoaded[]
-
   /**
    * used when application stops
    */
   public stopped: boolean = false
   public stopping: boolean = false
-
   /**
    * time in milliseconds gmt 0 since aplication was loaded
    */
   public timeLoaded: number | null = null
-
   /**
    * time in milliseconds gmt 0 since aplication was started
    */
   public timeStarted: number
-
   public rethinkDbConnected: boolean = false
-
   public systemTools = SystemTools
 
   /**
@@ -65,8 +53,6 @@ export class App {
 
     this.features = this.loadFeatures()
 
-    // this.cronjobController = new CronjobController();
-
     this.monoModules = [
       EventModule,
       ReducerModule,
@@ -76,8 +62,7 @@ export class App {
     ]
 
     this.monoModules.forEach(monoModule => monoModule.config())
-
-    // global.monoApp = this;
+    global.monoApp = this;
   }
 
   public async connectStore() {
@@ -85,27 +70,20 @@ export class App {
   }
 
   public async start() {
-
     await EventTools.send({ command: SystemCommands.starting })
 
     await this.connectStore()
-
     this.monoModules.forEach( controller =>
       controller.loadFeatures(this.features) )
-
     await GeneralTools.asyncForEach( this.monoModules,
-      async (monoModule: IMonoModule) => await monoModule.start()
-    )
+      async (monoModule: IMonoModule) => await monoModule.start() )
 
     this.timeLoaded = Date.now();
-    const systemInfo = {
-      load_time: this.timeLoaded - this.timeStarted,
-    }
+    const systemInfo = { load_time: this.timeLoaded - this.timeStarted }
     await EventTools.send({
       command: SystemCommands.started,
       request: systemInfo
     })
-
   }
 
   public async stop() {
@@ -113,9 +91,9 @@ export class App {
       this.stopping = true;
 
       while ( ! await this.isFree() ) { await ast.delay(App.FREE_REST_TIME); }
+
       await GeneralTools.asyncForEach( this.monoModules.reverse(),
-        async (monoModule: IMonoModule) => await monoModule.stop()
-      );
+        async (monoModule: IMonoModule) => await monoModule.stop() );
 
       await closeStore();
       this.stopped = true;
@@ -148,7 +126,6 @@ export class App {
       const features = [...BasicFeatures]
       return FeatureTools.createFeatures( features )
     }
-
   }
 
   /**

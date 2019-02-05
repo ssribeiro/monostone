@@ -4,10 +4,8 @@
 
 import * as ast from "@angstone/node-util"
 import { error } from "../error"
-
 import { BasicModule, ReducerModule } from './'
 import { IEventRead } from '../interfaces'
-
 import { EventEmitter } from "events";
 import {
   CatchUpSubscriptionSettings,
@@ -134,7 +132,6 @@ const readAllPastEvents = () => {
         eventNumber: event.eventNumber,
         request: event.data,
       }
-      // console.log("this is an emit of: ", eventRead);
       state.eventRead$.emit(event.eventType, eventRead)
     },
     (eventStoreStreamCatchUpSubscription: any, reason: string, errorFound: any) => {

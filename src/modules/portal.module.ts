@@ -1,18 +1,15 @@
 import * as ast from "@angstone/node-util"
 import { error } from 'error'
-
 import * as bodyParser from "body-parser"
 import * as express from "express"
 import * as http from "http"
-
 import { BasicModule, ReducerModule, ViewModule } from './'
-
 import { ICommandLoaded, IFeatureLoaded, IViewLoaded } from "../interfaces"
 import { CommandTools } from "tools"
-
 import { IAuthToken } from "features/auth/interfaces/auth-token.i"
-import { messages as authMessages } from "features/auth/messages"
 import * as AuthTools from "features/auth/tools"
+import { messages as authMessages } from "features/auth/messages"
+import * as net from 'net'
 
 interface ServerError extends Error {
   code: string | number
@@ -230,16 +227,16 @@ const start = (): Promise<void> => {
 
 const isPortTaken  = (port: number): Promise<boolean> => {
   return new Promise<boolean>( (resolve) => {
-    /*const tester = net.createServer()
-      .once('error', (err: ServerError) => {
-        if (err.code == 'EADDRINUSE') resolve(true);
-        else resolve(false);
-      })
-      .once('listening', () => {
-        tester.once('close', () => { resolve(false); } )
-        .close();
-      })
-      .listen(port);*/
+    const tester = net.createServer()
+    .once('error', (err: ServerError) => {
+      if (err.code == 'EADDRINUSE') resolve(true)
+      else resolve(false)
+    })
+    .once('listening', () => {
+      tester.once('close', () => resolve(false) )
+      .close()
+    })
+    .listen(port)
     resolve(false)
   })
 }
@@ -263,10 +260,6 @@ const stop = (): Promise<void> => {
 
 const getExpressApp = (): express.Express => state.expressApp
 const getApiPort = (): number => state.apiPort
-const setApiPort = (newApiPort: number) => {
-  state.apiPort = newApiPort
-  config()
-}
 
 export const PortalModule = {
   ...BasicModule,
@@ -275,6 +268,5 @@ export const PortalModule = {
   start,
   stop,
   getExpressApp,
-  getApiPort,
-  setApiPort
+  getApiPort
 }

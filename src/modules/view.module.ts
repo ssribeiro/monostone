@@ -2,7 +2,6 @@ import * as ast from "@angstone/node-util"
 import { BasicModule, EventModule } from './'
 import { IFeatureLoaded, IViewLoaded, IEventRead } from "../interfaces"
 
-// TODO: Probabbly the interfaces are the error source
 interface IRenderUpdate {
   viewTag: string,
   methodRenderUpdate: (lastData?: any, event?: any) => Promise<any>,
@@ -75,8 +74,8 @@ const loadFeatures = (features: IFeatureLoaded[]) => {
                 })
               }
               return watch
-            });
-          });
+            })
+          })
         }
 
         if (view.renderInitial) {
@@ -123,17 +122,12 @@ const watchEvents = () => {
       (eventRead: IEventRead) => {
         state.rendering = true
 
-        console.log('got the event: ', eventRead)
-
         watcher.renderUpdates.forEach((render: IRenderUpdate) => {
           render.methodRenderUpdate(
             state.viewsData[render.viewTag],
             eventRead
           ).then((newViewData: any) => {
-            console.log('got the new data: ', newViewData)
-            console.log('see the state of viewsData befor: ', state.viewsData[render.viewTag])
             state.viewsData[render.viewTag] = newViewData
-            console.log('see the state of viewsData now: ', state.viewsData[render.viewTag])
           })
         })
 

@@ -1,9 +1,7 @@
 import * as ast from "@angstone/node-util"
 import { error } from "../error"
 import { BasicModule, EventModule } from './'
-
-import { EventEmitter } from "events";
-
+import { EventEmitter } from "events"
 import {
   ICommandLoaded,
   IFeatureLoaded,
@@ -16,7 +14,7 @@ interface EventToReduce {
   commandType: string
   reducer: IReducer | undefined
   eventRead: IEventRead
-};
+}
 
 interface IReducerModuleState {
   firstEventNumberToReduce: number;
