@@ -49,7 +49,7 @@ describe("App", () => {
      process.env.MONGO_DATABASE = "dev5001";
      appOneInstance = new App();
      appOneInstance.start().then(() => {
-       request = supertest(appOneInstance.portal.expressApp);
+       request = supertest(appOneInstance.portalController.expressApp);
        const userInfo = {
          login: "logmeiamanuser",
          name: "Some USer Tobeloged",

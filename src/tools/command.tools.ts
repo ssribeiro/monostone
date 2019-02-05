@@ -1,11 +1,15 @@
 import { EventEmitter } from "events";
 import { error } from "../error";
-import { ICommand, IReducer, IRule } from "../interfaces";
+import { IReducer, IRule, ICommandLoaded, IEventRead } from "../interfaces";
 import { EventTools, ReducerTools, RuleTools, FolderTools } from "./";
 
 const EVENT_REDUCE_TIMEOUT: number = +(process.env.EVENT_REDUCE_TIMEOUT || 3000);
 
-export async function execute(command: ICommand, request: any, eventReduced$: EventEmitter ): Promise<any> {
+export async function execute(
+  command: ICommandLoaded,
+  request: any,
+  eventReduced$: EventEmitter
+): Promise<any> {
 
   let ruleBroken;
 
@@ -34,15 +38,15 @@ export async function execute(command: ICommand, request: any, eventReduced$: Ev
   if (command.rule && command.rule.respond) {
 
     await new Promise((resolve, reject) => {
-      const resolveListener = (eventNumberReduced: number) => {
-        if (eventNumberReduced === eventNumber) {
+      const resolveListener = (eventRead: IEventRead) => {
+        if (eventRead.eventNumber === eventNumber) {
           resolve();
-          eventReduced$.removeListener("new", resolveListener);
+          eventReduced$.removeListener(command.commandType, resolveListener);
         }
       };
-      eventReduced$.addListener("new", resolveListener);
+      eventReduced$.addListener(command.commandType, resolveListener);
       setTimeout(() => {
-        eventReduced$.removeListener("new", resolveListener);
+        eventReduced$.removeListener(command.commandType, resolveListener);
         reject("Server was unable to reduce in time");
       }, EVENT_REDUCE_TIMEOUT);
     });
@@ -54,7 +58,7 @@ export async function execute(command: ICommand, request: any, eventReduced$: Ev
 }
 
 export function createCommand(commandRecipe: {
-  featureName: string, commandName: string, featurePath: string }): ICommand {
+  featureName: string, commandName: string, featurePath: string }): ICommandLoaded {
   let ruleSheet;
   try {
     ruleSheet = require(commandRecipe.featurePath + "/commands/" +
@@ -69,7 +73,13 @@ export function createCommand(commandRecipe: {
     commandName: commandRecipe.commandName,
     featurePath: commandRecipe.featurePath,
   });
-  return { featureName: commandRecipe.featureName, commandName: commandRecipe.commandName, rule, reducer };
+  return {
+    commandType: commandRecipe.featureName + " " + commandRecipe.commandName,
+    featureName: commandRecipe.featureName,
+    commandName: commandRecipe.commandName,
+    rule,
+    reducer
+  };
 }
 
 export function createCommands(
@@ -79,7 +89,7 @@ export function createCommands(
       commandNames: string[],
       featurePath: string
     }
-  ): ICommand[] {
+  ): ICommandLoaded[] {
 
   if(commandsRecipe.commandNames.length == 0) {
     commandsRecipe.commandNames = FolderTools.getDirectories(
@@ -87,7 +97,7 @@ export function createCommands(
     ).map(FolderTools.lastNameOfFilePath);
   }
 
-  const commands: ICommand[] = [];
+  const commands: ICommandLoaded[] = [];
   commandsRecipe.commandNames.forEach((commandName, index) => {
     commands[index] = createCommand({
       commandName,

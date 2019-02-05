@@ -1,5 +1,6 @@
 // Name resolution fixes for nodejs:
-const moduleAlias = require('module-alias');
+import * as moduleAlias from 'module-alias';
+
 moduleAlias.addAliases({
   'store'  : __dirname + '/store',
   'interfaces'  : __dirname + '/interfaces',
@@ -15,21 +16,18 @@ import { error } from "./error";
 
 // Boot Process
 ast.log("booting monostone framework");
-ast.log("loading configuration");
 
-// Create Express App
-ast.log("creating express app");
+// Create App
+ast.log("creating app");
 const app: App = new App();
 if (app) {
-  ast.success("express app created");
+  ast.success("app created");
 } else {
-  error.fatal("fail in creating express app");
+  error.fatal("fail in creating app");
 }
 
-// global.monoApp = app;
-
 // Start Express App
-ast.log("starting express app");
+ast.log("starting app");
 app.start().then(() => {
-  ast.success("express app successfully started");
+  ast.success("app successfully started");
 });

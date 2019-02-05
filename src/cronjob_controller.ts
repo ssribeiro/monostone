@@ -1,11 +1,12 @@
 import * as ast from "@angstone/node-util";
+import { Controller } from './controller';
 import { CronJob, CronJobParameters } from "cron";
 import { ICronjob, IFeatureLoaded } from "./interfaces";
 
 /**
  * Control the cronjobs of server
  */
-export class CronjobController {
+export class CronjobController extends Controller {
 
   /**
    * list of cronjobs loaded
@@ -23,6 +24,7 @@ export class CronjobController {
     undefined;
 
   constructor() {
+    super();
     ast.log("creating cronjob controller");
   }
 
@@ -60,7 +62,7 @@ export class CronjobController {
    * load cronjobs
    * @param  features list of the features loaded by server
    */
-  public loadCronjobs(features: IFeatureLoaded[]) {
+  public loadFeatures(features: IFeatureLoaded[]) {
     ast.log("loading cronjobs");
 
     const cronjobs: ICronjob[] = [];

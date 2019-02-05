@@ -3,12 +3,13 @@ import * as ast from "@angstone/node-util";
 import * as bodyParser from "body-parser";
 import * as express from "express";
 import * as http from "http";
-import * as net from "net";
 
-import { EventEmitter } from "events";
+import { Controller } from './controller';
+import { EventController } from './event_controller';
+
 import { IAuthToken } from "features/auth/interfaces/auth-token.i";
-import { ICommand, IFeatureLoaded, IViewLoaded } from "interfaces";
-import { CommandTools, ViewTools } from "tools";
+import { ICommandLoaded, IFeatureLoaded, IViewLoaded } from "interfaces";
+import { CommandTools } from "tools";
 import { error } from 'error';
 
 import { messages as authMessages } from "features/auth/messages";
@@ -21,22 +22,23 @@ interface ServerError extends Error {
 /**
  * Portal to expose api resources
  */
-export class Portal {
+export class PortalController extends Controller {
 
   public apiPort: number;
   public expressApp: express.Express;
   public httpServer: http.Server | null = null;
 
   constructor() {
+    super();
     this.apiPort = +(process.env.API_PORT || 3002);
     this.expressApp = express();
     this.expressApp.use(bodyParser.json());
   }
 
-  public route(features: IFeatureLoaded[], eventReduced$: EventEmitter, viewsData: any) {
+  public loadFeatures(features: IFeatureLoaded[], viewsData: any) {
     ast.log("creating routes");
     this.routeSystem();
-    this.routeFeatures(features, eventReduced$, viewsData);
+    this.routeFeatures(features, viewsData);
   }
 
   public start(): Promise<void> {
@@ -129,9 +131,9 @@ export class Portal {
    * Route each feature
    * @param  features      loaded features
    * @param  eventReduced$ reduced events stream
-   * @param  viewsData     stored data from views
+   * @param  viewData     stored data from views
    */
-  private routeFeatures(features: IFeatureLoaded[], eventReduced$: EventEmitter, viewsData: any) {
+  private routeFeatures(features: IFeatureLoaded[], viewsData: any) {
     ast.log("adding the feature routes");
     features.forEach((feature) => {
 
@@ -144,7 +146,7 @@ export class Portal {
           ast.log(" found command: " + command.commandName);
 
           featureRouter.post("/" + command.commandName,
-            this.commandRequest(command, eventReduced$));
+            this.commandRequest(command));
 
           ast.log(" routed command " + command.commandName);
         });
@@ -154,10 +156,7 @@ export class Portal {
 
         feature.views.forEach((view) => {
           ast.log(" found view: " + view.viewName);
-
-          const viewTag: string = view.featureName + " " + view.viewName;
-          featureRouter.get("/" + view.viewName,
-            this.viewRequest(view, viewTag, viewsData));
+          featureRouter.get( "/" + view.viewName, this.viewRequest( view, viewsData ) );
 
           ast.log(" routed view " + view.viewName);
         });
@@ -175,12 +174,12 @@ export class Portal {
    * @param  eventReduced$ stream of reduced events
    * @return               express function midlleware
    */
-  private commandRequest(command: ICommand, eventReduced$: EventEmitter): (
+  private commandRequest(command: ICommandLoaded): (
     req: express.Request,
     res: express.Response,
   ) => void {
     return (req: express.Request, res: express.Response) => {
-      CommandTools.execute(command, req.body, eventReduced$)
+      CommandTools.execute(command, req.body, EventController.eventReduced$)
         .then((ans: any) => res.status(200).send(ans))
         .catch((err: Error) => {
           ast.dev(err);
@@ -193,32 +192,63 @@ export class Portal {
    * Generate the request for each view
    * @param  view      [description]
    * @param  viewTag   [description]
-   * @param  viewsData [description]
+   * @param  viewData [description]
    * @return           express function middleware
    */
-  private viewRequest(view: IViewLoaded, viewTag: string, viewsData: any): (
+  private viewRequest(view: IViewLoaded, viewsData: any): (
     req: express.Request,
     res: express.Response,
   ) => void {
-    return (req: any, res: express.Response) => {
-      ViewTools.renderRequestView(view, viewsData[viewTag], req.token)
-        .then((ans: any|undefined) => {
-          if (ans) {
-            res.status(200).send(ans);
-          } else {
-            res.status(401).send(authMessages.NO_TOKEN_PROVIDED);
+
+    const viewData = viewsData[view.viewTag];
+
+    if (view.renderPrivate && !view.renderPublic) {
+
+      return (req: any, res: express.Response) => {
+        if (req.token && view.renderPrivate) {
+          view.renderPrivate( viewData, req.token )
+            .then((ans: any) => res.status(200).send(ans))
+            .catch((err: Error) => res.status(400).send(err));
+        } else {
+          res.status(401).send(authMessages.NO_TOKEN_PROVIDED);
+        }
+      };
+
+    } else if (view.renderPrivate && view.renderPublic) {
+
+      return (req: any, res: express.Response) => {
+        if (req.token && view.renderPrivate) {
+          view.renderPrivate( viewData, req.token )
+            .then((ans: any) => res.status(200).send(ans))
+            .catch((err: Error) => res.status(400).send(err));
+        } else if (view.renderPublic){
+          view.renderPublic( viewData )
+            .then((ans: any) => res.status(200).send(ans))
+            .catch((err: Error) => res.status(400).send(err));
+        }
+      };
+
+    } else {
+      if (view.renderPublic) {
+
+        return (req: any, res: express.Response) => {
+          if(view.renderPublic) {
+            view.renderPublic( viewData )
+              .then((ans: any) => res.status(200).send(ans))
+              .catch((err: Error) => res.status(400).send(err));
           }
-        })
-        .catch((err: Error) => {
-          ast.dev(err);
-          res.status(400).send(err);
-        });
-    };
+        };
+
+      } else {
+        return (req: any, res: express.Response) => { res.status(200).send({}); };
+      }
+    }
+
   }
 
   public isPortTaken (port: number): Promise<boolean> {
     return new Promise<boolean>( (resolve) => {
-      const tester = net.createServer()
+      /*const tester = net.createServer()
         .once('error', (err: ServerError) => {
           if (err.code == 'EADDRINUSE') resolve(true);
           else resolve(false);
@@ -227,7 +257,8 @@ export class Portal {
           tester.once('close', () => { resolve(false); } )
           .close();
         })
-        .listen(port);
+        .listen(port);*/
+      resolve(false);
     });
   };
 

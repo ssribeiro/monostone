@@ -51,11 +51,11 @@ describe("App", () => {
    });
 
    it("should signup an user and give us the id", (done) => {
-     process.env.API_PORT = "" + 3100;
+     process.env.API_PORT = "" + 0;
      process.env.MONGO_DATABASE = "dev100";
      appOneInstance = new App();
      appOneInstance.start().then(() => {
-       request = supertest(appOneInstance.portal.expressApp);
+       request = supertest(appOneInstance.portalController.expressApp);
        const userInfo = {
          login: "user_tworun_login",
          name: "user two",
@@ -74,11 +74,11 @@ describe("App", () => {
     });
 
    it("should deny signup an user already signed", (done) => {
-     process.env.API_PORT = "" + 3101;
+     process.env.API_PORT = "" + 0;
      process.env.MONGO_DATABASE = "dev101";
      appOneInstance = new App();
      appOneInstance.start().then(() => {
-       request = supertest(appOneInstance.portal.expressApp);
+       request = supertest(appOneInstance.portalController.expressApp);
        const userInfo = {
          login: "Bixrun_deny",
          name: "user Bix",
@@ -101,11 +101,11 @@ describe("App", () => {
     });
 
    it("should signup second user and give us the id", (done) => {
-      process.env.API_PORT = "" + 3102;
+      process.env.API_PORT = "" + 0;
       process.env.MONGO_DATABASE = "dev101";
       appOneInstance = new App();
       appOneInstance.start().then(() => {
-        request = supertest(appOneInstance.portal.expressApp);
+        request = supertest(appOneInstance.portalController.expressApp);
         const userInfo = {
           login: "onerun_second_login",
           name: "One Run Second",
@@ -124,11 +124,11 @@ describe("App", () => {
      });
 
    it("should deny signup second user already signed", (done) => {
-      process.env.API_PORT = "" + 3103;
+      process.env.API_PORT = "" + 0;
       process.env.MONGO_DATABASE = "dev101";
       appOneInstance = new App();
       appOneInstance.start().then(() => {
-        request = supertest(appOneInstance.portal.expressApp);
+        request = supertest(appOneInstance.portalController.expressApp);
         const userInfo = {
           login: "Second_Bixrun_deny",
           name: "user Bix",
@@ -313,11 +313,11 @@ describe("App", () => {
    }
 
    it("should signup MANY users", (done) => {
-     process.env.API_PORT = "" + 3104;
+     process.env.API_PORT = "" + 0;
      process.env.MONGO_DATABASE = "dev102";
      appOneInstance = new App();
      appOneInstance.start().then(() => {
-       request = supertest(appOneInstance.portal.expressApp);
+       request = supertest(appOneInstance.portalController.expressApp);
        const dones: boolean[] = [];
        for (let i = 0; i < users.length; i++) {
          dones[i] = false;
@@ -354,11 +354,11 @@ describe("App", () => {
    });
 
    it("should deny MANY users", (done) => {
-     process.env.API_PORT = "" + 3105;
+     process.env.API_PORT = "" + 0;
      process.env.MONGO_DATABASE = "dev103";
      appOneInstance = new App();
      appOneInstance.start().then(() => {
-       request = supertest(appOneInstance.portal.expressApp);
+       request = supertest(appOneInstance.portalController.expressApp);
        const dones: boolean[] = [];
        for (let i = 0; i < denyUsers.length; i++) {
          dones[i] = false;

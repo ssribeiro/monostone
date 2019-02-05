@@ -1,29 +1,43 @@
 // Util functions used mainly to change color
 import * as ast from "@angstone/node-util";
-
-// configurations
-import { config as configTool } from "./config";
 // error handler
 import { error } from "./error";
 
+// configurations
+import { config as configTool } from "./config";
+
+// framework controllers
+import { Controller } from "./controller";
 import { CronjobController } from "./cronjob_controller";
 import { EventController } from "./event_controller";
-import { IFeature, IFeatureLoaded } from "./interfaces";
+import { PortalController } from "./portal_controller";
+import { ReducerController } from "./reducer_controller";
+import { ViewController } from "./view_controller";
 
-import { Portal } from "./portal";
-
+// framework store
 import { closeStore, connectStore } from "./store";
 
+// framework tools
+import { GeneralTools, EventTools, SystemTools, FeatureTools } from "./tools";
+
+// interfaces
+import { IFeature, IFeatureLoaded } from "./interfaces";
+
+// framework system commands
 import * as SystemCommands from "./system_commands";
-import { EventTools, SystemTools, FeatureTools } from "./tools";
 
 export class App {
 
-  public cronjobController: CronjobController;
-  public eventController: EventController;
-  public features: IFeatureLoaded[];
+  private static FREE_REST_TIME: number = 10;
 
-  public portal: Portal;
+  public controllers: Controller[];
+  // public cronjobController: CronjobController;
+  public eventController: EventController;
+  public portalController: PortalController;
+  public reducerController: ReducerController;
+  public viewController: ViewController;
+
+  public features: IFeatureLoaded[];
 
   /**
    * used when application stops
@@ -52,16 +66,24 @@ export class App {
     this.timeStarted = Date.now();
     this.config();
 
-    this.portal = new Portal();
-
     this.features = this.loadFeatures();
 
     this.eventController = new EventController();
-    this.cronjobController = new CronjobController();
+    this.reducerController = new ReducerController();
+    this.viewController = new ViewController();
+    // this.cronjobController = new CronjobController();
+    this.portalController = new PortalController();
 
-    this.portal.route(this.features,
-      this.eventController.eventReduced$,
-      this.eventController.viewsData);
+    this.controllers = [
+      this.eventController,
+      this.reducerController,
+      this.viewController,
+      // this.cronjobController
+    ];
+
+    this.portalController.loadFeatures(this.features, this.viewController.viewsData);
+
+    global.monoApp = this;
   }
 
   public async connectStore() {
@@ -69,18 +91,17 @@ export class App {
   }
 
   public async start() {
+
     await EventTools.send({ command: SystemCommands.starting });
 
     await this.connectStore();
 
-    this.eventController.loadFeatures(this.features);
+    this.controllers.forEach( controller => controller.loadFeatures(this.features) );
 
-    this.eventController.start();
-    await this.eventController.completePastEventTasks();
-    await this.eventController.renderViews();
-
-    this.cronjobController.loadCronjobs(this.features);
-    this.cronjobController.start();
+    await GeneralTools.asyncForEach( this.controllers,
+      async (controller: Controller) => await controller.start()
+    );
+    await this.portalController.start();
 
     this.timeLoaded = Date.now();
     const systemInfo = {
@@ -88,24 +109,22 @@ export class App {
     };
     await EventTools.send({ command: SystemCommands.started, request: systemInfo});
 
-    await this.portal.start();
-
-    await EventTools.send({ command: SystemCommands.apiOpened });
   }
 
   public async stop() {
     if ( !this.stopping && !this.stopped ) {
       this.stopping = true;
-      await this.portal.stop();
-      await this.cronjobController.stop();
-      await this.eventController.stop();
+
+      while ( ! await this.isFree() ) { await ast.delay(App.FREE_REST_TIME); }
+
+      await this.portalController.stop();
+      await GeneralTools.asyncForEach( this.controllers.reverse(),
+        async (controller: Controller) => await controller.stop()
+      );
+
       await closeStore();
       this.stopped = true;
     }
-  }
-
-  public reloadFeatures() {
-    this.features = this.loadFeatures();
   }
 
   private config() {
@@ -135,6 +154,17 @@ export class App {
       return FeatureTools.createFeatures( features );
     }
 
+  }
+
+  /**
+   * check if it does not have ongoing tasks
+   * @return boolean
+   */
+  public async isFree(): Promise<boolean> {
+    for (const controller of this.controllers) {
+      if(!await controller.isFree()) return false;
+    }
+    return true;
   }
 
 }

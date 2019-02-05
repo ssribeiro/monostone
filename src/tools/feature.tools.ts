@@ -1,9 +1,9 @@
-import { ICommand, IFeature, IFeatureLoaded, IViewLoaded, ICronjob, IEffectLoaded } from "../interfaces";
+import { ICommandLoaded, IFeature, IFeatureLoaded, IViewLoaded, ICronjob, IEffectLoaded } from "../interfaces";
 import { CommandTools, EffectTools, StringTools, ViewTools, CronjobTools, FolderTools } from "./";
 
 export function createFeature(featureRecipe: IFeature): IFeatureLoaded {
   const featureName: string = StringTools.lastNameOfFilePath(featureRecipe.featurePath);
-  const commands: ICommand[] = CommandTools.createCommands({
+  const commands: ICommandLoaded[] = CommandTools.createCommands({
     commandNames: featureRecipe.commandNames || [],
     featureName,
     featurePath: featureRecipe.featurePath,

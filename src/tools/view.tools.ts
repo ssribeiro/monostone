@@ -1,29 +1,6 @@
 import { error } from "../error";
-import { IAuthToken } from "../features/auth/interfaces/auth-token.i";
 import { IViewLoaded } from "../interfaces";
 import { FolderTools, StringTools } from './';
-
-export async function renderRequestView(view: IViewLoaded, data: any, token?: IAuthToken|undefined): Promise<any|undefined> {
-  if (view.renderPrivate && !view.renderPublic) {
-    if (token) {
-      return await view.renderPrivate(data, token);
-    } else {
-      return undefined;
-    }
-  } else if (view.renderPrivate && view.renderPublic) {
-    if (token) {
-      return await view.renderPrivate(data, token);
-    } else {
-      return await view.renderPublic(data);
-    }
-  } else {
-    if (view.renderPublic) {
-      return await view.renderPublic(data);
-    } else {
-      return {};
-    }
-  }
-}
 
 export function createView(viewRecipe: {
   featureName: string, featurePath: string, viewName: string }): IViewLoaded {
@@ -36,7 +13,11 @@ export function createView(viewRecipe: {
     error.fatal(e, "failed to load viewSheet for view " + viewRecipe.viewName);
   }
   if (!viewSheet) { error.fatal("failed to load viewSheet for view " + viewRecipe.viewName); }
-  return Object.assign({}, viewSheet, { featureName: viewRecipe.featureName, viewName: viewRecipe.viewName }) as IViewLoaded;
+  return Object.assign({}, viewSheet, {
+    featureName: viewRecipe.featureName,
+    viewName: viewRecipe.viewName,
+    viewTag: viewRecipe.featureName + ' ' + viewRecipe.viewName
+  }) as IViewLoaded;
 }
 
 export function createViews(

@@ -9,6 +9,7 @@ import * as RuleTools from "./rule.tools";
 import * as StringTools from "./string.tools";
 import * as SystemTools from "./system.tools";
 import * as ViewTools from "./view.tools";
+import * as GeneralTools from './general.tools';
 
 export {
   CommandTools,
@@ -21,5 +22,6 @@ export {
   StringTools,
   ReducerTools,
   RuleTools,
-  ViewTools
+  ViewTools,
+  GeneralTools,
 };

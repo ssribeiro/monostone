@@ -17,14 +17,14 @@ describe("App", () => {
     beforeEach((done) => {
       // originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
       // jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
-      process.env.API_PORT = "" + 3990;
+      process.env.API_PORT = "" + 0;
       process.env.MONGO_DATABASE = "dev" + 90;
       appWiped = new App();
       appWiped.connectStore().then(() => {
         appWiped.systemTools.dbDrop().then(() => {
           appWiped.systemTools.eventClear().then(() => {
             appWiped.start().then(() => {
-              request = supertest(appWiped.portal.expressApp);
+              request = supertest(appWiped.portalController.expressApp);
               done();
             });
           });
@@ -50,9 +50,9 @@ describe("App", () => {
 
     it("should load the apiPort", () => {
       if (process.env.API_PORT) {
-        expect(appWiped.portal.apiPort).toBe(+process.env.API_PORT);
+        expect(appWiped.portalController.apiPort).toBe(+process.env.API_PORT);
       } else {
-        expect(appWiped.portal.apiPort).toBe(3002);
+        expect(appWiped.portalController.apiPort).toBe(3002);
       }
     });
 

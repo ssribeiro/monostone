@@ -132,11 +132,11 @@ describe("App", () => {
    }
 
    it("should render public view", (done) => {
-     process.env.API_PORT = "" + 3440;
+     process.env.API_PORT = "" + 0;
      process.env.MONGO_DATABASE = "dev4001";
      appOneInstance = new App();
      appOneInstance.start().then(() => {
-       request = supertest(appOneInstance.portal.expressApp);
+       request = supertest(appOneInstance.portalController.expressApp);
        const dones: boolean[] = [];
        for (let i = 0; i < users.length; i++) {
          dones[i] = false;
@@ -175,11 +175,11 @@ describe("App", () => {
    });
 
    it("should ask for token when try to access private view", (done) => {
-     process.env.API_PORT = "" + 3442;
+     process.env.API_PORT = "" + 0;
      process.env.MONGO_DATABASE = "dev4001";
      appOneInstance = new App();
      appOneInstance.start().then(() => {
-       request = supertest(appOneInstance.portal.expressApp);
+       request = supertest(appOneInstance.portalController.expressApp);
        (request.get("/auth/session") as supertest.Test)
          .expect(401, messages.NO_TOKEN_PROVIDED)
          .then(() => {
@@ -189,11 +189,11 @@ describe("App", () => {
    });
 
    it("should render private view", (done) => {
-     process.env.API_PORT = "" + 3443;
+     process.env.API_PORT = "" + 0;
      process.env.MONGO_DATABASE = "dev4001";
      appOneInstance = new App();
      appOneInstance.start().then(() => {
-       request = supertest(appOneInstance.portal.expressApp);
+       request = supertest(appOneInstance.portalController.expressApp);
        const userInfo = {
          login: "safelogin",
          name: "safe user name",
@@ -219,7 +219,7 @@ describe("App", () => {
               expect(responseTwo.body).toBeDefined();
               expect(responseTwo.body.token).toBeDefined();
               expect(responseTwo.body.token).toBeString();
-              request = supertest(appOneInstance.portal.expressApp);
+              request = supertest(appOneInstance.portalController.expressApp);
               (request.get("/auth/session") as supertest.Test)
                 .set("token", responseTwo.body.token)
                 .expect(200)

@@ -1,80 +1,70 @@
 import * as ast from "@angstone/node-util";
-import {
-  Connection,
-  ICredentials
-} from "event-store-client";
-import { EventEmitter } from "events";
 import { error } from "./error";
-import { IFeatureLoaded, IViewLoaded, IEffectLoaded } from "./interfaces";
 
+import { Controller } from './controller';
 import { ReducerController } from './reducer_controller';
 
-// TODO: Create view controller and effect controller separated files
+import { IEventRead } from './interfaces';
+
+import {
+  CatchUpSubscriptionSettings,
+  Connection,
+  EventStoreStreamCatchUpSubscription,
+  ICredentials,
+  StoredEvent
+} from "event-store-client";
+import * as events from "events";
+
+// TODO: Create effect controller separated files
+// TODO: Test if reducerController and viewController was sharing watchers
 
 /**
  * Controlls the events toolchain
  */
-export class EventController {
+export class EventController extends Controller {
 
-  /**
-   * Stream of events read from event store
-   */
-  public eventRead$: EventEmitter;
-  /**
-   * Stream of events already reduced
-   */
-  public eventReduced$: EventEmitter;
-
-  /**
-   * Object to store all data from views that are required to
-   * be persisted across iterations within the reducer
-   */
-  public viewsData: any = {};
-
-  private initialRenders: Array<{
-    viewTag: string,
-    method: () => Promise<any>,
-  }> = [];
-  private watchers: Array<{
-    event: string,
-    views: Array<{
-      viewTag: string,
-      method: (lastData?: any, event?: any) => Promise<any>,
-    }>,
-  }> = [];
-
+  /*
   private effectWatchers: Array<{
+   /
     eventTrigger: string,
     effects: Array<{
       effectName: string,
       effectMethodRun: (eventNumber?: number | undefined, request?: any) => Promise<void>,
     }>,
   }> = [];
+  */
+
+  private static MAX_LIVE_QUEUE_SIZE: number = 10000;
+  private static READ_BATCH_SIZE: number = 500;
+
+  /**
+   * Stream of events read from event store
+   */
+  public static eventRead$: events.EventEmitter = new events.EventEmitter().setMaxListeners(Infinity);
+  /**
+   * Stream of events already reduced
+   */
+  public static eventReduced$: events.EventEmitter = new events.EventEmitter().setMaxListeners(Infinity);
+  /**
+  * If already read all past events and now are reducing live events
+  */
+  public static isStreamInLive: boolean = false;
 
   /**
    * Connection with Event Store
    */
-  private connection: Connection;
+  private connection: Connection | undefined;
 
-  public nextEventNumberToReduce: number = 0;
+  private eventStreamSubscription: EventStoreStreamCatchUpSubscription | undefined;
+
   public closed: boolean = false;
   private credentials: ICredentials;
-  private RENDER_REST_TIME: number = 10;
 
-  private rendering: boolean = false;
-  private lastTimeRendering: number = Date.now();
-
-  public reducerController: ReducerController;
-
-  private FREE_REST_TIME: number = 10;
+  public firstEventNumberToReduce: number = 0;
 
   constructor() {
+    super();
     ast.log("creating event controller");
-
-    this.eventRead$ = new EventEmitter();
-    this.eventRead$.setMaxListeners(Infinity);
-    this.eventReduced$ = new EventEmitter();
-    this.eventReduced$.setMaxListeners(Infinity);
 
     this.credentials = {
       password: process.env.EVENT_SOURCE_PASSWORD || "changeit",
@@ -83,13 +73,6 @@ export class EventController {
     ast.log("creating connection to event store");
     this.connection = this.createConnection();
     ast.log("event store connected");
-
-    this.reducerController = new ReducerController(
-      this.connection,
-      this.credentials,
-      this.eventRead$,
-      this.eventReduced$
-    );
   }
 
   /**
@@ -97,8 +80,8 @@ export class EventController {
    */
   public async stop() {
     ast.log("stoping event controller");
-    await this.reducerController.stop();
-    while ( ! await this.isFree() ) { await ast.delay(this.FREE_REST_TIME); }
+    await this.unsubscribeStream();
+    ast.log("usubscribed from stream");
     await this.closeConnection();
     ast.log("connection closed");
   }
@@ -108,64 +91,89 @@ export class EventController {
    */
   public async start() {
     ast.log("starting event controller");
-    ast.log("starting reducer");
-    await this.reducerController.start();
+    await this.calculateFirstEventNumberToReduce();
+    ast.log("reading past events from eventsource");
+    this.readAllPastEvents();
     ast.log("event controller ready");
   }
 
-  public loadFeatures(features: IFeatureLoaded[]) {
-    this.reducerController.loadReducers(features);
-    this.loadViews(features);
+  private readAllPastEvents() {
+    this.eventStreamSubscription = this.listenToFrom(
+      this.firstEventNumberToReduce,
+      (event: StoredEvent) => {
+        const eventRead: IEventRead = {
+          eventNumber: event.eventNumber,
+          request: event.data,
+        };
+        // console.log("this is an emit of: ", eventRead);
+        EventController.eventRead$.emit(event.eventType, eventRead);
+      },
+      (eventStoreStreamCatchUpSubscription: any, reason: string, errorFound: any) => {
+        if (reason !== "UserInitiated") {
+          error.op("eventstore subscription dropped due to " + reason,
+            errorFound,
+            eventStoreStreamCatchUpSubscription,
+          );
+        }
+      },
+      () => {
+        EventController.isStreamInLive = true;
+      },
+    );
   }
 
-  public loadViews(features: IFeatureLoaded[]) {
-    features.forEach((feature: IFeatureLoaded) => {
-      if (feature.views) {
-        feature.views.forEach((view: IViewLoaded) => {
+  /*
+    Executes a catch-up subscription on the given stream,
+    reading events from a given event number,
+    and continuing with a live subscription when all historical events have been read.
+  */
+  private listenToFrom(
+    fromEventNumber: number,
+    onEventAppeared: (event: StoredEvent) => void,
+    onDropped: (eventStoreCatchUpSubscription: any, reason: string, error: any) => void,
+    onLiveProcessingStarted: () => void,
+  ): EventStoreStreamCatchUpSubscription | undefined {
+    const streamId: string = process.env.EVENT_STREAM_NAME || "mono";
+    const settings: CatchUpSubscriptionSettings = {
+      debug: false, // process.env.NODE_ENV === "development",
+      maxLiveQueueSize: EventController.MAX_LIVE_QUEUE_SIZE,
+      readBatchSize: EventController.READ_BATCH_SIZE,
+      resolveLinkTos: false,
+    };
+    if( this.connection ) {
+      return this.connection.subscribeToStreamFrom(
+        streamId, // streamId - The name of the stream in the Event Store (string)
+        fromEventNumber, // fromEventNumber - Which event number to start after
+        this.credentials, // credentials - The user name and password needed for permission to subscribe to the stream.
+        onEventAppeared, // onEventAppeared - Callback for each event received (historical or live)
+        onLiveProcessingStarted, /* onLiveProcessingStarted - Callback when historical events have been read
+        and live events are about to be read.*/
+        onDropped, // onDropped - Callback when subscription drops or is dropped.
+        settings, // settings
+      );
+    }
+  }
 
-          this.viewsData[view.featureName + " " + view.viewName] = {};
-
-          if (view.renderUpdate && view.watchEvents) {
-            view.watchEvents.forEach((watchEvent: string) => {
-              const alreadyInitiatedWatcher = this.watchers.filter((watch) => {
-                return watch.event === watchEvent;
-              });
-              if ( alreadyInitiatedWatcher.length === 0 ) {
-                this.watchers.push({
-                  event: watchEvent,
-                  views: [],
-                });
-              }
-              this.watchers = this.watchers.map((watch) => {
-                if (watch.event === watchEvent) {
-                  watch.views.push({
-                    method: view.renderUpdate as (lastData?: any, event?: any) => Promise<any>,
-                    viewTag: view.featureName + " " + view.viewName,
-                  });
-                }
-                return watch;
-              });
-            });
-          }
-
-          if (view.renderInitial) {
-            this.initialRenders.push({
-              method: view.renderInitial,
-              viewTag: view.featureName + " " + view.viewName,
-            });
-          }
-
-        });
+  private unsubscribeStream(): Promise<void> {
+    return new Promise<void>((resolve) => {
+      if (this.eventStreamSubscription) {
+        this.eventStreamSubscription.stop();
+        this.eventStreamSubscription = undefined;
+        resolve();
+      } else {
+        resolve();
       }
     });
   }
 
+  /*
   loadEffects(features: IFeatureLoaded[]) {
+
 
     /**
      * TODO: create a function to subscribe for the eventTriggers in watchers
      * and a function to resolve all past events (in async start chain)
-     */
+     /
     features.forEach((feature: IFeatureLoaded) => {
 
       if(feature.effects) {
@@ -226,75 +234,7 @@ export class EventController {
     });
 
   }
-
-  /**
-   * check if it does not have ongoing tasks
-   * @return boolean
-   */
-  public async isFree(): Promise<boolean> {
-    return await this.reducerController.isFree() && await this.isRenderFree();
-  }
-
-  public async isRenderFree(): Promise<boolean> {
-    if (this.rendering) {
-      return false;
-    } else {
-      if ((Date.now() - this.lastTimeRendering) > 3 * this.RENDER_REST_TIME) {
-        return !this.rendering;
-      }
-      return false;
-    }
-  }
-
-  /**
-   * renders views
-   */
-  public async renderViews() {
-    this.rendering = true;
-    for (const initialRenderIndex in this.initialRenders) {
-      if (this.initialRenders[initialRenderIndex]) {
-        this.viewsData[ this.initialRenders[initialRenderIndex].viewTag ] =
-          await this.initialRenders[initialRenderIndex].method();
-      }
-    }
-    this.rendering = false;
-    this.lastTimeRendering = Date.now();
-
-    this.watchEvents();
-
-    await ast.delay(2);
-  }
-
-  /**
-
-   * watch for events
-   */
-  public watchEvents() {
-    this.watchers.forEach((watcher: {
-      event: string,
-      views: Array<{
-        viewTag: string,
-        method: (lastData?: any, event?: any) => Promise<any>,
-      }>,
-    }) => {
-      this.eventRead$.addListener(watcher.event, (event: {
-        eventNumber: number,
-        request: any,
-      }) => {
-        this.rendering = true;
-        watcher.views.forEach((view: {
-          viewTag: string,
-          method: (lastData?: any, event?: any) => Promise<any>,
-        }) => {
-          view.method(this.viewsData[view.viewTag], event).then((newData: any) => {
-            this.viewsData[view.viewTag] = newData;
-          });
-        });
-        this.lastTimeRendering = Date.now();
-        this.rendering = false;
-      });
-    });
-  }
+  */
 
   /**
    * Creates connection with Event Store
@@ -322,6 +262,7 @@ export class EventController {
         this.closed = true;
         if (this.connection) {
           this.connection.close();
+          this.connection = undefined;
           resolve();
         } else {
           resolve();
@@ -332,8 +273,10 @@ export class EventController {
     });
   }
 
-  public async completePastEventTasks() {
-    await this.reducerController.completePastReducing();
+  private async calculateFirstEventNumberToReduce() {
+    this.firstEventNumberToReduce = Math.min(...[
+      await ReducerController.getFirstEventNumberToReduce()
+    ]);
   }
 
 }

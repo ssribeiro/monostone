@@ -1,3 +1,4 @@
+import { IEventRead } from './';
 import { IAuthToken } from "../features/auth/interfaces/auth-token.i";
 
 /**
@@ -19,11 +20,11 @@ export interface IView {
   /**
    * Procedure to apply when any of the watched events appears
    */
-  renderUpdate?: (lastData?: any, event?: any) => Promise<any>;
+  renderUpdate?: (lastData: any, event: IEventRead) => Promise<any>;
   /**
    * data formatted to non-authenticated users
    */
-  renderPublic?: (data?: any) => Promise<any>;
+  renderPublic?: (data: any) => Promise<any>;
   /**
    * data formatted for authenticated users
    */
