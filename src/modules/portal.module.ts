@@ -128,7 +128,11 @@ const commandRequest = (command: ICommandLoaded): (
   res: express.Response,
 ) => void  => {
   return (req: express.Request, res: express.Response) => {
-    CommandTools.execute(command, req.body, ReducerModule.eventReduced$)
+    CommandTools.execute(
+      command,
+      req.body,
+      ReducerModule.getEventReducedStream()
+    )
       .then((ans: any) => res.status(200).send(ans))
       .catch((err: Error) => {
         ast.dev(err)
@@ -149,7 +153,7 @@ const viewRequest = (view: IViewLoaded): (
   res: express.Response,
 ) => void => {
 
-  const viewData = ViewModule.getViewData(view);
+  const viewData = ViewModule.getViewData(view)
 
   if (view.renderPrivate && !view.renderPublic) {
 

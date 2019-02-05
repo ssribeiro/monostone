@@ -220,7 +220,7 @@ describe("App", () => {
               expect(responseTwo.body).toBeDefined();
               expect(responseTwo.body.token).toBeDefined();
               expect(responseTwo.body.token).toBeString();
-              request = supertest(PortalModule.getExpressApp());
+              // request = supertest(PortalModule.getExpressApp());
               (request.get("/auth/session") as supertest.Test)
                 .set("token", responseTwo.body.token)
                 .expect(200)

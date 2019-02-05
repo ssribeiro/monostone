@@ -118,7 +118,7 @@ const renderInitialViews = async () => {
 const watchEvents = () => {
   state.viewWatchers.forEach((watcher: IViewWatcher) => {
 
-    EventModule.eventRead$.addListener(
+    EventModule.getEventReadStream().addListener(
       watcher.event,
       (eventRead: IEventRead) => {
         state.rendering = true

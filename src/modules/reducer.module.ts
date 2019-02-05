@@ -2,7 +2,7 @@ import * as ast from "@angstone/node-util"
 import { error } from "../error"
 import { BasicModule, EventModule } from './'
 
-import * as events from "events";
+import { EventEmitter } from "events";
 
 import {
   ICommandLoaded,
@@ -31,14 +31,13 @@ interface IReducerModuleState {
   reducing: boolean;
   lastTimeReducing: number;
   moduleStopped: boolean;
+  eventReduced$: EventEmitter;
 }
 
 const REDUCER_CONTROLLER_NAME: string = "reducer_control"
 const REDUCER_REST_TIME: number = 10
 const SECURITY_TIME_DELAY_FOR_EMIT_REDUCED: number = 3
 
-const eventReduced$: events.EventEmitter = new events.EventEmitter()
-  .setMaxListeners(Infinity)
 
 const state: IReducerModuleState = {
   firstEventNumberToReduce: 0,
@@ -47,6 +46,7 @@ const state: IReducerModuleState = {
   reducing: false,
   lastTimeReducing: Date.now(),
   moduleStopped: false,
+  eventReduced$: new EventEmitter().setMaxListeners(Infinity),
 }
 
 const config = () => {
@@ -56,6 +56,7 @@ const config = () => {
   state.reducing = false
   state.lastTimeReducing = Date.now()
   state.moduleStopped = false
+  state.eventReduced$ = new EventEmitter().setMaxListeners(Infinity)
 }
 
 const loadFeatures = async (features: IFeatureLoaded[]) => {
@@ -65,7 +66,7 @@ const loadFeatures = async (features: IFeatureLoaded[]) => {
         if (command.reducer !== undefined) {
           state.reducers[command.commandType] = {
             reducer: command.reducer,
-            subscription: EventModule.eventRead$.addListener(
+            subscription: EventModule.getEventReadStream().addListener(
               command.commandType,
               ((eventRead: IEventRead,
             ) => {
@@ -139,7 +140,7 @@ const reduce = async () => {
       })
       await reduceMarkEnd(reduceRecipe.eventRead.eventNumber)
       setTimeout(() => {
-        eventReduced$.emit(
+        state.eventReduced$.emit(
           reduceRecipe.commandType,
           reduceRecipe.eventRead
         )
@@ -191,13 +192,15 @@ const isFree = async (): Promise<boolean> => {
   }
 }
 
+const getEventReducedStream = (): EventEmitter => state.eventReduced$
+
 export const ReducerModule = {
   ...BasicModule,
   config,
   loadFeatures,
   start,
   stop,
-  eventReduced$,
+  getEventReducedStream,
   isFree,
   getFirstEventNumberToReduce
 }

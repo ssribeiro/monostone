@@ -8,7 +8,7 @@ import { error } from "../error"
 import { BasicModule, ReducerModule } from './'
 import { IEventRead } from '../interfaces'
 
-import * as events from "events";
+import { EventEmitter } from "events";
 import {
   CatchUpSubscriptionSettings,
   Connection,
@@ -24,13 +24,11 @@ interface IEventModuleState {
   eventStreamSubscription: EventStoreStreamCatchUpSubscription | undefined;
   firstEventNumberToReduce: number;
   moduleClosed: boolean;
+  eventRead$: EventEmitter;
 }
 
 const MAX_LIVE_QUEUE_SIZE: number = 10000
 const READ_BATCH_SIZE: number = 500
-
-const eventRead$: events.EventEmitter = new events.EventEmitter()
-  .setMaxListeners(Infinity)
 
 const state: IEventModuleState = {
   isStreamInLive: false,
@@ -39,6 +37,7 @@ const state: IEventModuleState = {
   eventStreamSubscription: undefined,
   firstEventNumberToReduce: 0,
   moduleClosed: false,
+  eventRead$: new EventEmitter().setMaxListeners(Infinity),
 }
 
 const config = () => {
@@ -47,6 +46,7 @@ const config = () => {
   state.eventStreamSubscription = undefined
   state.firstEventNumberToReduce = 0
   state.moduleClosed = false
+  state.eventRead$ = new EventEmitter().setMaxListeners(Infinity)
   state.credentials = {
     password: process.env.EVENT_SOURCE_PASSWORD || "changeit",
     username: process.env.EVENT_SOURCE_USERNAME || "admin",
@@ -135,7 +135,7 @@ const readAllPastEvents = () => {
         request: event.data,
       }
       // console.log("this is an emit of: ", eventRead);
-      eventRead$.emit(event.eventType, eventRead)
+      state.eventRead$.emit(event.eventType, eventRead)
     },
     (eventStoreStreamCatchUpSubscription: any, reason: string, errorFound: any) => {
       if (reason !== "UserInitiated") {
@@ -184,12 +184,13 @@ const listenToFrom = (
 }
 
 const isStreamInLive = (): boolean => state.isStreamInLive
+const getEventReadStream = (): EventEmitter => state.eventRead$
 
 export const EventModule = {
   ...BasicModule,
   config,
   start,
   stop,
-  eventRead$,
+  getEventReadStream,
   isStreamInLive,
 }
