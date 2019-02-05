@@ -56,7 +56,7 @@ describe("App", () => {
      process.env.MONGO_DATABASE = "dev100";
      appOneInstance = new App();
      appOneInstance.start().then(() => {
-       request = supertest(PortalModule.state.expressApp);
+       request = supertest(PortalModule.getExpressApp());
        const userInfo = {
          login: "user_tworun_login",
          name: "user two",
@@ -79,7 +79,7 @@ describe("App", () => {
      process.env.MONGO_DATABASE = "dev101";
      appOneInstance = new App();
      appOneInstance.start().then(() => {
-       request = supertest(PortalModule.state.expressApp);
+       request = supertest(PortalModule.getExpressApp());
        const userInfo = {
          login: "Bixrun_deny",
          name: "user Bix",
@@ -106,7 +106,7 @@ describe("App", () => {
       process.env.MONGO_DATABASE = "dev101";
       appOneInstance = new App();
       appOneInstance.start().then(() => {
-        request = supertest(PortalModule.state.expressApp);
+        request = supertest(PortalModule.getExpressApp());
         const userInfo = {
           login: "onerun_second_login",
           name: "One Run Second",
@@ -129,7 +129,7 @@ describe("App", () => {
       process.env.MONGO_DATABASE = "dev101";
       appOneInstance = new App();
       appOneInstance.start().then(() => {
-        request = supertest(PortalModule.state.expressApp);
+        request = supertest(PortalModule.getExpressApp());
         const userInfo = {
           login: "Second_Bixrun_deny",
           name: "user Bix",
@@ -318,7 +318,7 @@ describe("App", () => {
      process.env.MONGO_DATABASE = "dev102";
      appOneInstance = new App();
      appOneInstance.start().then(() => {
-       request = supertest(PortalModule.state.expressApp);
+       request = supertest(PortalModule.getExpressApp());
        const dones: boolean[] = [];
        for (let i = 0; i < users.length; i++) {
          dones[i] = false;
@@ -359,7 +359,7 @@ describe("App", () => {
      process.env.MONGO_DATABASE = "dev103";
      appOneInstance = new App();
      appOneInstance.start().then(() => {
-       request = supertest(PortalModule.state.expressApp);
+       request = supertest(PortalModule.getExpressApp());
        const dones: boolean[] = [];
        for (let i = 0; i < denyUsers.length; i++) {
          dones[i] = false;

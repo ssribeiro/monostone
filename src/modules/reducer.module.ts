@@ -66,7 +66,7 @@ const loadFeatures = async (features: IFeatureLoaded[]) => {
         if (command.reducer !== undefined) {
           state.reducers[command.commandType] = {
             reducer: command.reducer,
-            subscription: EventModule.state.eventRead$.addListener(
+            subscription: EventModule.getEventReadStream().addListener(
               command.commandType,
               ((eventRead: IEventRead,
             ) => {
@@ -171,7 +171,7 @@ const reduceMarkEnd = async (eventNumber: number) => {
  * await all past events to be reduced
  */
 const completePastReducing = async () => {
-  while ( !(state.eventStack.length === 0 && EventModule.state.isStreamInLive) ) {
+  while ( !(state.eventStack.length === 0 && EventModule.isStreamInLive()) ) {
     await new Promise<void>((resolve) => {
       setTimeout(resolve, REDUCER_REST_TIME * 5)
     })
@@ -192,7 +192,7 @@ const isFree = async (): Promise<boolean> => {
   }
 }
 
-// const getEventReducedStream = (): EventEmitter => state.eventReduced$
+const getEventReducedStream = (): EventEmitter => state.eventReduced$
 
 export const ReducerModule = {
   ...BasicModule,
@@ -202,5 +202,5 @@ export const ReducerModule = {
   stop,
   isFree,
   getFirstEventNumberToReduce,
-  state
+  getEventReducedStream
 }

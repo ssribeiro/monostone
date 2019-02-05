@@ -131,7 +131,7 @@ const commandRequest = (command: ICommandLoaded): (
     CommandTools.execute(
       command,
       req.body,
-      ReducerModule.state.eventReduced$
+      ReducerModule.getEventReducedStream()
     )
       .then((ans: any) => res.status(200).send(ans))
       .catch((err: Error) => {
@@ -261,14 +261,12 @@ const stop = (): Promise<void> => {
   })
 }
 
-/*
 const getExpressApp = (): express.Express => state.expressApp
 const getApiPort = (): number => state.apiPort
 const setApiPort = (newApiPort: number) => {
   state.apiPort = newApiPort
   config()
 }
-*/
 
 export const PortalModule = {
   ...BasicModule,
@@ -276,5 +274,7 @@ export const PortalModule = {
   loadFeatures,
   start,
   stop,
-  state
+  getExpressApp,
+  getApiPort,
+  setApiPort
 }

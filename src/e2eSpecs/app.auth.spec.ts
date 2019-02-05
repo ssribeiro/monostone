@@ -50,7 +50,7 @@ describe("App", () => {
      process.env.MONGO_DATABASE = "dev5001";
      appOneInstance = new App();
      appOneInstance.start().then(() => {
-       request = supertest(PortalModule.state.expressApp);
+       request = supertest(PortalModule.getExpressApp());
        const userInfo = {
          login: "logmeiamanuser",
          name: "Some USer Tobeloged",

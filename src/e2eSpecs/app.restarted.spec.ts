@@ -21,7 +21,7 @@ describe("App", () => {
      i++;
      appRestarted = new App();
      appRestarted.start().then(() => {
-       request = supertest(PortalModule.state.expressApp);
+       request = supertest(PortalModule.getExpressApp());
        done();
      });
    });
@@ -93,7 +93,7 @@ describe("App", () => {
          appRestarted.stop().then(() => {
            appRestarted = new App();
            appRestarted.start().then(() => {
-             request = supertest(PortalModule.state.expressApp);
+             request = supertest(PortalModule.getExpressApp());
              (request.post("/auth/signup") as supertest.Test)
                .send(userInfo)
                .expect(400, messages.LOGIN_TAKEN, done);
@@ -140,7 +140,7 @@ describe("App", () => {
            expect(response.body.userId).toBeGreaterThan(1);
            appRestarted.stop().then(() => {
              appRestarted = new App();
-             request = supertest(PortalModule.state.expressApp);
+             request = supertest(PortalModule.getExpressApp());
              appRestarted.start().then(() => {
                (request.post("/auth/signup") as supertest.Test)
                  .send(userInfo)
