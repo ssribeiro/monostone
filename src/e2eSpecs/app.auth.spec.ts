@@ -3,6 +3,7 @@ import "jasmine-expect";
 import * as supertest from "supertest";
 
 import { App } from "../app";
+import { PortalModule } from '../modules';
 
 import * as jwt from "jsonwebtoken";
 
@@ -49,7 +50,7 @@ describe("App", () => {
      process.env.MONGO_DATABASE = "dev5001";
      appOneInstance = new App();
      appOneInstance.start().then(() => {
-       request = supertest(appOneInstance.portalController.expressApp);
+       request = supertest(PortalModule.expressApp);
        const userInfo = {
          login: "logmeiamanuser",
          name: "Some USer Tobeloged",

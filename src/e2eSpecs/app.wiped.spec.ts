@@ -2,6 +2,7 @@ import "jasmine-expect";
 import * as supertest from "supertest";
 
 import { App } from "../app";
+import { PortalModule } from '../modules';
 import { features as basicFeatures } from "../features/optional.index";
 import { messages } from "../features/auth/commands/signup/signup.messages";
 import { FeatureTools } from "../tools";
@@ -24,7 +25,7 @@ describe("App", () => {
         appWiped.systemTools.dbDrop().then(() => {
           appWiped.systemTools.eventClear().then(() => {
             appWiped.start().then(() => {
-              request = supertest(appWiped.portalController.expressApp);
+              request = supertest(PortalModule.expressApp);
               done();
             });
           });
@@ -50,9 +51,9 @@ describe("App", () => {
 
     it("should load the apiPort", () => {
       if (process.env.API_PORT) {
-        expect(appWiped.portalController.apiPort).toBe(+process.env.API_PORT);
+        expect(PortalModule.apiPort).toBe(+process.env.API_PORT);
       } else {
-        expect(appWiped.portalController.apiPort).toBe(3002);
+        expect(PortalModule.apiPort).toBe(3002);
       }
     });
 

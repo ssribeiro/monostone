@@ -8,6 +8,7 @@ import { IEventRead } from "./event-read.i";
 import { IEventRecipe } from "./event-recipe.i";
 import { IFeature } from "./feature.i";
 import { IFeatureLoaded } from "./feature-loaded.i";
+import { IMonoModule } from "./mono-module.i";
 import { IReducer } from "./reducer.i";
 import { IRule } from "./rule.i";
 import { IView } from "./view.i";
@@ -27,5 +28,6 @@ export {
   IEventRead,
   IEventRecipe,
   IEffect,
-  IEffectLoaded
+  IEffectLoaded,
+  IMonoModule,
 };

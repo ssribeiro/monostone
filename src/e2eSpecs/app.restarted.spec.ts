@@ -2,6 +2,7 @@ import "jasmine-expect";
 import * as supertest from "supertest";
 
 import { App } from "../app";
+import { PortalModule } from '../modules';
 import { messages } from "../features/auth/commands/signup/signup.messages";
 
 describe("App", () => {
@@ -19,7 +20,7 @@ describe("App", () => {
      i++;
      appRestarted = new App();
      appRestarted.start().then(() => {
-       request = supertest(appRestarted.portalController.expressApp);
+       request = supertest(PortalModule.expressApp);
        done();
      });
    });
@@ -90,7 +91,7 @@ describe("App", () => {
          appRestarted.stop().then(() => {
            appRestarted = new App();
            appRestarted.start().then(() => {
-             request = supertest(appRestarted.portalController.expressApp);
+             request = supertest(PortalModule.expressApp);
              (request.post("/auth/signup") as supertest.Test)
                .send(userInfo)
                .expect(400, messages.LOGIN_TAKEN, done);
@@ -137,7 +138,7 @@ describe("App", () => {
            expect(response.body.userId).toBeGreaterThan(1);
            appRestarted.stop().then(() => {
              appRestarted = new App();
-             request = supertest(appRestarted.portalController.expressApp);
+             request = supertest(PortalModule.expressApp);
              appRestarted.start().then(() => {
                (request.post("/auth/signup") as supertest.Test)
                  .send(userInfo)

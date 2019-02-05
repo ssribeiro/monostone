@@ -4,6 +4,7 @@ import "jasmine-expect";
 import * as supertest from "supertest";
 
 import { App } from "../app";
+import { PortalModule } from '../modules';
 import { messages } from "../features/auth/commands/signup/signup.messages";
 
 describe("App", () => {
@@ -55,7 +56,7 @@ describe("App", () => {
      process.env.MONGO_DATABASE = "dev100";
      appOneInstance = new App();
      appOneInstance.start().then(() => {
-       request = supertest(appOneInstance.portalController.expressApp);
+       request = supertest(PortalModule.expressApp);
        const userInfo = {
          login: "user_tworun_login",
          name: "user two",
@@ -78,7 +79,7 @@ describe("App", () => {
      process.env.MONGO_DATABASE = "dev101";
      appOneInstance = new App();
      appOneInstance.start().then(() => {
-       request = supertest(appOneInstance.portalController.expressApp);
+       request = supertest(PortalModule.expressApp);
        const userInfo = {
          login: "Bixrun_deny",
          name: "user Bix",
@@ -105,7 +106,7 @@ describe("App", () => {
       process.env.MONGO_DATABASE = "dev101";
       appOneInstance = new App();
       appOneInstance.start().then(() => {
-        request = supertest(appOneInstance.portalController.expressApp);
+        request = supertest(PortalModule.expressApp);
         const userInfo = {
           login: "onerun_second_login",
           name: "One Run Second",
@@ -128,7 +129,7 @@ describe("App", () => {
       process.env.MONGO_DATABASE = "dev101";
       appOneInstance = new App();
       appOneInstance.start().then(() => {
-        request = supertest(appOneInstance.portalController.expressApp);
+        request = supertest(PortalModule.expressApp);
         const userInfo = {
           login: "Second_Bixrun_deny",
           name: "user Bix",
@@ -317,7 +318,7 @@ describe("App", () => {
      process.env.MONGO_DATABASE = "dev102";
      appOneInstance = new App();
      appOneInstance.start().then(() => {
-       request = supertest(appOneInstance.portalController.expressApp);
+       request = supertest(PortalModule.expressApp);
        const dones: boolean[] = [];
        for (let i = 0; i < users.length; i++) {
          dones[i] = false;
@@ -358,7 +359,7 @@ describe("App", () => {
      process.env.MONGO_DATABASE = "dev103";
      appOneInstance = new App();
      appOneInstance.start().then(() => {
-       request = supertest(appOneInstance.portalController.expressApp);
+       request = supertest(PortalModule.expressApp);
        const dones: boolean[] = [];
        for (let i = 0; i < denyUsers.length; i++) {
          dones[i] = false;

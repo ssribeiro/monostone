@@ -6,6 +6,7 @@ import * as supertest from "supertest";
 import { messages } from "../features/auth/messages";
 
 import { App } from "../app";
+import { PortalModule } from '../modules';
 
 describe("App", () => {
 
@@ -136,7 +137,7 @@ describe("App", () => {
      process.env.MONGO_DATABASE = "dev4001";
      appOneInstance = new App();
      appOneInstance.start().then(() => {
-       request = supertest(appOneInstance.portalController.expressApp);
+       request = supertest(PortalModule.expressApp);
        const dones: boolean[] = [];
        for (let i = 0; i < users.length; i++) {
          dones[i] = false;
@@ -179,7 +180,7 @@ describe("App", () => {
      process.env.MONGO_DATABASE = "dev4001";
      appOneInstance = new App();
      appOneInstance.start().then(() => {
-       request = supertest(appOneInstance.portalController.expressApp);
+       request = supertest(PortalModule.expressApp);
        (request.get("/auth/session") as supertest.Test)
          .expect(401, messages.NO_TOKEN_PROVIDED)
          .then(() => {
@@ -193,7 +194,7 @@ describe("App", () => {
      process.env.MONGO_DATABASE = "dev4001";
      appOneInstance = new App();
      appOneInstance.start().then(() => {
-       request = supertest(appOneInstance.portalController.expressApp);
+       request = supertest(PortalModule.expressApp);
        const userInfo = {
          login: "safelogin",
          name: "safe user name",
@@ -219,7 +220,7 @@ describe("App", () => {
               expect(responseTwo.body).toBeDefined();
               expect(responseTwo.body.token).toBeDefined();
               expect(responseTwo.body.token).toBeString();
-              request = supertest(appOneInstance.portalController.expressApp);
+              request = supertest(PortalModule.expressApp);
               (request.get("/auth/session") as supertest.Test)
                 .set("token", responseTwo.body.token)
                 .expect(200)

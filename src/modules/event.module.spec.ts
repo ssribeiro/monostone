@@ -1,9 +1,9 @@
 import "jasmine";
 import "jasmine-expect";
 
-import { EventController } from "./event_controller";
-import * as SystemCommands from "./system_commands";
-import { EventTools } from "./tools";
+import { EventModule } from "./";
+import * as SystemCommands from "../system_commands";
+import { EventTools } from "../tools";
 
 describe("EventController", () => {
 
@@ -14,8 +14,8 @@ describe("EventController", () => {
   });
 
   it("should be created", () => {
-    const eventController: EventController = new EventController();
-    expect(eventController).toBeDefined();
+    EventModule.config();
+    expect(EventModule).toBeDefined();
   });
 
 });
