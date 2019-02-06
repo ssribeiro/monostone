@@ -4,7 +4,7 @@
 
 import * as ast from "@angstone/node-util"
 import { error } from "../error"
-import { BasicModule, ReducerModule } from './'
+import { BasicModule, ReducerModule, EffectModule } from './'
 import { IEventRead } from '../interfaces'
 import { EventEmitter } from "events";
 import {
@@ -120,7 +120,8 @@ const start = async () => {
 
 const calculateFirstEventNumberToReduce = async () => {
   state.firstEventNumberToReduce = Math.min(...[
-    await ReducerModule.getFirstEventNumberToReduce()
+    await ReducerModule.getFirstEventNumberToReduce(),
+    await EffectModule.getFirstEventNumberToEffect(),
   ]);
 }
 

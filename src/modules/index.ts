@@ -13,11 +13,3 @@ export {
   ViewModule,
   EffectModule,
 }
-
-export const MonoModules = [
-  EventModule,
-  ReducerModule,
-  ViewModule,
-  EffectModule,
-  PortalModule
-];

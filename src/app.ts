@@ -9,7 +9,8 @@ import {
   EventModule,
   PortalModule,
   ReducerModule,
-  ViewModule
+  ViewModule,
+  EffectModule
 } from "./modules"
 // import { CronjobController } from "./cronjob_controller";
 // framework store
@@ -58,7 +59,7 @@ export class App {
       ReducerModule,
       ViewModule,
       PortalModule,
-      // this.cronjobController
+      EffectModule,
     ]
 
     this.monoModules.forEach(monoModule => monoModule.config())

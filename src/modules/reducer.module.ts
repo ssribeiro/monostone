@@ -1,3 +1,5 @@
+// TODO: Make a field on reducer to tell how to recover from reducer error in db
+
 import * as ast from "@angstone/node-util"
 import { error } from "../error"
 import { BasicModule, EventModule } from './'
@@ -68,11 +70,13 @@ const loadFeatures = async (features: IFeatureLoaded[]) => {
               command.commandType,
               ((eventRead: IEventRead,
             ) => {
-              state.eventStack.push({
-                commandType: command.commandType,
-                eventRead,
-                reducer: command.reducer,
-              })
+              if( eventRead.eventNumber > state.firstEventNumberToReduce ) {
+                state.eventStack.push({
+                  commandType: command.commandType,
+                  eventRead,
+                  reducer: command.reducer,
+                })
+              }
             })),
           }
         }
