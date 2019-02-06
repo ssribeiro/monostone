@@ -182,6 +182,9 @@ const listenToFrom = (
 }
 
 const isStreamInLive = (): boolean => state.isStreamInLive
+const awaitStreamInLive = async (): Promise<void> => {
+  while (!state.isStreamInLive) { await ast.delay(10) }
+}
 const getEventReadStream = (): EventEmitter => state.eventRead$
 
 export const EventModule = {
@@ -190,5 +193,6 @@ export const EventModule = {
   start,
   stop,
   isStreamInLive,
+  awaitStreamInLive,
   getEventReadStream
 }

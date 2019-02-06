@@ -18,5 +18,5 @@ export interface IEffectLoaded {
   /**
    * effect task to be executed
    */
-  run: (eventNumber?: number, request?: any) => Promise<void>;
+  run: (eventNumber: number, request: any) => Promise<void>;
 }

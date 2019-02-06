@@ -58,8 +58,8 @@ export class App {
       EventModule,
       ReducerModule,
       ViewModule,
-      PortalModule,
       EffectModule,
+      PortalModule,
     ]
 
     this.monoModules.forEach(monoModule => monoModule.config())
