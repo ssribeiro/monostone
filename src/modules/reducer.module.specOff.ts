@@ -9,7 +9,7 @@ import { EventTools, FeatureTools } from "../tools";
 
 describe("ReducerModule", () => {
 
-  const TIME_DELAY = 100;
+  const TIME_DELAY = 250;
 
   it("should load reducers", () => {
     EventModule.config();

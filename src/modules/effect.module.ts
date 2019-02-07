@@ -48,12 +48,12 @@ interface IEffectModuleState {
   lastTimeSolving: number
 }
 
-const EFFECT_CONTROLLER_NAME: string = "effect_control"
-const EFFECT_REST_TIME: number = 100
-const MAX_TASKS_AT_TIME: number = 30
+const EFFECT_CONTROLLER_NAME: string = "effect_control";
+const EFFECT_REST_TIME: number = 100;
+const MAX_TASKS_AT_TIME: number = 30;
 const MAX_TASK_ATTEMPTS: number = 3
 const TIME_BETWEEN_ATTEMPTS: number = 250
-const STACK_FULLFILL_STABILITY_REST_TIME: number = 10
+const STACK_FULLFILL_STABILITY_REST_TIME: number = 100
   // process.env.NODE_ENV == 'development' ? 10 : 200
 const EFFECT_DONE_EVENT_TYPE: string =
   SystemCommands.effectDone.featureName + ' ' +
@@ -141,6 +141,7 @@ const makeShureTriggerIsSigned = (commandTrigger: string) => {
 }
 
 const start = async () => {
+
   fullfillStackOfEffectsToSolve()
 
   await EventModule.awaitStreamInLive()
@@ -247,78 +248,91 @@ const fullfillStackOfEffectsToSolve = () => {
 }
 
 const solve = async () => {
+  // console.log('solve called at '+Date.now())
+
   if(
     state.effectsToSolve.length !== 0 &&
-    !state.moduleStopped
+    !state.moduleStopped &&
+    !state.solving
   ) {
+    // console.log('effectsToSolve before the solve '+Date.now())
+    // console.log(state.effectsToSolve)
     state.solving = true
+
     await new Promise<void>((resolveParallel) => {
       asyncFunctions.parallelLimit(
-        state.effectsToSolve.map(effectToSolve => {
-          return async (): Promise<void> => {
-            return new Promise<void>((resolve) => {
-
-              effectToSolve.effectMethod(
-                effectToSolve.eventRead.eventNumber,
-                effectToSolve.eventRead.request
-              ).then(() => {
-                const request: IEffectDoneInfo = {
-                  eventNumber: effectToSolve.eventRead.eventNumber,
-                  effectName: effectToSolve.effectName
-                }
-                EventTools.send({
-                  command: SystemCommands.effectDone, request
-                }).then(() => {
-                  takeEffectFromToSolveStack(effectToSolve)
-                  resolve()
-                }).catch((sendError: Error | string) => {
-                  dealWithDoubleEffectError(effectToSolve, sendError)
-                  resolve()
-                })
-              }).catch((e: any) => {
-                console.log(e)
-                dealWithSolvingError(effectToSolve, e)
-                if(effectToSolve.attempts < MAX_TASK_ATTEMPTS) {
-                  countEffectToSolveAttempt(effectToSolve)
-                  takeEffectFromToSolveStack(effectToSolve)
-
-                  setTimeout(() => {
-                    putEffectInSolveStack(effectToSolve)
-                  }, TIME_BETWEEN_ATTEMPTS)
-
-                  resolve()
-                } else {
-                  takeEffectFromToSolveStack(effectToSolve)
-
-                  const request: IEffectFailedInfo = {
-                    eventNumber: effectToSolve.eventRead.eventNumber,
-                    effectName: effectToSolve.effectName,
-                    attempts: effectToSolve.attempts + 1
-                  }
-                  EventTools.send({
-                    command: SystemCommands.effectFailed, request
-                  }).then(() => {
-                    resolve()
-                  }).catch((sendError: Error | string) => {
-                    error.op(sendError)
-                    resolve()
-                  })
-                }
-              })
-
+        state.effectsToSolve.map(effectToSolve => (callback: (e: any) => void ) => {
+          effectToSolve.effectMethod(
+            effectToSolve.eventRead.eventNumber,
+            effectToSolve.eventRead.request
+          ).then(() => {
+            const request: IEffectDoneInfo = {
+              eventNumber: effectToSolve.eventRead.eventNumber,
+              effectName: effectToSolve.effectName
+            }
+            EventTools.send({
+              command: SystemCommands.effectDone, request
+            }).then(() => {
+              // console.log('solved '+effectToSolve.eventRead.eventNumber+' at '+Date.now())
+              takeEffectFromToSolveStack(effectToSolve)
+              // console.log('effectsToSolve after this solve')
+              // console.log(state.effectsToSolve)
+              callback(null)
+            }).catch((sendError: Error | string) => {
+              dealWithDoubleEffectError(effectToSolve, sendError)
+              callback(null)
             })
-          }
+          }).catch((e: any) => {
+            dealWithSolvingError(effectToSolve, e)
+            if(effectToSolve.attempts < MAX_TASK_ATTEMPTS) {
+              countEffectToSolveAttempt(effectToSolve)
+              takeEffectFromToSolveStack(effectToSolve)
+
+              setTimeout(() => {
+                putEffectInSolveStack(effectToSolve)
+              }, TIME_BETWEEN_ATTEMPTS)
+
+              callback(null)
+            } else {
+              takeEffectFromToSolveStack(effectToSolve)
+
+              const request: IEffectFailedInfo = {
+                eventNumber: effectToSolve.eventRead.eventNumber,
+                effectName: effectToSolve.effectName,
+                attempts: effectToSolve.attempts + 1
+              }
+              EventTools.send({
+                command: SystemCommands.effectFailed, request
+              }).then(() => {
+                callback(null)
+              }).catch((sendError: Error | string) => {
+                error.op(sendError)
+                callback(null)
+              })
+            }
+          })
         }),
         MAX_TASKS_AT_TIME,
         () => {
           state.solving = false
-          resolveParallel()
+          console.log('NOW IT IS '+Date.now())
+          ast.delay(EFFECT_REST_TIME).then(() => {
+            if ( !state.moduleStopped ) { solve() }
+            console.log('AFTER IT IS '+Date.now())
+            resolveParallel()
+          })
         }
       )
     })
+
+  } else {
+
+    console.log('NOW IT IS '+Date.now())
+    await ast.delay(EFFECT_REST_TIME)
+    if ( !state.moduleStopped ) { solve() }
+    console.log('AFTER IT IS '+Date.now())
+
   }
-  await ast.delay(EFFECT_REST_TIME)
-  if ( !state.moduleStopped ) { solve() }
 }
 
 const putEffectInSolveStack = (effectToSolve: IEffectToSolve) => {
@@ -326,11 +340,16 @@ const putEffectInSolveStack = (effectToSolve: IEffectToSolve) => {
 }
 
 const takeEffectFromToSolveStack = (effectToTake: IEffectToSolve) => {
+  console.log('effectToSolve before:')
+  console.log(state.effectsToSolve)
   state.effectsToSolve =
     state.effectsToSolve.filter(effectToSolve =>
       effectToSolve.eventRead.eventNumber !=
         effectToTake.eventRead.eventNumber
     )
+  console.log('effectToSolve after:')
+  console.log(state.effectsToSolve)
+  console.log('tooked of '+effectToTake.eventRead.eventNumber+' at '+Date.now())
 }
 
 const countEffectToSolveAttempt = (effectToCount: IEffectToSolve) => {
