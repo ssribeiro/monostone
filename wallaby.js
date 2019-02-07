@@ -32,6 +32,9 @@ module.exports = function (w) {
     testFramework: 'jasmine',
 
     setup: (w) => {
+      const fs = require('fs');
+      fs.copyFileSync(w.localProjectDir+'/.env', w.projectCacheDir + '/.env');
+
       Object.keys(require.cache).filter(k => k.indexOf('jasmine-expect') >= 0)
         .forEach((k) => { delete require.cache[k]; });
 

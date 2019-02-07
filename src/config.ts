@@ -13,5 +13,4 @@ const defaultFilePath = `${__dirname}/../.env`;
 export const config = (configRecipe?: IConfigRecipe) => {
   if (!configRecipe) { configRecipe = {}; }
   dotenv.config({ path: configRecipe.filePath || defaultFilePath });
-  console.log(process.env.NODE_ENV)
 };
