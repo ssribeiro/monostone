@@ -9,7 +9,7 @@ import { EventTools, FeatureTools } from "../tools";
 
 describe("ReducerModule", () => {
 
-  const TIME_DELAY = 250;
+  const TIME_DELAY = 100;
 
   it("should load reducers", () => {
     EventModule.config();
@@ -53,9 +53,11 @@ describe("ReducerModule", () => {
          connectStore().then(() => {
            EventModule.start().then(() => {
              ReducerModule.start().then(() => {
-               ReducerModule.stop().then(() => {
-                 EventModule.stop().then(done);
-               });
+               setTimeout(() => {
+                 ReducerModule.stop().then(() => {
+                   EventModule.stop().then(done);
+                 });
+               }, TIME_DELAY);
              });
            });
          });
