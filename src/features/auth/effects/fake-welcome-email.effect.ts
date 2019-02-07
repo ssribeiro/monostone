@@ -1,7 +1,7 @@
 // import * as ast from "@angstone/node-util";
 // import { db } from "../../../store";
 
-import { IEffect } from "interfaces";
+import { IEffect } from "../../../interfaces";
 
 import * as fs from 'fs';
 // import * as path from 'path';

@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>&quot;appSpecs/app.wiped.spec&quot; | monostone</title>
+	<title>&quot;modules/effect.module&quot; | @angstone/monostone</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<style type="text/css">/*! normalize.css v1.1.3 | MIT License | git.io/normalize */
@@ -879,7 +879,7 @@ img { max-width: 100%; }
 		<div class="container">
 			<div class="table-wrap">
 				<div class="table-cell">
-					<strong><a href="../index.html">monostone</a></strong>
+					<strong><a href="../index.html">@angstone/monostone</a></strong>
 				</div>
 				<div class="table-cell" id="tsd-widgets">
 					<div id="tsd-filter">
@@ -909,10 +909,871 @@ img { max-width: 100%; }
 </header>
 <nav class="tsd-navigation secondary">
 	<ul>
+		<li class=" tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported">
+			<a href="../interfaces/_modules_effect_module_.ieffectdoneinfo.html" class="tsd-kind-icon">IEffect<wbr>Done<wbr>Info</a>
+		</li>
+		<li class=" tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported">
+			<a href="../interfaces/_modules_effect_module_.ieffectfailedinfo.html" class="tsd-kind-icon">IEffect<wbr>Failed<wbr>Info</a>
+		</li>
+		<li class=" tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported">
+			<a href="../interfaces/_modules_effect_module_.ieffectmodulestate.html" class="tsd-kind-icon">IEffect<wbr>Module<wbr>State</a>
+		</li>
+		<li class=" tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported">
+			<a href="../interfaces/_modules_effect_module_.ieffecttorun.html" class="tsd-kind-icon">IEffect<wbr>ToRun</a>
+		</li>
+		<li class=" tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported">
+			<a href="../interfaces/_modules_effect_module_.ieffecttosolve.html" class="tsd-kind-icon">IEffect<wbr>ToSolve</a>
+		</li>
+		<li class=" tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported">
+			<a href="../interfaces/_modules_effect_module_.ieffectwatcher.html" class="tsd-kind-icon">IEffect<wbr>Watcher</a>
+		</li>
+		<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+			<a href="_modules_effect_module_.html#effect_controller_name" class="tsd-kind-icon">EFFECT_<wbr>CONTROLLER_<wbr>NAME</a>
+		</li>
+		<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+			<a href="_modules_effect_module_.html#effect_done_event_type" class="tsd-kind-icon">EFFECT_<wbr>DONE_<wbr>EVENT_<wbr>TYPE</a>
+		</li>
+		<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+			<a href="_modules_effect_module_.html#effect_failed_event_type" class="tsd-kind-icon">EFFECT_<wbr>FAILED_<wbr>EVENT_<wbr>TYPE</a>
+		</li>
+		<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+			<a href="_modules_effect_module_.html#effect_rest_time" class="tsd-kind-icon">EFFECT_<wbr>REST_<wbr>TIME</a>
+		</li>
+		<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+			<a href="_modules_effect_module_.html#effect_solving_error_message" class="tsd-kind-icon">EFFECT_<wbr>SOLVING_<wbr>ERROR_<wbr>MESSAGE</a>
+		</li>
+		<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+			<a href="_modules_effect_module_.html#max_tasks_at_time" class="tsd-kind-icon">MAX_<wbr>TASKS_<wbr>AT_<wbr>TIME</a>
+		</li>
+		<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+			<a href="_modules_effect_module_.html#max_task_attempts" class="tsd-kind-icon">MAX_<wbr>TASK_<wbr>ATTEMPTS</a>
+		</li>
+		<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+			<a href="_modules_effect_module_.html#possibily_double_effect_error" class="tsd-kind-icon">POSSIBILY_<wbr>DOUBLE_<wbr>EFFECT_<wbr>ERROR</a>
+		</li>
+		<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+			<a href="_modules_effect_module_.html#stack_fullfill_stability_rest_time" class="tsd-kind-icon">STACK_<wbr>FULLFILL_<wbr>STABILITY_<wbr>REST_<wbr>TIME</a>
+		</li>
+		<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+			<a href="_modules_effect_module_.html#time_between_attempts" class="tsd-kind-icon">TIME_<wbr>BETWEEN_<wbr>ATTEMPTS</a>
+		</li>
+		<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+			<a href="_modules_effect_module_.html#config" class="tsd-kind-icon">config</a>
+		</li>
+		<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+			<a href="_modules_effect_module_.html#counteffecttosolveattempt" class="tsd-kind-icon">count<wbr>Effect<wbr>ToSolve<wbr>Attempt</a>
+		</li>
+		<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+			<a href="_modules_effect_module_.html#dealwithdoubleeffecterror" class="tsd-kind-icon">deal<wbr>With<wbr>Double<wbr>Effect<wbr>Error</a>
+		</li>
+		<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+			<a href="_modules_effect_module_.html#dealwithsolvingerror" class="tsd-kind-icon">deal<wbr>With<wbr>Solving<wbr>Error</a>
+		</li>
+		<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+			<a href="_modules_effect_module_.html#fullfillofstackofeffectstosolvestability" class="tsd-kind-icon">fullfill<wbr>OfStack<wbr>OfEffects<wbr>ToSolve<wbr>Stability</a>
+		</li>
+		<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+			<a href="_modules_effect_module_.html#fullfillstackofeffectstosolve" class="tsd-kind-icon">fullfill<wbr>Stack<wbr>OfEffects<wbr>ToSolve</a>
+		</li>
+		<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+			<a href="_modules_effect_module_.html#getfirsteventnumbertoeffect" class="tsd-kind-icon">get<wbr>First<wbr>Event<wbr>Number<wbr>ToEffect</a>
+		</li>
+		<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+			<a href="_modules_effect_module_.html#isfree" class="tsd-kind-icon">is<wbr>Free</a>
+		</li>
+		<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+			<a href="_modules_effect_module_.html#loadeffectsaftercommands" class="tsd-kind-icon">load<wbr>Effects<wbr>After<wbr>Commands</a>
+		</li>
+		<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+			<a href="_modules_effect_module_.html#loadfeatures" class="tsd-kind-icon">load<wbr>Features</a>
+		</li>
+		<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+			<a href="_modules_effect_module_.html#makeshuretriggerissigned" class="tsd-kind-icon">make<wbr>Shure<wbr>Trigger<wbr>IsSigned</a>
+		</li>
+		<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+			<a href="_modules_effect_module_.html#puteffectinsolvestack" class="tsd-kind-icon">put<wbr>Effect<wbr>InSolve<wbr>Stack</a>
+		</li>
+		<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+			<a href="_modules_effect_module_.html#registerdbcontrol" class="tsd-kind-icon">register<wbr>DbControl</a>
+		</li>
+		<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+			<a href="_modules_effect_module_.html#removefromstackfailedevents" class="tsd-kind-icon">remove<wbr>From<wbr>Stack<wbr>Failed<wbr>Events</a>
+		</li>
+		<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+			<a href="_modules_effect_module_.html#removefromstacksolvedevents" class="tsd-kind-icon">remove<wbr>From<wbr>Stack<wbr>Solved<wbr>Events</a>
+		</li>
+		<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+			<a href="_modules_effect_module_.html#removelistenertofailedevents" class="tsd-kind-icon">remove<wbr>Listener<wbr>ToFailed<wbr>Events</a>
+		</li>
+		<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+			<a href="_modules_effect_module_.html#removelistenertosolvedevents" class="tsd-kind-icon">remove<wbr>Listener<wbr>ToSolved<wbr>Events</a>
+		</li>
+		<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+			<a href="_modules_effect_module_.html#solve" class="tsd-kind-icon">solve</a>
+		</li>
+		<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+			<a href="_modules_effect_module_.html#start" class="tsd-kind-icon">start</a>
+		</li>
+		<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+			<a href="_modules_effect_module_.html#stop" class="tsd-kind-icon">stop</a>
+		</li>
+		<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+			<a href="_modules_effect_module_.html#takeeffectfromtosolvestack" class="tsd-kind-icon">take<wbr>Effect<wbr>From<wbr>ToSolve<wbr>Stack</a>
+		</li>
+		<li class=" tsd-kind-object-literal tsd-parent-kind-external-module">
+			<a href="_modules_effect_module_.html#effectmodule" class="tsd-kind-icon">Effect<wbr>Module</a>
+		</li>
+		<li class=" tsd-kind-object-literal tsd-parent-kind-external-module tsd-is-not-exported">
+			<a href="_modules_effect_module_.html#state" class="tsd-kind-icon">state</a>
+		</li>
 	</ul>
 </nav>
 <div class="container container-main">
 	<div class="content-wrap">
+		<section class="tsd-panel-group tsd-index-group">
+			<h2>Index</h2>
+			<section class="tsd-panel tsd-index-panel">
+				<div class="tsd-index-content">
+					<section class="tsd-index-section tsd-is-not-exported">
+						<h3>Interfaces</h3>
+						<ul class="tsd-index-list">
+							<li class="tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported"><a href="../interfaces/_modules_effect_module_.ieffectdoneinfo.html" class="tsd-kind-icon">IEffect<wbr>Done<wbr>Info</a></li>
+							<li class="tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported"><a href="../interfaces/_modules_effect_module_.ieffectfailedinfo.html" class="tsd-kind-icon">IEffect<wbr>Failed<wbr>Info</a></li>
+							<li class="tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported"><a href="../interfaces/_modules_effect_module_.ieffectmodulestate.html" class="tsd-kind-icon">IEffect<wbr>Module<wbr>State</a></li>
+							<li class="tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported"><a href="../interfaces/_modules_effect_module_.ieffecttorun.html" class="tsd-kind-icon">IEffect<wbr>ToRun</a></li>
+							<li class="tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported"><a href="../interfaces/_modules_effect_module_.ieffecttosolve.html" class="tsd-kind-icon">IEffect<wbr>ToSolve</a></li>
+							<li class="tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported"><a href="../interfaces/_modules_effect_module_.ieffectwatcher.html" class="tsd-kind-icon">IEffect<wbr>Watcher</a></li>
+						</ul>
+					</section>
+					<section class="tsd-index-section tsd-is-not-exported">
+						<h3>Variables</h3>
+						<ul class="tsd-index-list">
+							<li class="tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported"><a href="_modules_effect_module_.html#effect_controller_name" class="tsd-kind-icon">EFFECT_<wbr>CONTROLLER_<wbr>NAME</a></li>
+							<li class="tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported"><a href="_modules_effect_module_.html#effect_done_event_type" class="tsd-kind-icon">EFFECT_<wbr>DONE_<wbr>EVENT_<wbr>TYPE</a></li>
+							<li class="tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported"><a href="_modules_effect_module_.html#effect_failed_event_type" class="tsd-kind-icon">EFFECT_<wbr>FAILED_<wbr>EVENT_<wbr>TYPE</a></li>
+							<li class="tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported"><a href="_modules_effect_module_.html#effect_rest_time" class="tsd-kind-icon">EFFECT_<wbr>REST_<wbr>TIME</a></li>
+							<li class="tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported"><a href="_modules_effect_module_.html#effect_solving_error_message" class="tsd-kind-icon">EFFECT_<wbr>SOLVING_<wbr>ERROR_<wbr>MESSAGE</a></li>
+							<li class="tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported"><a href="_modules_effect_module_.html#max_tasks_at_time" class="tsd-kind-icon">MAX_<wbr>TASKS_<wbr>AT_<wbr>TIME</a></li>
+							<li class="tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported"><a href="_modules_effect_module_.html#max_task_attempts" class="tsd-kind-icon">MAX_<wbr>TASK_<wbr>ATTEMPTS</a></li>
+							<li class="tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported"><a href="_modules_effect_module_.html#possibily_double_effect_error" class="tsd-kind-icon">POSSIBILY_<wbr>DOUBLE_<wbr>EFFECT_<wbr>ERROR</a></li>
+							<li class="tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported"><a href="_modules_effect_module_.html#stack_fullfill_stability_rest_time" class="tsd-kind-icon">STACK_<wbr>FULLFILL_<wbr>STABILITY_<wbr>REST_<wbr>TIME</a></li>
+							<li class="tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported"><a href="_modules_effect_module_.html#time_between_attempts" class="tsd-kind-icon">TIME_<wbr>BETWEEN_<wbr>ATTEMPTS</a></li>
+						</ul>
+					</section>
+					<section class="tsd-index-section tsd-is-not-exported">
+						<h3>Functions</h3>
+						<ul class="tsd-index-list">
+							<li class="tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported"><a href="_modules_effect_module_.html#config" class="tsd-kind-icon">config</a></li>
+							<li class="tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported"><a href="_modules_effect_module_.html#counteffecttosolveattempt" class="tsd-kind-icon">count<wbr>Effect<wbr>ToSolve<wbr>Attempt</a></li>
+							<li class="tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported"><a href="_modules_effect_module_.html#dealwithdoubleeffecterror" class="tsd-kind-icon">deal<wbr>With<wbr>Double<wbr>Effect<wbr>Error</a></li>
+							<li class="tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported"><a href="_modules_effect_module_.html#dealwithsolvingerror" class="tsd-kind-icon">deal<wbr>With<wbr>Solving<wbr>Error</a></li>
+							<li class="tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported"><a href="_modules_effect_module_.html#fullfillofstackofeffectstosolvestability" class="tsd-kind-icon">fullfill<wbr>OfStack<wbr>OfEffects<wbr>ToSolve<wbr>Stability</a></li>
+							<li class="tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported"><a href="_modules_effect_module_.html#fullfillstackofeffectstosolve" class="tsd-kind-icon">fullfill<wbr>Stack<wbr>OfEffects<wbr>ToSolve</a></li>
+							<li class="tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported"><a href="_modules_effect_module_.html#getfirsteventnumbertoeffect" class="tsd-kind-icon">get<wbr>First<wbr>Event<wbr>Number<wbr>ToEffect</a></li>
+							<li class="tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported"><a href="_modules_effect_module_.html#isfree" class="tsd-kind-icon">is<wbr>Free</a></li>
+							<li class="tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported"><a href="_modules_effect_module_.html#loadeffectsaftercommands" class="tsd-kind-icon">load<wbr>Effects<wbr>After<wbr>Commands</a></li>
+							<li class="tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported"><a href="_modules_effect_module_.html#loadfeatures" class="tsd-kind-icon">load<wbr>Features</a></li>
+							<li class="tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported"><a href="_modules_effect_module_.html#makeshuretriggerissigned" class="tsd-kind-icon">make<wbr>Shure<wbr>Trigger<wbr>IsSigned</a></li>
+							<li class="tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported"><a href="_modules_effect_module_.html#puteffectinsolvestack" class="tsd-kind-icon">put<wbr>Effect<wbr>InSolve<wbr>Stack</a></li>
+							<li class="tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported"><a href="_modules_effect_module_.html#registerdbcontrol" class="tsd-kind-icon">register<wbr>DbControl</a></li>
+							<li class="tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported"><a href="_modules_effect_module_.html#removefromstackfailedevents" class="tsd-kind-icon">remove<wbr>From<wbr>Stack<wbr>Failed<wbr>Events</a></li>
+							<li class="tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported"><a href="_modules_effect_module_.html#removefromstacksolvedevents" class="tsd-kind-icon">remove<wbr>From<wbr>Stack<wbr>Solved<wbr>Events</a></li>
+							<li class="tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported"><a href="_modules_effect_module_.html#removelistenertofailedevents" class="tsd-kind-icon">remove<wbr>Listener<wbr>ToFailed<wbr>Events</a></li>
+							<li class="tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported"><a href="_modules_effect_module_.html#removelistenertosolvedevents" class="tsd-kind-icon">remove<wbr>Listener<wbr>ToSolved<wbr>Events</a></li>
+							<li class="tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported"><a href="_modules_effect_module_.html#solve" class="tsd-kind-icon">solve</a></li>
+							<li class="tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported"><a href="_modules_effect_module_.html#start" class="tsd-kind-icon">start</a></li>
+							<li class="tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported"><a href="_modules_effect_module_.html#stop" class="tsd-kind-icon">stop</a></li>
+							<li class="tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported"><a href="_modules_effect_module_.html#takeeffectfromtosolvestack" class="tsd-kind-icon">take<wbr>Effect<wbr>From<wbr>ToSolve<wbr>Stack</a></li>
+						</ul>
+					</section>
+					<section class="tsd-index-section ">
+						<h3>Object literals</h3>
+						<ul class="tsd-index-list">
+							<li class="tsd-kind-object-literal tsd-parent-kind-external-module"><a href="_modules_effect_module_.html#effectmodule" class="tsd-kind-icon">Effect<wbr>Module</a></li>
+							<li class="tsd-kind-object-literal tsd-parent-kind-external-module tsd-is-not-exported"><a href="_modules_effect_module_.html#state" class="tsd-kind-icon">state</a></li>
+						</ul>
+					</section>
+				</div>
+			</section>
+		</section>
+		<section class="tsd-panel-group tsd-member-group tsd-is-not-exported">
+			<h2>Variables</h2>
+			<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+				<a name="effect_controller_name" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagConst">Const</span> EFFECT_<wbr>CONTROLLER_<wbr>NAME</h3>
+				<div class="tsd-signature tsd-kind-icon">EFFECT_<wbr>CONTROLLER_<wbr>NAME<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;effect_control&quot;</span></div>
+				<aside class="tsd-sources">
+					<ul>
+						<li>Defined in <a href="https://github.com/ssribeiro/monostone/blob/ecc5194/src/modules/effect.module.ts#L51">modules/effect.module.ts:51</a></li>
+					</ul>
+				</aside>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+				<a name="effect_done_event_type" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagConst">Const</span> EFFECT_<wbr>DONE_<wbr>EVENT_<wbr>TYPE</h3>
+				<div class="tsd-signature tsd-kind-icon">EFFECT_<wbr>DONE_<wbr>EVENT_<wbr>TYPE<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;SystemCommands.effectDone.featureName + &#x27; &#x27; +SystemCommands.effectDone.commandName</span></div>
+				<aside class="tsd-sources">
+					<ul>
+						<li>Defined in <a href="https://github.com/ssribeiro/monostone/blob/ecc5194/src/modules/effect.module.ts#L58">modules/effect.module.ts:58</a></li>
+					</ul>
+				</aside>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+				<a name="effect_failed_event_type" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagConst">Const</span> EFFECT_<wbr>FAILED_<wbr>EVENT_<wbr>TYPE</h3>
+				<div class="tsd-signature tsd-kind-icon">EFFECT_<wbr>FAILED_<wbr>EVENT_<wbr>TYPE<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;SystemCommands.effectFailed.featureName + &#x27; &#x27; +SystemCommands.effectFailed.commandName</span></div>
+				<aside class="tsd-sources">
+					<ul>
+						<li>Defined in <a href="https://github.com/ssribeiro/monostone/blob/ecc5194/src/modules/effect.module.ts#L61">modules/effect.module.ts:61</a></li>
+					</ul>
+				</aside>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+				<a name="effect_rest_time" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagConst">Const</span> EFFECT_<wbr>REST_<wbr>TIME</h3>
+				<div class="tsd-signature tsd-kind-icon">EFFECT_<wbr>REST_<wbr>TIME<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> =&nbsp;100</span></div>
+				<aside class="tsd-sources">
+					<ul>
+						<li>Defined in <a href="https://github.com/ssribeiro/monostone/blob/ecc5194/src/modules/effect.module.ts#L52">modules/effect.module.ts:52</a></li>
+					</ul>
+				</aside>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+				<a name="effect_solving_error_message" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagConst">Const</span> EFFECT_<wbr>SOLVING_<wbr>ERROR_<wbr>MESSAGE</h3>
+				<div class="tsd-signature tsd-kind-icon">EFFECT_<wbr>SOLVING_<wbr>ERROR_<wbr>MESSAGE<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&#x60;error solving effect:&#x60;</span></div>
+				<aside class="tsd-sources">
+					<ul>
+						<li>Defined in <a href="https://github.com/ssribeiro/monostone/blob/ecc5194/src/modules/effect.module.ts#L68">modules/effect.module.ts:68</a></li>
+					</ul>
+				</aside>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+				<a name="max_tasks_at_time" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagConst">Const</span> MAX_<wbr>TASKS_<wbr>AT_<wbr>TIME</h3>
+				<div class="tsd-signature tsd-kind-icon">MAX_<wbr>TASKS_<wbr>AT_<wbr>TIME<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> =&nbsp;30</span></div>
+				<aside class="tsd-sources">
+					<ul>
+						<li>Defined in <a href="https://github.com/ssribeiro/monostone/blob/ecc5194/src/modules/effect.module.ts#L53">modules/effect.module.ts:53</a></li>
+					</ul>
+				</aside>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+				<a name="max_task_attempts" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagConst">Const</span> MAX_<wbr>TASK_<wbr>ATTEMPTS</h3>
+				<div class="tsd-signature tsd-kind-icon">MAX_<wbr>TASK_<wbr>ATTEMPTS<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> =&nbsp;3</span></div>
+				<aside class="tsd-sources">
+					<ul>
+						<li>Defined in <a href="https://github.com/ssribeiro/monostone/blob/ecc5194/src/modules/effect.module.ts#L54">modules/effect.module.ts:54</a></li>
+					</ul>
+				</aside>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+				<a name="possibily_double_effect_error" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagConst">Const</span> POSSIBILY_<wbr>DOUBLE_<wbr>EFFECT_<wbr>ERROR</h3>
+				<div class="tsd-signature tsd-kind-icon">POSSIBILY_<wbr>DOUBLE_<wbr>EFFECT_<wbr>ERROR<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&#x60;error sending confirmation of effect to event store.It is posible that you endup with a double execution of effect:&#x60;</span></div>
+				<aside class="tsd-sources">
+					<ul>
+						<li>Defined in <a href="https://github.com/ssribeiro/monostone/blob/ecc5194/src/modules/effect.module.ts#L64">modules/effect.module.ts:64</a></li>
+					</ul>
+				</aside>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+				<a name="stack_fullfill_stability_rest_time" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagConst">Const</span> STACK_<wbr>FULLFILL_<wbr>STABILITY_<wbr>REST_<wbr>TIME</h3>
+				<div class="tsd-signature tsd-kind-icon">STACK_<wbr>FULLFILL_<wbr>STABILITY_<wbr>REST_<wbr>TIME<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> =&nbsp;100</span></div>
+				<aside class="tsd-sources">
+					<ul>
+						<li>Defined in <a href="https://github.com/ssribeiro/monostone/blob/ecc5194/src/modules/effect.module.ts#L56">modules/effect.module.ts:56</a></li>
+					</ul>
+				</aside>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+				<a name="time_between_attempts" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagConst">Const</span> TIME_<wbr>BETWEEN_<wbr>ATTEMPTS</h3>
+				<div class="tsd-signature tsd-kind-icon">TIME_<wbr>BETWEEN_<wbr>ATTEMPTS<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> =&nbsp;250</span></div>
+				<aside class="tsd-sources">
+					<ul>
+						<li>Defined in <a href="https://github.com/ssribeiro/monostone/blob/ecc5194/src/modules/effect.module.ts#L55">modules/effect.module.ts:55</a></li>
+					</ul>
+				</aside>
+			</section>
+		</section>
+		<section class="tsd-panel-group tsd-member-group tsd-is-not-exported">
+			<h2>Functions</h2>
+			<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+				<a name="config" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagConst">Const</span> config</h3>
+				<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+					<li class="tsd-signature tsd-kind-icon">config<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/ssribeiro/monostone/blob/ecc5194/src/modules/effect.module.ts#L81">modules/effect.module.ts:81</a></li>
+							</ul>
+						</aside>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+				<a name="counteffecttosolveattempt" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagConst">Const</span> count<wbr>Effect<wbr>ToSolve<wbr>Attempt</h3>
+				<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+					<li class="tsd-signature tsd-kind-icon">count<wbr>Effect<wbr>ToSolve<wbr>Attempt<span class="tsd-signature-symbol">(</span>effectToCount<span class="tsd-signature-symbol">: </span><a href="../interfaces/_modules_effect_module_.ieffecttosolve.html" class="tsd-signature-type">IEffectToSolve</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/ssribeiro/monostone/blob/ecc5194/src/modules/effect.module.ts#L355">modules/effect.module.ts:355</a></li>
+							</ul>
+						</aside>
+						<h4 class="tsd-parameters-title">Parameters</h4>
+						<ul class="tsd-parameters">
+							<li>
+								<h5>effectToCount: <a href="../interfaces/_modules_effect_module_.ieffecttosolve.html" class="tsd-signature-type">IEffectToSolve</a></h5>
+							</li>
+						</ul>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+				<a name="dealwithdoubleeffecterror" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagConst">Const</span> deal<wbr>With<wbr>Double<wbr>Effect<wbr>Error</h3>
+				<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+					<li class="tsd-signature tsd-kind-icon">deal<wbr>With<wbr>Double<wbr>Effect<wbr>Error<span class="tsd-signature-symbol">(</span>effectToSolve<span class="tsd-signature-symbol">: </span><a href="../interfaces/_modules_effect_module_.ieffecttosolve.html" class="tsd-signature-type">IEffectToSolve</a>, sendError<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Error</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/ssribeiro/monostone/blob/ecc5194/src/modules/effect.module.ts#L365">modules/effect.module.ts:365</a></li>
+							</ul>
+						</aside>
+						<h4 class="tsd-parameters-title">Parameters</h4>
+						<ul class="tsd-parameters">
+							<li>
+								<h5>effectToSolve: <a href="../interfaces/_modules_effect_module_.ieffecttosolve.html" class="tsd-signature-type">IEffectToSolve</a></h5>
+							</li>
+							<li>
+								<h5>sendError: <span class="tsd-signature-type">Error</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></h5>
+							</li>
+						</ul>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+				<a name="dealwithsolvingerror" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagConst">Const</span> deal<wbr>With<wbr>Solving<wbr>Error</h3>
+				<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+					<li class="tsd-signature tsd-kind-icon">deal<wbr>With<wbr>Solving<wbr>Error<span class="tsd-signature-symbol">(</span>effectToSolve<span class="tsd-signature-symbol">: </span><a href="../interfaces/_modules_effect_module_.ieffecttosolve.html" class="tsd-signature-type">IEffectToSolve</a>, effectError<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Error</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/ssribeiro/monostone/blob/ecc5194/src/modules/effect.module.ts#L380">modules/effect.module.ts:380</a></li>
+							</ul>
+						</aside>
+						<h4 class="tsd-parameters-title">Parameters</h4>
+						<ul class="tsd-parameters">
+							<li>
+								<h5>effectToSolve: <a href="../interfaces/_modules_effect_module_.ieffecttosolve.html" class="tsd-signature-type">IEffectToSolve</a></h5>
+							</li>
+							<li>
+								<h5>effectError: <span class="tsd-signature-type">Error</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></h5>
+							</li>
+						</ul>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+				<a name="fullfillofstackofeffectstosolvestability" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagConst">Const</span> fullfill<wbr>OfStack<wbr>OfEffects<wbr>ToSolve<wbr>Stability</h3>
+				<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+					<li class="tsd-signature tsd-kind-icon">fullfill<wbr>OfStack<wbr>OfEffects<wbr>ToSolve<wbr>Stability<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/ssribeiro/monostone/blob/ecc5194/src/modules/effect.module.ts#L167">modules/effect.module.ts:167</a></li>
+							</ul>
+						</aside>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+				<a name="fullfillstackofeffectstosolve" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagConst">Const</span> fullfill<wbr>Stack<wbr>OfEffects<wbr>ToSolve</h3>
+				<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+					<li class="tsd-signature tsd-kind-icon">fullfill<wbr>Stack<wbr>OfEffects<wbr>ToSolve<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/ssribeiro/monostone/blob/ecc5194/src/modules/effect.module.ts#L232">modules/effect.module.ts:232</a></li>
+							</ul>
+						</aside>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+				<a name="getfirsteventnumbertoeffect" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagConst">Const</span> get<wbr>First<wbr>Event<wbr>Number<wbr>ToEffect</h3>
+				<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+					<li class="tsd-signature tsd-kind-icon">get<wbr>First<wbr>Event<wbr>Number<wbr>ToEffect<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/ssribeiro/monostone/blob/ecc5194/src/modules/effect.module.ts#L394">modules/effect.module.ts:394</a></li>
+							</ul>
+						</aside>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+				<a name="isfree" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagConst">Const</span> is<wbr>Free</h3>
+				<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+					<li class="tsd-signature tsd-kind-icon">is<wbr>Free<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/ssribeiro/monostone/blob/ecc5194/src/modules/effect.module.ts#L418">modules/effect.module.ts:418</a></li>
+							</ul>
+						</aside>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+				<a name="loadeffectsaftercommands" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagConst">Const</span> load<wbr>Effects<wbr>After<wbr>Commands</h3>
+				<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+					<li class="tsd-signature tsd-kind-icon">load<wbr>Effects<wbr>After<wbr>Commands<span class="tsd-signature-symbol">(</span>effect<span class="tsd-signature-symbol">: </span><a href="../interfaces/_interfaces_effect_loaded_i_.ieffectloaded.html" class="tsd-signature-type">IEffectLoaded</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/ssribeiro/monostone/blob/ecc5194/src/modules/effect.module.ts#L101">modules/effect.module.ts:101</a></li>
+							</ul>
+						</aside>
+						<h4 class="tsd-parameters-title">Parameters</h4>
+						<ul class="tsd-parameters">
+							<li>
+								<h5>effect: <a href="../interfaces/_interfaces_effect_loaded_i_.ieffectloaded.html" class="tsd-signature-type">IEffectLoaded</a></h5>
+							</li>
+						</ul>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+				<a name="loadfeatures" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagConst">Const</span> load<wbr>Features</h3>
+				<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+					<li class="tsd-signature tsd-kind-icon">load<wbr>Features<span class="tsd-signature-symbol">(</span>features<span class="tsd-signature-symbol">: </span><a href="../interfaces/_interfaces_feature_loaded_i_.ifeatureloaded.html" class="tsd-signature-type">IFeatureLoaded</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/ssribeiro/monostone/blob/ecc5194/src/modules/effect.module.ts#L90">modules/effect.module.ts:90</a></li>
+							</ul>
+						</aside>
+						<h4 class="tsd-parameters-title">Parameters</h4>
+						<ul class="tsd-parameters">
+							<li>
+								<h5>features: <a href="../interfaces/_interfaces_feature_loaded_i_.ifeatureloaded.html" class="tsd-signature-type">IFeatureLoaded</a><span class="tsd-signature-symbol">[]</span></h5>
+							</li>
+						</ul>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+				<a name="makeshuretriggerissigned" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagConst">Const</span> make<wbr>Shure<wbr>Trigger<wbr>IsSigned</h3>
+				<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+					<li class="tsd-signature tsd-kind-icon">make<wbr>Shure<wbr>Trigger<wbr>IsSigned<span class="tsd-signature-symbol">(</span>commandTrigger<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/ssribeiro/monostone/blob/ecc5194/src/modules/effect.module.ts#L128">modules/effect.module.ts:128</a></li>
+							</ul>
+						</aside>
+						<h4 class="tsd-parameters-title">Parameters</h4>
+						<ul class="tsd-parameters">
+							<li>
+								<h5>commandTrigger: <span class="tsd-signature-type">string</span></h5>
+							</li>
+						</ul>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+				<a name="puteffectinsolvestack" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagConst">Const</span> put<wbr>Effect<wbr>InSolve<wbr>Stack</h3>
+				<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+					<li class="tsd-signature tsd-kind-icon">put<wbr>Effect<wbr>InSolve<wbr>Stack<span class="tsd-signature-symbol">(</span>effectToSolve<span class="tsd-signature-symbol">: </span><a href="../interfaces/_modules_effect_module_.ieffecttosolve.html" class="tsd-signature-type">IEffectToSolve</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/ssribeiro/monostone/blob/ecc5194/src/modules/effect.module.ts#L338">modules/effect.module.ts:338</a></li>
+							</ul>
+						</aside>
+						<h4 class="tsd-parameters-title">Parameters</h4>
+						<ul class="tsd-parameters">
+							<li>
+								<h5>effectToSolve: <a href="../interfaces/_modules_effect_module_.ieffecttosolve.html" class="tsd-signature-type">IEffectToSolve</a></h5>
+							</li>
+						</ul>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+				<a name="registerdbcontrol" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagConst">Const</span> register<wbr>DbControl</h3>
+				<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+					<li class="tsd-signature tsd-kind-icon">register<wbr>DbControl<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/ssribeiro/monostone/blob/ecc5194/src/modules/effect.module.ts#L403">modules/effect.module.ts:403</a></li>
+							</ul>
+						</aside>
+						<div class="tsd-comment tsd-typography">
+							<div class="lead">
+								<p>Register the control data on database. This is necessary to coordinate
+								and grant stability and roughness to the system</p>
+							</div>
+						</div>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+				<a name="removefromstackfailedevents" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagConst">Const</span> remove<wbr>From<wbr>Stack<wbr>Failed<wbr>Events</h3>
+				<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+					<li class="tsd-signature tsd-kind-icon">remove<wbr>From<wbr>Stack<wbr>Failed<wbr>Events<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/ssribeiro/monostone/blob/ecc5194/src/modules/effect.module.ts#L210">modules/effect.module.ts:210</a></li>
+							</ul>
+						</aside>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+				<a name="removefromstacksolvedevents" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagConst">Const</span> remove<wbr>From<wbr>Stack<wbr>Solved<wbr>Events</h3>
+				<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+					<li class="tsd-signature tsd-kind-icon">remove<wbr>From<wbr>Stack<wbr>Solved<wbr>Events<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/ssribeiro/monostone/blob/ecc5194/src/modules/effect.module.ts#L188">modules/effect.module.ts:188</a></li>
+							</ul>
+						</aside>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+				<a name="removelistenertofailedevents" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagConst">Const</span> remove<wbr>Listener<wbr>ToFailed<wbr>Events</h3>
+				<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+					<li class="tsd-signature tsd-kind-icon">remove<wbr>Listener<wbr>ToFailed<wbr>Events<span class="tsd-signature-symbol">(</span>listenerFailed<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/ssribeiro/monostone/blob/ecc5194/src/modules/effect.module.ts#L183">modules/effect.module.ts:183</a></li>
+							</ul>
+						</aside>
+						<h4 class="tsd-parameters-title">Parameters</h4>
+						<ul class="tsd-parameters">
+							<li>
+								<h5>listenerFailed: <span class="tsd-signature-type">any</span></h5>
+							</li>
+						</ul>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+				<a name="removelistenertosolvedevents" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagConst">Const</span> remove<wbr>Listener<wbr>ToSolved<wbr>Events</h3>
+				<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+					<li class="tsd-signature tsd-kind-icon">remove<wbr>Listener<wbr>ToSolved<wbr>Events<span class="tsd-signature-symbol">(</span>listenerDone<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/ssribeiro/monostone/blob/ecc5194/src/modules/effect.module.ts#L178">modules/effect.module.ts:178</a></li>
+							</ul>
+						</aside>
+						<h4 class="tsd-parameters-title">Parameters</h4>
+						<ul class="tsd-parameters">
+							<li>
+								<h5>listenerDone: <span class="tsd-signature-type">any</span></h5>
+							</li>
+						</ul>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+				<a name="solve" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagConst">Const</span> solve</h3>
+				<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+					<li class="tsd-signature tsd-kind-icon">solve<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/ssribeiro/monostone/blob/ecc5194/src/modules/effect.module.ts#L250">modules/effect.module.ts:250</a></li>
+							</ul>
+						</aside>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+				<a name="start" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagConst">Const</span> start</h3>
+				<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+					<li class="tsd-signature tsd-kind-icon">start<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/ssribeiro/monostone/blob/ecc5194/src/modules/effect.module.ts#L143">modules/effect.module.ts:143</a></li>
+							</ul>
+						</aside>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+				<a name="stop" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagConst">Const</span> stop</h3>
+				<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+					<li class="tsd-signature tsd-kind-icon">stop<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/ssribeiro/monostone/blob/ecc5194/src/modules/effect.module.ts#L162">modules/effect.module.ts:162</a></li>
+							</ul>
+						</aside>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+				<a name="takeeffectfromtosolvestack" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagConst">Const</span> take<wbr>Effect<wbr>From<wbr>ToSolve<wbr>Stack</h3>
+				<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+					<li class="tsd-signature tsd-kind-icon">take<wbr>Effect<wbr>From<wbr>ToSolve<wbr>Stack<span class="tsd-signature-symbol">(</span>effectToTake<span class="tsd-signature-symbol">: </span><a href="../interfaces/_modules_effect_module_.ieffecttosolve.html" class="tsd-signature-type">IEffectToSolve</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/ssribeiro/monostone/blob/ecc5194/src/modules/effect.module.ts#L342">modules/effect.module.ts:342</a></li>
+							</ul>
+						</aside>
+						<h4 class="tsd-parameters-title">Parameters</h4>
+						<ul class="tsd-parameters">
+							<li>
+								<h5>effectToTake: <a href="../interfaces/_modules_effect_module_.ieffecttosolve.html" class="tsd-signature-type">IEffectToSolve</a></h5>
+							</li>
+						</ul>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+					</li>
+				</ul>
+			</section>
+		</section>
+		<section class="tsd-panel-group tsd-member-group ">
+			<h2>Object literals</h2>
+			<section class="tsd-panel tsd-member tsd-kind-object-literal tsd-parent-kind-external-module">
+				<a name="effectmodule" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagConst">Const</span> Effect<wbr>Module</h3>
+				<div class="tsd-signature tsd-kind-icon">Effect<wbr>Module<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
+				<aside class="tsd-sources">
+					<ul>
+						<li>Defined in <a href="https://github.com/ssribeiro/monostone/blob/ecc5194/src/modules/effect.module.ts#L427">modules/effect.module.ts:427</a></li>
+					</ul>
+				</aside>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+					<a name="effectmodule.config-1" class="tsd-anchor"></a>
+					<h3>config</h3>
+					<div class="tsd-signature tsd-kind-icon">config<span class="tsd-signature-symbol">:</span> <a href="" class="tsd-signature-type">config</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/ssribeiro/monostone/blob/ecc5194/src/modules/effect.module.ts#L429">modules/effect.module.ts:429</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+					<a name="effectmodule.getfirsteventnumbertoeffect-1" class="tsd-anchor"></a>
+					<h3>get<wbr>First<wbr>Event<wbr>Number<wbr>ToEffect</h3>
+					<div class="tsd-signature tsd-kind-icon">get<wbr>First<wbr>Event<wbr>Number<wbr>ToEffect<span class="tsd-signature-symbol">:</span> <a href="" class="tsd-signature-type">getFirstEventNumberToEffect</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/ssribeiro/monostone/blob/ecc5194/src/modules/effect.module.ts#L434">modules/effect.module.ts:434</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+					<a name="effectmodule.isfree-1" class="tsd-anchor"></a>
+					<h3>is<wbr>Free</h3>
+					<div class="tsd-signature tsd-kind-icon">is<wbr>Free<span class="tsd-signature-symbol">:</span> <a href="" class="tsd-signature-type">isFree</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/ssribeiro/monostone/blob/ecc5194/src/modules/effect.module.ts#L433">modules/effect.module.ts:433</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+					<a name="effectmodule.loadfeatures-1" class="tsd-anchor"></a>
+					<h3>load<wbr>Features</h3>
+					<div class="tsd-signature tsd-kind-icon">load<wbr>Features<span class="tsd-signature-symbol">:</span> <a href="" class="tsd-signature-type">loadFeatures</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/ssribeiro/monostone/blob/ecc5194/src/modules/effect.module.ts#L430">modules/effect.module.ts:430</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+					<a name="effectmodule.start-1" class="tsd-anchor"></a>
+					<h3>start</h3>
+					<div class="tsd-signature tsd-kind-icon">start<span class="tsd-signature-symbol">:</span> <a href="" class="tsd-signature-type">start</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/ssribeiro/monostone/blob/ecc5194/src/modules/effect.module.ts#L431">modules/effect.module.ts:431</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+					<a name="effectmodule.stop-1" class="tsd-anchor"></a>
+					<h3>stop</h3>
+					<div class="tsd-signature tsd-kind-icon">stop<span class="tsd-signature-symbol">:</span> <a href="" class="tsd-signature-type">stop</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/ssribeiro/monostone/blob/ecc5194/src/modules/effect.module.ts#L432">modules/effect.module.ts:432</a></li>
+						</ul>
+					</aside>
+				</section>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-object-literal tsd-parent-kind-external-module tsd-is-not-exported">
+				<a name="state" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagConst">Const</span> state</h3>
+				<div class="tsd-signature tsd-kind-icon">state<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
+				<aside class="tsd-sources">
+					<ul>
+						<li>Defined in <a href="https://github.com/ssribeiro/monostone/blob/ecc5194/src/modules/effect.module.ts#L72">modules/effect.module.ts:72</a></li>
+					</ul>
+				</aside>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal tsd-is-not-exported">
+					<a name="state.effectwatchers" class="tsd-anchor"></a>
+					<h3>effect<wbr>Watchers</h3>
+					<div class="tsd-signature tsd-kind-icon">effect<wbr>Watchers<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">never</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> =&nbsp;[]</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/ssribeiro/monostone/blob/ecc5194/src/modules/effect.module.ts#L73">modules/effect.module.ts:73</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal tsd-is-not-exported">
+					<a name="state.effectstosolve" class="tsd-anchor"></a>
+					<h3>effects<wbr>ToSolve</h3>
+					<div class="tsd-signature tsd-kind-icon">effects<wbr>ToSolve<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">never</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> =&nbsp;[]</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/ssribeiro/monostone/blob/ecc5194/src/modules/effect.module.ts#L75">modules/effect.module.ts:75</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal tsd-is-not-exported">
+					<a name="state.firsteventnumbertoeffect" class="tsd-anchor"></a>
+					<h3>first<wbr>Event<wbr>Number<wbr>ToEffect</h3>
+					<div class="tsd-signature tsd-kind-icon">first<wbr>Event<wbr>Number<wbr>ToEffect<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> =&nbsp;0</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/ssribeiro/monostone/blob/ecc5194/src/modules/effect.module.ts#L74">modules/effect.module.ts:74</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal tsd-is-not-exported">
+					<a name="state.lasttimesolving" class="tsd-anchor"></a>
+					<h3>last<wbr>Time<wbr>Solving</h3>
+					<div class="tsd-signature tsd-kind-icon">last<wbr>Time<wbr>Solving<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> =&nbsp;Date.now()</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/ssribeiro/monostone/blob/ecc5194/src/modules/effect.module.ts#L78">modules/effect.module.ts:78</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal tsd-is-not-exported">
+					<a name="state.modulestopped" class="tsd-anchor"></a>
+					<h3>module<wbr>Stopped</h3>
+					<div class="tsd-signature tsd-kind-icon">module<wbr>Stopped<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">false</span><span class="tsd-signature-symbol"> =&nbsp;false</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/ssribeiro/monostone/blob/ecc5194/src/modules/effect.module.ts#L76">modules/effect.module.ts:76</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal tsd-is-not-exported">
+					<a name="state.solving" class="tsd-anchor"></a>
+					<h3>solving</h3>
+					<div class="tsd-signature tsd-kind-icon">solving<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">false</span><span class="tsd-signature-symbol"> =&nbsp;false</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/ssribeiro/monostone/blob/ecc5194/src/modules/effect.module.ts#L77">modules/effect.module.ts:77</a></li>
+						</ul>
+					</aside>
+				</section>
+			</section>
+		</section>
 		<footer class="with-border-bottom">
 			<div class="container">
 				<h2>Legend</h2>

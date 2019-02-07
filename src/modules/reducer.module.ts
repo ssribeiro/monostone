@@ -10,7 +10,7 @@ import {
   IReducer,
   IEventRead
 } from "../interfaces"
-import { db } from "store"
+import { db } from "../store"
 
 interface EventToReduce {
   commandType: string

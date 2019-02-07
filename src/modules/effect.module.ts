@@ -6,7 +6,7 @@ import * as ast from "@angstone/node-util"
 import * as asyncFunctions from 'async'
 import { error } from "../error"
 import { BasicModule, EventModule } from './'
-import { db } from "store"
+import { db } from "../store"
 import { IFeatureLoaded, IEffectLoaded, IEventRead } from '../interfaces'
 import { EventTools } from '../tools'
 import * as SystemCommands from '../system_commands'

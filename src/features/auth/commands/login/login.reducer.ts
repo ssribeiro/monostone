@@ -1,5 +1,5 @@
-import { IReducer } from "interfaces";
-import { db } from "store";
+import { IReducer } from "../../../../interfaces";
+import { db } from "../../../../store";
 
 export const reducer: IReducer = {
   async process(request: any, eventNumber: number): Promise<void> {

@@ -1,5 +1,5 @@
-import { IRule } from "interfaces";
-import { db } from "store";
+import { IRule } from "../../../../interfaces";
+import { db } from "../../../../store";
 import * as authTools from "../../tools";
 import { messages } from "./login.messages";
 

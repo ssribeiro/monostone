@@ -1,14 +1,14 @@
 import * as ast from "@angstone/node-util"
-import { error } from 'error'
+import { error } from '../error'
 import * as bodyParser from "body-parser"
 import * as express from "express"
 import * as http from "http"
 import { BasicModule, ReducerModule, ViewModule } from './'
 import { ICommandLoaded, IFeatureLoaded, IViewLoaded } from "../interfaces"
-import { CommandTools } from "tools"
-import { IAuthToken } from "features/auth/interfaces/auth-token.i"
-import * as AuthTools from "features/auth/tools"
-import { messages as authMessages } from "features/auth/messages"
+import { CommandTools } from "../tools"
+import { IAuthToken } from "../features/auth/interfaces/auth-token.i"
+import * as AuthTools from "../features/auth/tools"
+import { messages as authMessages } from "../features/auth/messages"
 import * as net from 'net'
 
 interface ServerError extends Error {

@@ -1,5 +1,5 @@
-import { IRule } from "interfaces";
-import { db } from "store";
+import { IRule } from "../../../../interfaces";
+import { db } from "../../../../store";
 import { messages } from "./signup.messages";
 
 export const rule: IRule = {
