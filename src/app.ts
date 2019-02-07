@@ -46,6 +46,8 @@ export class App {
   public rethinkDbConnected: boolean = false
   public systemTools = SystemTools
 
+  public customFeaturesPath: string | undefined = undefined
+
   /**
    * Creates the main application
    */
@@ -104,7 +106,7 @@ export class App {
   }
 
   private config() {
-    configTool()
+    if (!process.env.NODE_ENV) configTool()
 
     if (process.env.NODE_ENV === "production"
       || process.env.NODE_ENV === "development")
@@ -113,6 +115,7 @@ export class App {
       error.fatal("configuration failed - please verify .env file")
 
     ast.info("configured environment: " + process.env.NODE_ENV)
+    this.customFeaturesPath = process.env.FEATURES_PATH
   }
 
   private loadFeatures(): IFeatureLoaded[] {
@@ -125,8 +128,11 @@ export class App {
     } catch (e) {
       BasicFeatures = FeatureTools.getRecipesFromFolderStructure()
     } finally {
-      // TODO: Add support for loading external features here in future.
+
       const features = [...BasicFeatures]
+      if(this.customFeaturesPath) {
+        features.concat( FeatureTools.getRecipesFromFolderStructure(this.customFeaturesPath) )
+      }
       return FeatureTools.createFeatures( features )
     }
   }

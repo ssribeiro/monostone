@@ -1,0 +1,15 @@
+.tscache
+dist/e2eSpecs
+dist/*.spec.js
+data
+dockers/data
+node_modules
+specOff
+src
+trash
+fake
+jasmine.json
+nodemon.json
+tsconfig.json
+tslint.json
+wallaby.js

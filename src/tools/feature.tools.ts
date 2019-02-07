@@ -34,8 +34,9 @@ export function createFeatures(featureRecipes: IFeature[]): IFeatureLoaded[] {
   return featureLoadeds;
 }
 
-export function getRecipesFromFolderStructure(): IFeature[] {
-  return FolderTools.getDirectories( __dirname+'/../features' ).map((featurePath: string) => {
+export function getRecipesFromFolderStructure(customPath?: string | undefined): IFeature[] {
+  const featuresDir: string = customPath || __dirname+'/../features'
+  return FolderTools.getDirectories( featuresDir ).map((featurePath: string) => {
     return { featurePath } as IFeature;
   });
 }

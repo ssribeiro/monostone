@@ -10,7 +10,7 @@
       "dom"
     ],
     "sourceMap": true,
-    "declaration": false,
+    "declaration": true,
     "strict": true,
     "moduleResolution": "node",
     "typeRoots": [
