@@ -1,8 +1,10 @@
 .tscache
 dist/e2eSpecs
 dist/*.spec.js
+dist/*/*.spec.js
 data
 dockers/data
+docs
 node_modules
 specOff
 src
@@ -13,3 +15,4 @@ nodemon.json
 tsconfig.json
 tslint.json
 wallaby.js
+

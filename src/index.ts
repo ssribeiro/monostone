@@ -18,11 +18,11 @@ import { App } from "./app"
 import { error } from "./error"
 import { config } from './config'
 
-import { db as store } from 'store'
-import * as interfaces from 'interfaces'
-import * as tools from 'tools'
-import * as modules from 'modules'
-import * as SystemCommands from 'system_commands'
+import { db as store } from './store'
+import * as interfaces from './interfaces'
+import * as tools from './tools'
+import * as modules from './modules'
+import * as SystemCommands from './system_commands'
 
 config()
 
