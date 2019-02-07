@@ -5,6 +5,7 @@ import { IEffect } from "interfaces";
 
 import * as fs from 'fs';
 // import * as path from 'path';
+const EMAIL_TEXT: string = 'This is supposed to be a fake email to test effects. eventNumber is ';
 
 export const effect: IEffect = {
 
@@ -13,11 +14,8 @@ export const effect: IEffect = {
   run: async (eventNumber: number, request: any): Promise<void> => {
     // Fake email creation
     let fakedir = './fake';
-    let filename = 'email_'+request.login+Date.now();
-    let emailtext = `
-    This is supposed to be a fake email to
-    test effect: number is ` + eventNumber + `
-    `;
+    let filename = 'email_'+request.login+'|';
+    let emailtext = EMAIL_TEXT + eventNumber;
 
     if (!fs.existsSync(fakedir)) { fs.mkdirSync(fakedir); }
 

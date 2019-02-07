@@ -6,10 +6,12 @@ import { features as basicFeatures } from "../features/optional.index";
 import { ICommand } from "../interfaces";
 import { connectStore } from "../store";
 import { EventTools, FeatureTools } from "../tools";
+import * as ast from "@angstone/node-util";
+
 
 describe("ReducerModule", () => {
 
-  const TIME_DELAY = 100;
+  const TIME_DELAY = 10;
 
   it("should load reducers", () => {
     EventModule.config();
@@ -26,9 +28,11 @@ describe("ReducerModule", () => {
     connectStore().then(() => {
       EventModule.start().then(()=>{
         ReducerModule.start().then(() => {
-          ReducerModule.stop().then(() => {
-            EventModule.stop().then(done);
-          });
+          ast.delay(10).then(() => {
+            ReducerModule.stop().then(() => {
+              EventModule.stop().then(done);
+            });
+          })
         });
       });
     });

@@ -315,10 +315,10 @@ const solve = async () => {
         MAX_TASKS_AT_TIME,
         () => {
           state.solving = false
-          console.log('NOW IT IS '+Date.now())
+          // console.log('NOW IT IS '+Date.now())
           ast.delay(EFFECT_REST_TIME).then(() => {
             if ( !state.moduleStopped ) { solve() }
-            console.log('AFTER IT IS '+Date.now())
+            // console.log('AFTER IT IS '+Date.now())
             resolveParallel()
           })
         }
@@ -327,10 +327,10 @@ const solve = async () => {
 
   } else {
 
-    console.log('NOW IT IS '+Date.now())
+    // console.log('NOW IT IS '+Date.now())
     await ast.delay(EFFECT_REST_TIME)
     if ( !state.moduleStopped ) { solve() }
-    console.log('AFTER IT IS '+Date.now())
+    // console.log('AFTER IT IS '+Date.now())
 
   }
 }
@@ -340,16 +340,16 @@ const putEffectInSolveStack = (effectToSolve: IEffectToSolve) => {
 }
 
 const takeEffectFromToSolveStack = (effectToTake: IEffectToSolve) => {
-  console.log('effectToSolve before:')
-  console.log(state.effectsToSolve)
+  // console.log('effectToSolve before:')
+  // console.log(state.effectsToSolve)
   state.effectsToSolve =
     state.effectsToSolve.filter(effectToSolve =>
       effectToSolve.eventRead.eventNumber !=
         effectToTake.eventRead.eventNumber
     )
-  console.log('effectToSolve after:')
-  console.log(state.effectsToSolve)
-  console.log('tooked of '+effectToTake.eventRead.eventNumber+' at '+Date.now())
+  // console.log('effectToSolve after:')
+  // console.log(state.effectsToSolve)
+  // console.log('tooked of '+effectToTake.eventRead.eventNumber+' at '+Date.now())
 }
 
 const countEffectToSolveAttempt = (effectToCount: IEffectToSolve) => {

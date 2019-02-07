@@ -1,9 +1,11 @@
 import "jasmine-expect";
 import * as supertest from "supertest";
+import * as ast from "@angstone/node-util";
 
 import { App } from "../app";
 import { PortalModule } from '../modules';
 import { messages } from "../features/auth/commands/signup/signup.messages";
+import { testFakeEmail } from './test-fake-email'
 
 describe("App", () => {
 
@@ -69,7 +71,12 @@ describe("App", () => {
          // console.log(response.body);
          expect(response.body.userId).toBeNumber();
          expect(response.body.userId).toBeGreaterThan(1);
-         done();
+         ast.delay(100).then(()=>{
+           testFakeEmail(response.body.userId, userInfo.login).then((result) => {
+             expect(result).toBeTrue();
+             done();
+           })
+         })
        });
     });
 
@@ -96,7 +103,14 @@ describe("App", () => {
              request = supertest(PortalModule.getExpressApp());
              (request.post("/auth/signup") as supertest.Test)
                .send(userInfo)
-               .expect(400, messages.LOGIN_TAKEN, done);
+               .expect(400, messages.LOGIN_TAKEN, () => {
+                 ast.delay(100).then(()=>{
+                   testFakeEmail(response.body.userId, userInfo.login).then((result) => {
+                     expect(result).toBeTrue();
+                     done();
+                   })
+                 })
+               });
            });
          });
        });
@@ -118,7 +132,12 @@ describe("App", () => {
           // console.log(response.body);
           expect(response.body.userId).toBeNumber();
           expect(response.body.userId).toBeGreaterThan(1);
-          done();
+          ast.delay(100).then(()=>{
+            testFakeEmail(response.body.userId, userInfo.login).then((result) => {
+              expect(result).toBeTrue();
+              done();
+            })
+          })
         });
      });
 
@@ -144,7 +163,14 @@ describe("App", () => {
              appRestarted.start().then(() => {
                (request.post("/auth/signup") as supertest.Test)
                  .send(userInfo)
-                 .expect(400, messages.LOGIN_TAKEN, done);
+                 .expect(400, messages.LOGIN_TAKEN, () => {
+                   ast.delay(100).then(()=>{
+                     testFakeEmail(response.body.userId, userInfo.login).then((result) => {
+                       expect(result).toBeTrue();
+                       done();
+                     })
+                   })
+                 });
              });
            });
          });

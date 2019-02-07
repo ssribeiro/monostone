@@ -4,6 +4,7 @@ import "jasmine-expect";
 import * as supertest from "supertest";
 
 import { messages } from "../features/auth/messages";
+import { testFakeEmail } from './test-fake-email'
 
 import { App } from "../app";
 import { PortalModule } from '../modules';
@@ -110,7 +111,14 @@ describe("App", () => {
      (request.post("/auth/signup") as supertest.Test)
        .send(input)
        .expect(200)
-       .then(done);
+       .then((response) => {
+         ast.delay(100).then(()=>{
+           testFakeEmail(response.body.userId, input.login).then((result) => {
+             expect(result).toBeTrue();
+             done();
+           })
+         })
+       });
    }
 
    function testPublicView(done: any) {
@@ -159,7 +167,7 @@ describe("App", () => {
 
        const atEnd = (ready: any) => {
          if (!checkDone()) {
-           ast.delay(10).then(() => {
+           ast.delay(100).then(() => {
              atEnd(ready);
            });
          } else {
@@ -189,7 +197,6 @@ describe("App", () => {
      });
    });
 
-   /*
    it("should render private view", (done) => {
      process.env.API_PORT = "" + 0;
      process.env.MONGO_DATABASE = "dev4001";
@@ -214,32 +221,38 @@ describe("App", () => {
          .then((response) => {
            expect(response.body.userId).toBeNumber();
            expect(response.body.userId).toBeGreaterThan(-1);
-           (request.post("/auth/login") as supertest.Test)
-            .send(loginInfo)
-            .expect(200)
-            .then((responseTwo) => {
-              expect(responseTwo.body).toBeDefined();
-              expect(responseTwo.body.token).toBeDefined();
-              expect(responseTwo.body.token).toBeString();
-              // request = supertest(PortalModule.getExpressApp());
-              (request.get("/auth/session") as supertest.Test)
-                .set("token", responseTwo.body.token)
+           ast.delay(100).then(()=>{
+             testFakeEmail(response.body.userId, userInfo.login).then((result) => {
+               expect(result).toBeTrue();
+
+               (request.post("/auth/login") as supertest.Test)
+                .send(loginInfo)
                 .expect(200)
-                .then((responseThree) => {
-                  expect(responseThree.body).toBeNonEmptyArray();
-                  expect(responseThree.body.length).toEqual(1);
-                  expect(responseThree.body[0].userId).toEqual(response.body.userId);
-                  expect(responseThree.body[0].deviceType).toEqual(loginInfo.deviceType);
-                  expect(responseThree.body[0].loggedSince).toBeNumber();
-                  expect(responseThree.body[0].loggedSince).toBeGreaterThan(10);
-                  expect(responseThree.body[0].loggedSince).toBeLessThan(Date.now());
-                  appOneInstance.stop().then(done);
+                .then((responseTwo) => {
+                  expect(responseTwo.body).toBeDefined();
+                  expect(responseTwo.body.token).toBeDefined();
+                  expect(responseTwo.body.token).toBeString();
+                  // request = supertest(PortalModule.getExpressApp());
+                  (request.get("/auth/session") as supertest.Test)
+                    .set("token", responseTwo.body.token)
+                    .expect(200)
+                    .then((responseThree) => {
+                      expect(responseThree.body).toBeNonEmptyArray();
+                      expect(responseThree.body.length).toEqual(1);
+                      expect(responseThree.body[0].userId).toEqual(response.body.userId);
+                      expect(responseThree.body[0].deviceType).toEqual(loginInfo.deviceType);
+                      expect(responseThree.body[0].loggedSince).toBeNumber();
+                      expect(responseThree.body[0].loggedSince).toBeGreaterThan(10);
+                      expect(responseThree.body[0].loggedSince).toBeLessThan(Date.now());
+                      appOneInstance.stop().then(done);
+                    });
                 });
-            });
+
+             })
+           });
          });
      });
    });
-   */
 
   });
 

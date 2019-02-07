@@ -1,4 +1,4 @@
-// import * as ast from "@angstone/node-util";
+import * as ast from "@angstone/node-util";
 import "jasmine-expect";
 import * as supertest from "supertest";
 
@@ -6,6 +6,7 @@ import { App } from "../app";
 import { PortalModule } from '../modules';
 
 import * as jwt from "jsonwebtoken";
+import { testFakeEmail } from './test-fake-email'
 
 describe("App", () => {
 
@@ -82,7 +83,12 @@ describe("App", () => {
               expect(tokenParsed.dId).toEqual(loginInfo.deviceId);
               expect(tokenParsed.dTp).toEqual(loginInfo.deviceType);
               expect(tokenParsed.perm).toBeDefined();
-              appOneInstance.stop().then(done);
+              ast.delay(10).then(()=>{
+                testFakeEmail(response.body.userId, userInfo.login).then((result) => {
+                  expect(result).toBeTrue();
+                  appOneInstance.stop().then(done);
+                })
+              })
             });
          });
      });

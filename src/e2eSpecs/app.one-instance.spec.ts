@@ -6,6 +6,7 @@ import * as supertest from "supertest";
 import { App } from "../app";
 import { PortalModule } from '../modules';
 import { messages } from "../features/auth/commands/signup/signup.messages";
+import { testFakeEmail } from './test-fake-email'
 
 describe("App", () => {
 
@@ -69,7 +70,12 @@ describe("App", () => {
        .then((response) => {
          expect(response.body.userId).toBeNumber();
          expect(response.body.userId).toBeGreaterThan(-1);
-         appOneInstance.stop().then(done);
+         ast.delay(100).then(()=>{
+           testFakeEmail(response.body.userId, userInfo.login).then((result) => {
+             expect(result).toBeTrue();
+             appOneInstance.stop().then(done);
+           })
+         })
        });
      });
     });
@@ -95,7 +101,12 @@ describe("App", () => {
          (request.post("/auth/signup") as supertest.Test)
            .send(userInfo)
            .expect(400, messages.LOGIN_TAKEN, () => {
-             appOneInstance.stop().then(done);
+             ast.delay(100).then(()=>{
+               testFakeEmail(response.body.userId, userInfo.login).then((result) => {
+                 expect(result).toBeTrue();
+                 appOneInstance.stop().then(done);
+               })
+             })
            });
        });
      });
@@ -119,7 +130,12 @@ describe("App", () => {
         .then((response) => {
           expect(response.body.userId).toBeNumber();
           expect(response.body.userId).toBeGreaterThan(-1);
-          appOneInstance.stop().then(done);
+          ast.delay(100).then(()=>{
+            testFakeEmail(response.body.userId, userInfo.login).then((result) => {
+              expect(result).toBeTrue();
+              appOneInstance.stop().then(done);
+            })
+          })
         });
       });
      });
@@ -145,7 +161,12 @@ describe("App", () => {
           (request.post("/auth/signup") as supertest.Test)
             .send(userInfo)
             .expect(400, messages.LOGIN_TAKEN, () => {
-              appOneInstance.stop().then(done);
+              ast.delay(100).then(()=>{
+                testFakeEmail(response.body.userId, userInfo.login).then((result) => {
+                  expect(result).toBeTrue();
+                  appOneInstance.stop().then(done);
+                })
+              })
             });
         });
       });
@@ -310,7 +331,14 @@ describe("App", () => {
      (request.post("/auth/signup") as supertest.Test)
        .send(input)
        .expect(200)
-       .then(done);
+       .then((response) => {
+         ast.delay(100).then(()=>{
+           testFakeEmail(response.body.userId, input.login).then((result) => {
+             expect(result).toBeTrue();
+             done()
+           })
+         })
+       })
    }
 
    it("should signup MANY users", (done) => {
@@ -340,7 +368,7 @@ describe("App", () => {
 
        const atEnd = (ready: any) => {
          if (!checkDone()) {
-           ast.delay(10).then(() => {
+           ast.delay(100).then(() => {
              atEnd(ready);
            });
          } else {
@@ -381,7 +409,7 @@ describe("App", () => {
 
        const atEnd = (ready: any) => {
          if (!checkDone()) {
-           ast.delay(10).then(() => {
+           ast.delay(100).then(() => {
              atEnd(ready);
            });
          } else {
@@ -411,7 +439,7 @@ describe("App", () => {
 
          const atEndDeny = (ready: any) => {
            if (!checkDeny()) {
-             ast.delay(10).then(() => {
+             ast.delay(100).then(() => {
                atEndDeny(ready);
              });
            } else {

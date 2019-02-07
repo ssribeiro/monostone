@@ -6,6 +6,8 @@ import { PortalModule } from '../modules';
 import { features as basicFeatures } from "../features/optional.index";
 import { messages } from "../features/auth/commands/signup/signup.messages";
 import { FeatureTools } from "../tools";
+import * as ast from "@angstone/node-util";
+import { testFakeEmail } from './test-fake-email'
 
 describe("App", () => {
 
@@ -99,7 +101,12 @@ describe("App", () => {
         .then((response) => {
           expect(response.body.userId).toBeNumber();
           expect(response.body.userId).toBeGreaterThan(-1);
-          done();
+          ast.delay(10).then(()=>{
+            testFakeEmail(response.body.userId, userInfo.login).then((result) => {
+              expect(result).toBeTrue();
+              done();
+            })
+          })
         });
     });
 
