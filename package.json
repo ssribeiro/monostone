@@ -1,5 +1,5 @@
 {
-  "name": "ssribeiro/monostone",
+  "name": "@angstone/monostone",
   "version": "0.0.1",
   "description": "monolitic event-sourced framework",
   "main": "dist/index.js",
