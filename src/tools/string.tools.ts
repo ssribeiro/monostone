@@ -31,3 +31,7 @@ export const filters = {
     };
   },
 };
+
+export function stringStartWith (testString: string, initialString: string): boolean {
+  return testString.substr(0, initialString.length) == initialString
+}

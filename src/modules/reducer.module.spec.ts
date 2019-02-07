@@ -11,7 +11,7 @@ import * as ast from "@angstone/node-util";
 
 describe("ReducerModule", () => {
 
-  const TIME_DELAY = 10;
+  const TIME_DELAY = 100;
 
   it("should load reducers", () => {
     EventModule.config();
@@ -28,7 +28,7 @@ describe("ReducerModule", () => {
     connectStore().then(() => {
       EventModule.start().then(()=>{
         ReducerModule.start().then(() => {
-          ast.delay(10).then(() => {
+          ast.delay(TIME_DELAY).then(() => {
             ReducerModule.stop().then(() => {
               EventModule.stop().then(done);
             });

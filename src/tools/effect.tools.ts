@@ -33,7 +33,12 @@ export function createEffects(
 
     const effectNames: string[] = FolderTools.getFiles( effectsRecipe.featurePath+'/effects' )
     .filter(StringTools.filters.lastCharactersMustBe('ts'))
-    .map(FolderTools.firstNameOfFileSeparatedBySlashes);
+    .map(FolderTools.firstNameOfFileSeparatedBySlashes)
+    .filter(effectName => {
+      console.log(process.env.NODE_ENV)
+      return process.env.NODE_ENV == 'development' || StringTools.stringStartWith(effectName, 'fake')
+    });
+
 
     effectsRecipe.effects = effectNames.map(effectName => createEffect( { effectName, featurePath: effectsRecipe.featurePath }));
   }
