@@ -2,8 +2,7 @@
 import * as ast from "@angstone/node-util"
 // error handler
 import { error } from "./error"
-// configurations
-import { config as configTool } from "./config"
+
 // framework modules
 import {
   EventModule,
@@ -106,8 +105,6 @@ export class App {
   }
 
   private config() {
-    if (!process.env.NODE_ENV) configTool()
-
     if (process.env.NODE_ENV === "production"
       || process.env.NODE_ENV === "development")
       ast.success("configuration loaded")

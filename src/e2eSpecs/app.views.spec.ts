@@ -6,11 +6,13 @@ import * as supertest from "supertest";
 import { messages } from "../features/auth/messages";
 import { testFakeEmail } from './test-fake-email'
 
+import { config } from "../config";
 import { App } from "../app";
 import { PortalModule } from '../modules';
 
 describe("App", () => {
 
+  config()
   describe("Views Tests", () => {
 
    let appOneInstance: App;

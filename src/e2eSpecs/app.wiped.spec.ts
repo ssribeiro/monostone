@@ -1,6 +1,7 @@
 import "jasmine-expect";
 import * as supertest from "supertest";
 
+import { config } from "../config";
 import { App } from "../app";
 import { PortalModule } from '../modules';
 import { features as basicFeatures } from "../features/optional.index";
@@ -11,6 +12,7 @@ import { testFakeEmail } from './test-fake-email'
 
 describe("App", () => {
 
+  config()
   describe("Wiped Tests", () => {
 
     // let originalTimeout: number;

@@ -3,12 +3,14 @@ import * as ast from "@angstone/node-util";
 import "jasmine-expect";
 import * as supertest from "supertest";
 
+import { config } from "../config";
 import { App } from "../app";
 import { PortalModule } from '../modules';
 import { messages } from "../features/auth/commands/signup/signup.messages";
 import { testFakeEmail } from './test-fake-email'
 
 describe("App", () => {
+  config()
 
   describe("One Instance Running Tests", () => {
 

@@ -2,6 +2,7 @@
 dist/e2eSpecs
 dist/*.spec.js
 dist/*/*.spec.js
+dist/index.dev*
 data
 dockers/data
 docs
@@ -15,4 +16,3 @@ nodemon.json
 tsconfig.json
 tslint.json
 wallaby.js
-

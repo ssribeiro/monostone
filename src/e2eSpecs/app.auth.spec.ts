@@ -2,6 +2,7 @@ import * as ast from "@angstone/node-util";
 import "jasmine-expect";
 import * as supertest from "supertest";
 
+import { config } from "../config";
 import { App } from "../app";
 import { PortalModule } from '../modules';
 
@@ -9,6 +10,8 @@ import * as jwt from "jsonwebtoken";
 import { testFakeEmail } from './test-fake-email'
 
 describe("App", () => {
+
+  config()
 
   describe("Views Tests", () => {
 
