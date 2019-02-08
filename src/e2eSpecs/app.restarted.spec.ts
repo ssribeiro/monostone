@@ -166,7 +166,7 @@ describe("App", () => {
                (request.post("/auth/signup") as supertest.Test)
                  .send(userInfo)
                  .expect(400, messages.LOGIN_TAKEN, () => {
-                   ast.delay(100).then(()=>{
+                   ast.delay(200).then(()=>{
                      testFakeEmail(response.body.userId, userInfo.login).then((result) => {
                        expect(result).toBeTrue();
                        done();

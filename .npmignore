@@ -3,6 +3,9 @@ dist/e2eSpecs
 dist/*.spec.js
 dist/*/*.spec.js
 dist/index.dev*
+dist/samples
+dist/.env
+samples
 data
 dockers/data
 docs

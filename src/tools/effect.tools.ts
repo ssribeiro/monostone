@@ -30,16 +30,16 @@ export function createEffects(
   }): IEffectLoaded[] {
 
   if(effectsRecipe.effects.length == 0) {
+    try {
+      const effectNames: string[] = FolderTools.getFiles( effectsRecipe.featurePath+'/effects' )
+      .filter(StringTools.filters.lastCharactersMustBe('ts'))
+      .map(FolderTools.firstNameOfFileSeparatedBySlashes)
+      .filter(effectName =>
+        process.env.NODE_ENV == 'development' || !StringTools.stringStartWith(effectName, 'fake')
+      );
 
-    const effectNames: string[] = FolderTools.getFiles( effectsRecipe.featurePath+'/effects' )
-    .filter(StringTools.filters.lastCharactersMustBe('ts'))
-    .map(FolderTools.firstNameOfFileSeparatedBySlashes)
-    .filter(effectName =>
-      process.env.NODE_ENV == 'development' || !StringTools.stringStartWith(effectName, 'fake')
-    );
-
-
-    effectsRecipe.effects = effectNames.map(effectName => createEffect( { effectName, featurePath: effectsRecipe.featurePath }));
+      effectsRecipe.effects = effectNames.map(effectName => createEffect( { effectName, featurePath: effectsRecipe.featurePath }));
+    } catch(e) {}
   }
 
   return effectsRecipe.effects.map((effect: IEffect) => {

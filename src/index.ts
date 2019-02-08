@@ -51,6 +51,8 @@ import {
 
 import * as SystemCommands from './system_commands'
 
+process.env.FRAMEWORK_ENV = 'packed'
+
 export {
   App,
   error,

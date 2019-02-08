@@ -126,10 +126,14 @@ export class App {
       BasicFeatures = FeatureTools.getRecipesFromFolderStructure()
     } finally {
 
-      const features = [...BasicFeatures]
+      let features = [...BasicFeatures]
       if(this.customFeaturesPath) {
-        features.concat( FeatureTools.getRecipesFromFolderStructure(this.customFeaturesPath) )
+
+        features = features.concat(
+          FeatureTools.getRecipesFromFolderStructure(this.customFeaturesPath))
+
       }
+
       return FeatureTools.createFeatures( features )
     }
   }

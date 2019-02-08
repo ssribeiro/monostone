@@ -31,7 +31,15 @@ export function createFeatures(featureRecipes: IFeature[]): IFeatureLoaded[] {
   featureRecipes.forEach( featureRecipe => {
     featureLoadeds.push( createFeature(featureRecipe) );
   })
-  return featureLoadeds;
+
+  const namesRepeated: string[] = [];
+  return featureLoadeds.filter((featureLoaded: IFeatureLoaded) => {
+    const alreadyAdded = namesRepeated.filter((name) => name == featureLoaded.featureName)
+    if( alreadyAdded.length == 0 ) {
+      namesRepeated.push(featureLoaded.featureName)
+      return true
+    } else return false
+  });
 }
 
 export function getRecipesFromFolderStructure(customPath?: string | undefined): IFeature[] {

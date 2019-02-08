@@ -75,6 +75,10 @@ export const error = {
        ast.error( FATAL_PREFIX + error.is(message).message );
      } else {
        ast.error( FATAL_PREFIX + message.message );
+       const internDetails = (message as MonoError).details;
+       if(internDetails) {
+         ast.error(internDetails);
+       }
      }
 
      if (details.length > 0) {

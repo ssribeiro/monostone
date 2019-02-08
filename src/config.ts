@@ -4,7 +4,11 @@
 import * as dotenv from "dotenv";
 import { IConfigRecipe } from './interfaces';
 
-const defaultFilePath = `${__dirname}/../.env`;
+let defaultFilePath: string = `${__dirname}/../.env`;
+
+if( process.env.FRAMEWORK_ENV == 'packed' ) {
+  defaultFilePath = '.env';
+}
 
 /**
  * Loads the enviroment variables.
@@ -12,5 +16,9 @@ const defaultFilePath = `${__dirname}/../.env`;
  */
 export const config = (configRecipe?: IConfigRecipe) => {
   if (!configRecipe) { configRecipe = {}; }
-  dotenv.config({ path: configRecipe.filePath || defaultFilePath });
+  console.log(configRecipe.envPath)
+  dotenv.config({ path: configRecipe.envPath || defaultFilePath });
+
+  if (configRecipe.featuresPath)
+    process.env.FEATURES_PATH = configRecipe.featuresPath
 };

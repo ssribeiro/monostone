@@ -4,6 +4,8 @@ import { App } from "./app"
 import { error } from "./error"
 import { config } from './config'
 
+process.env.FRAMEWORK_ENV = 'development',
+
 config()
 // Boot Process
 ast.log("booting monostone framework")

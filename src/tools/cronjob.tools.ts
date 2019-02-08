@@ -27,12 +27,13 @@ export function createCronjobs(
   }): ICronjob[] {
 
   if(cronjobsRecipe.cronjobs.length == 0) {
+    try {
+      const cronjobNames: string[] = FolderTools.getFiles( cronjobsRecipe.featurePath+'/cronjobs' )
+        .filter(StringTools.filters.lastCharactersMustBe('ts'))
+        .map(FolderTools.firstNameOfFileSeparatedBySlashes);
 
-    const cronjobNames: string[] = FolderTools.getFiles( cronjobsRecipe.featurePath+'/cronjobs' )
-    .filter(StringTools.filters.lastCharactersMustBe('ts'))
-    .map(FolderTools.firstNameOfFileSeparatedBySlashes);
-
-    cronjobsRecipe.cronjobs = cronjobNames.map(cronjobName => createCronjob( { cronjobName, featurePath: cronjobsRecipe.featurePath }));
+      cronjobsRecipe.cronjobs = cronjobNames.map(cronjobName => createCronjob( { cronjobName, featurePath: cronjobsRecipe.featurePath }));
+    } catch(e) {}
   }
 
   return cronjobsRecipe.cronjobs;

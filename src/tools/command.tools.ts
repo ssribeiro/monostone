@@ -92,9 +92,11 @@ export function createCommands(
   ): ICommandLoaded[] {
 
   if(commandsRecipe.commandNames.length == 0) {
-    commandsRecipe.commandNames = FolderTools.getDirectories(
-      commandsRecipe.featurePath+'/commands'
-    ).map(FolderTools.lastNameOfFilePath);
+    try {
+      commandsRecipe.commandNames = FolderTools.getDirectories(
+        commandsRecipe.featurePath+'/commands'
+      ).map(FolderTools.lastNameOfFilePath);
+    } catch(e) {}
   }
 
   const commands: ICommandLoaded[] = [];
