@@ -2,6 +2,7 @@
 import * as ast from "@angstone/node-util"
 // error handler
 import { error } from "./error"
+import * as express from "express"
 
 // framework modules
 import {
@@ -18,7 +19,7 @@ import { closeStore, connectStore } from "./store"
 // framework tools
 import { GeneralTools, EventTools, SystemTools, FeatureTools } from "./tools"
 // interfaces
-import { IFeature, IFeatureLoaded, IMonoModule } from "./interfaces"
+import { IFeature, IFeatureLoaded, IMonoModule, ICommand } from "./interfaces"
 // framework system commands
 import * as SystemCommands from "./system_commands"
 
@@ -84,10 +85,7 @@ export class App {
 
     this.timeLoaded = Date.now();
     const systemInfo = { load_time: this.timeLoaded - this.timeStarted }
-    await EventTools.send({
-      command: SystemCommands.started,
-      request: systemInfo
-    })
+    await this.sendCommand( SystemCommands.started, systemInfo )
   }
 
   public async stop() {
@@ -102,6 +100,10 @@ export class App {
       await closeStore();
       this.stopped = true;
     }
+  }
+
+  public async sendCommand(command: ICommand, request?: any): Promise<any> {
+    return await EventTools.send({command, request})
   }
 
   private config() {
@@ -147,6 +149,10 @@ export class App {
       if(!await controller.isFree()) return false
     }
     return true
+  }
+
+  public getExpressPortal(): express.Express {
+    return PortalModule.getExpressApp()
   }
 
 }
