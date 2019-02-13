@@ -24,6 +24,9 @@ import {
   IFeatureLoaded
 } from './interfaces'
 
+import { IAuthToken } from './features/auth/interfaces/auth-token.i';
+import { IPermission } from './features/auth/interfaces/permission.i';
+
 import {
   FeatureTools,
   CommandTools,
@@ -76,6 +79,8 @@ export {
   IEffectLoaded,
   ICommandLoaded,
   IFeatureLoaded,
+  IAuthToken,
+  IPermission,
   //  tools
   FeatureTools,
   CommandTools,

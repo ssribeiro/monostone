@@ -1,6 +1,6 @@
 {
   "name": "@angstone/monostone",
-  "version": "0.0.14",
+  "version": "0.0.16",
   "description": "monolitic event-sourced framework",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
