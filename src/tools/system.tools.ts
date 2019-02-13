@@ -8,7 +8,7 @@ export let rethinkDevConnected: boolean = false;
  * drops the database erasing everthing
  */
 export const dbDrop = async () => {
-  await db.dropDatabase();
+  await db().dropDatabase();
 };
 
 /**

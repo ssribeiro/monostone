@@ -23,7 +23,7 @@ export const rule: IRule = {
     }),
 
   validation: async (req: any): Promise<string|undefined|{req: any}> => {
-    const user = await db.collection("user").findOne({ login: req.login });
+    const user = await db().collection("user").findOne({ login: req.login });
     if (!user) {
       return messages.USER_NOT_FOUND;
     }
@@ -47,7 +47,7 @@ export const rule: IRule = {
   },
 
   respond: async (eventNumber: number, req: any): Promise<any> => {
-    const authentication = await db.collection("authentication").findOne({ id: eventNumber });
+    const authentication = await db().collection("authentication").findOne({ id: eventNumber });
     const token: string = authTools.createToken(authentication, req.role);
     return { token };
   },

@@ -96,11 +96,11 @@ const getFirstEventNumberToReduce = async (): Promise<number> => {
  */
 const registerDbControl = async () => {
   ast.log("registering db control")
-  const oldRegister: any = await db.collection(REDUCER_CONTROLLER_NAME)
+  const oldRegister: any = await db().collection(REDUCER_CONTROLLER_NAME)
     .find({id: REDUCER_CONTROLLER_NAME}).toArray()
 
   if (oldRegister.length === 0) {
-    await db.collection(REDUCER_CONTROLLER_NAME)
+    await db().collection(REDUCER_CONTROLLER_NAME)
       .insertOne({
          endEvent: 0,
          id: REDUCER_CONTROLLER_NAME,
@@ -155,14 +155,14 @@ const reduce = async () => {
 
 const reduceMarkStart = async (eventNumber: number) => {
   state.reducing = true
-  while ( db === undefined ) { await ast.delay(REDUCER_REST_TIME) }
-  await db.collection(REDUCER_CONTROLLER_NAME)
+  while ( db() === undefined ) { await ast.delay(REDUCER_REST_TIME) }
+  await db().collection(REDUCER_CONTROLLER_NAME)
     .updateOne({id: REDUCER_CONTROLLER_NAME},
       { $set: { startEvent: eventNumber } })
 }
 
 const reduceMarkEnd = async (eventNumber: number) => {
-  await db.collection(REDUCER_CONTROLLER_NAME)
+  await db().collection(REDUCER_CONTROLLER_NAME)
     .updateOne({id: REDUCER_CONTROLLER_NAME},
       { $set: { endEvent: eventNumber } })
   state.lastTimeReducing = Date.now()

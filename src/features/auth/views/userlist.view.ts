@@ -9,7 +9,7 @@ export const view: IView = {
   ],
 
   renderInitial: async (): Promise<any> => {
-    const usersInside = db.collection("user").find();
+    const usersInside = db().collection("user").find();
     const users: Array<{
       login: string,
       name: string,

@@ -11,7 +11,7 @@ import * as ast from "@angstone/node-util";
 
 describe("ReducerModule", () => {
 
-  const TIME_DELAY = 200;
+  const TIME_DELAY = 150;
 
   it("should load reducers", () => {
     EventModule.config();

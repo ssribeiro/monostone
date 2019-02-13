@@ -35,7 +35,7 @@ export const decodeToken = async (token: string): Promise<IAuthToken> => {
         reject(err);
       } else {
         const decodedToken: IAuthToken = decoded as IAuthToken;
-        db.collection("authentication").findOne({ id: decodedToken.id }).then((authentication: any) => {
+        db().collection("authentication").findOne({ id: decodedToken.id }).then((authentication: any) => {
           if (authentication) {
             if (authentication.userId === decodedToken.uId) {
               resolve(decodedToken);

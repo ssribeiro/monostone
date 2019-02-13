@@ -7,7 +7,7 @@ export const cronjob: ICronjob = {
   cron: "* * * * * *", // every second
   job: (onComplete: () => void) => {
     // console.log(Date.now());
-    db.collection("authentication").deleteMany({
+    db().collection("authentication").deleteMany({
       expiresAt: {
         $lt: Date.now(),
       },

@@ -402,11 +402,11 @@ const getFirstEventNumberToEffect = async (): Promise<number> => {
  */
 const registerDbControl = async () => {
   ast.log("registering db control for effects")
-  const oldRegister: any = await db.collection(EFFECT_CONTROLLER_NAME)
+  const oldRegister: any = await db().collection(EFFECT_CONTROLLER_NAME)
     .find({id: EFFECT_CONTROLLER_NAME}).toArray()
 
   if (oldRegister.length === 0) {
-    await db.collection(EFFECT_CONTROLLER_NAME)
+    await db().collection(EFFECT_CONTROLLER_NAME)
       .insertOne({
          id: EFFECT_CONTROLLER_NAME,
          startEvent: 0,

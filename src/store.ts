@@ -18,22 +18,33 @@ const url = "mongodb://" +
   mongoOptions.host + ":" +
   mongoOptions.port;
 
+class IStoreState {
+  mongoClient: mongodb.MongoClient | undefined;
+  db: mongodb.Db | undefined;
+}
+
+const storeState: IStoreState = {
+  mongoClient: undefined,
+  db: undefined,
+}
+
 // Create the db connection
-let mongoClient: mongodb.MongoClient;
-let db: mongodb.Db;
 const connectStore = async () => {
-  mongoClient = await mongodb.MongoClient.connect(url, {
+  storeState.mongoClient = await mongodb.MongoClient.connect(url, {
     poolSize: mongoOptions.poolSize,
   }).then((client: mongodb.MongoClient) => {
-    db = client.db(mongoOptions.db);
+    storeState.db = client.db(mongoOptions.db);
     return client;
   });
 };
 
 const closeStore = async () => {
-  if (mongoClient) { await mongoClient.close(); }
+  if (storeState.mongoClient) { await storeState.mongoClient.close(); }
 };
 
 const dbname: string = mongoOptions.db;
+
+const db = (): mongodb.Db | undefined => storeState.db;
+const mongoClient = (): mongodb.MongoClient | undefined => storeState.mongoClient;
 
 export { connectStore, closeStore, db, dbname, mongoClient };

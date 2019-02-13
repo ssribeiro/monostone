@@ -23,7 +23,7 @@ export const rule: IRule = {
     }),
 
   validation: async (req: any): Promise<string|undefined|{ req: any }> => {
-    const user = await db.collection("user").findOne({ login: req.login });
+    const user = await db().collection("user").findOne({ login: req.login });
     if (user) {
       return messages.LOGIN_TAKEN;
     } else {

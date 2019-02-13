@@ -9,7 +9,7 @@ export const view: IView = {
   ],
 
   renderInitial: async (): Promise<any> => {
-    const authentications = await db.collection("authentication").find();
+    const authentications = await db().collection("authentication").find();
     const sessions: Array<{
       userId: number,
       deviceType: string,

@@ -12,6 +12,6 @@ export const reducer: IReducer = {
       password: request.password,
       role: "newuser",
     }
-    await db.collection("user").insertOne(user);
+    await db().collection("user").insertOne(user);
   },
 };
