@@ -44,7 +44,7 @@ const closeStore = async () => {
 
 const dbname: string = mongoOptions.db;
 
-const db = (): mongodb.Db | undefined => storeState.db;
+const db = (): mongodb.Db => storeState.db || new mongodb.Db('shit', new mongodb.Server('neverhost', 666));
 const mongoClient = (): mongodb.MongoClient | undefined => storeState.mongoClient;
 
 export { connectStore, closeStore, db, dbname, mongoClient };
