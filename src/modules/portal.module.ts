@@ -124,7 +124,8 @@ const commandRequest = (command: ICommandLoaded): (
   req: express.Request,
   res: express.Response,
 ) => void  => {
-  return (req: express.Request, res: express.Response) => {
+  return (req: any, res: express.Response) => {
+    req.body.token = req.token;
     CommandTools.execute(
       command,
       req.body,
