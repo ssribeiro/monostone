@@ -4,7 +4,7 @@ import { App, devWipeDb, devWipeAll } from "./app"
 import { error } from "./error"
 import { config } from './config'
 
-import { db as store } from './store'
+import { db as store, connectStore } from './store'
 
 import {
   IView,
@@ -61,6 +61,7 @@ export {
   error,
   config,
   store,
+  connectStore,
   devWipeDb,
   devWipeAll,
   SystemCommands,
