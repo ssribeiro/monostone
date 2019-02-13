@@ -29,7 +29,7 @@ export class App {
 
   public monoModules: IMonoModule[]
   // public cronjobController: CronjobController;
-  public features: IFeatureLoaded[]
+  public features: IFeatureLoaded[] = []
   /**
    * used when application stops
    */
@@ -55,8 +55,6 @@ export class App {
     this.timeStarted = Date.now()
     this.config()
 
-    this.features = this.loadFeatures()
-
     this.monoModules = [
       EventModule,
       ReducerModule,
@@ -78,6 +76,9 @@ export class App {
     await EventTools.send({ command: SystemCommands.starting })
 
     await this.connectStore()
+
+    this.features = this.loadFeatures()
+
     this.monoModules.forEach( controller =>
       controller.loadFeatures(this.features) )
     await GeneralTools.asyncForEach( this.monoModules,
