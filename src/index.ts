@@ -1,6 +1,6 @@
 // Monostone Starter
 import * as angstoneTools from "@angstone/node-util"
-import { App } from "./app"
+import { App, devWipeDb, devWipeAll } from "./app"
 import { error } from "./error"
 import { config } from './config'
 
@@ -61,6 +61,8 @@ export {
   error,
   config,
   store,
+  devWipeDb,
+  devWipeAll,
   SystemCommands,
   angstoneTools,
   // interfaces
