@@ -158,3 +158,31 @@ export class App {
   }
 
 }
+
+export const devWipeAll = (done: Function) => {
+  if( process.env.NODE_ENV=='production' )
+    throw new Error("not allowed in production")
+  else {
+    let appWiped = new App();
+    appWiped.connectStore().then(() => {
+      appWiped.systemTools.dbDrop().then(() => {
+        appWiped.systemTools.eventClear().then(() => {
+          done();
+        });
+      });
+    });
+  }
+}
+
+export const devWipeDb = (done: Function) => {
+  if( process.env.NODE_ENV=='production' )
+    throw new Error("not allowed in production")
+  else {
+    let appWiped = new App();
+    appWiped.connectStore().then(() => {
+      appWiped.systemTools.dbDrop().then(() => {
+        done();
+      });
+    });
+  }
+}

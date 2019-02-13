@@ -2,7 +2,7 @@ import "jasmine-expect";
 import * as supertest from "supertest";
 
 import { config } from "../config";
-import { App } from "../app";
+import { App, devWipeAll } from "../app";
 import { PortalModule } from '../modules';
 import { features as basicFeatures } from "../features/optional.index";
 import { messages } from "../features/auth/commands/signup/signup.messages";
@@ -24,17 +24,13 @@ describe("App", () => {
       // jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
       process.env.API_PORT = "" + 0;
       process.env.MONGO_DATABASE = "dev" + 90;
-      appWiped = new App();
-      appWiped.connectStore().then(() => {
-        appWiped.systemTools.dbDrop().then(() => {
-          appWiped.systemTools.eventClear().then(() => {
-            appWiped.start().then(() => {
-              request = supertest(PortalModule.getExpressApp());
-              done();
-            });
-          });
+      devWipeAll(() => {
+        appWiped = new App();
+        appWiped.start().then(() => {
+          request = supertest(PortalModule.getExpressApp());
+          done();
         });
-      });
+      })
     });
 
     afterEach((done) => {
