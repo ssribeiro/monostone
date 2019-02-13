@@ -5,5 +5,4 @@ export interface IdbUser {
   name: string,
   password: string,
   role: string,
-  email_confirmed: boolean,
 }
