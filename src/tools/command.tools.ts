@@ -2,6 +2,7 @@ import { EventEmitter } from "events";
 import { error } from "../error";
 import { IReducer, IRule, ICommandLoaded, IEventRead } from "../interfaces";
 import { EventTools, ReducerTools, RuleTools, FolderTools } from "./";
+import * as sanitizeHtml from 'sanitize-html'
 
 const EVENT_REDUCE_TIMEOUT: number = +(process.env.EVENT_REDUCE_TIMEOUT || 3000);
 
@@ -10,6 +11,8 @@ export async function execute(
   request: any,
   eventReduced$: EventEmitter
 ): Promise<any> {
+
+  request = sanitizeRequest(request);
 
   let ruleBroken;
 
@@ -109,4 +112,11 @@ export function createCommands(
 
   return commands;
 
+}
+
+export function sanitizeRequest(req: any): any {
+  Object.keys(req).forEach( (key) => {
+    if ( key != 'token' ) req[key] = sanitizeHtml(req[key]);
+  });
+  return req;
 }

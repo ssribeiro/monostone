@@ -19,6 +19,8 @@ export const testFakeEmail = async (
       (err, data) => {
         if(err) resolve(false)
         if(!data) resolve(false)
+        console.log(data);
+        console.log(emailtext);
         if( data == emailtext ) {
           fs.unlinkSync(fakedir+'/'+filename)
           resolve(true)
